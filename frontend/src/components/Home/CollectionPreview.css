@@ -1,0 +1,286 @@
+/* Featured Collection */
+.featured-section {
+    padding: 0 16px 40px;
+    /* Reduced mobile padding */
+}
+
+@media (min-width: 1024px) {
+    .featured-section {
+        padding: 0 24px 32px 24px;
+    }
+}
+
+.view-all-wrap {
+    text-align: center;
+    margin-top: 40px;
+    /* Reduced margin */
+}
+
+/* Title remains large as requested */
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 24px;
+    border-left: 2px solid var(--color-accent);
+    padding-left: 16px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns on mobile */
+    gap: 12px;
+    /* Tighter gap */
+}
+
+@media (min-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.product-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 4/5;
+    background-color: #222;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease-out;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.product-header h3 {
+    font-size: 1.5rem;
+    color: var(--color-text-light);
+}
+
+.price {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    color: var(--color-accent);
+    font-size: 1.1rem;
+}
+
+.product-benefit {
+    font-size: 0.9rem;
+    color: rgba(244, 242, 238, 0.6);
+}
+
+/* Category Nav */
+.filter-tabs {
+    margin-bottom: 24px !important;
+    /* Reduced bottom margin */
+    gap: 12px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    /* Allow scroll hint */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
+
+.filter-tabs::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+}
+
+.filter-btn {
+    font-size: 0.75rem;
+    /* Smaller font for mobile */
+    padding: 8px 16px;
+    /* Smaller padding */
+    white-space: nowrap;
+}
+
+/* Desktop override for buttons */
+@media (min-width: 768px) {
+    .filter-btn {
+        font-size: 0.85rem;
+        padding: 10px 24px;
+    }
+
+    .filter-tabs {
+        margin-bottom: 40px !important;
+        gap: 16px;
+    }
+}
+
+/* 3. Active Category State */
+.filter-btn.active {
+    background-color: #d4b46e !important;
+    /* +10% darker/richer than accent */
+    color: #000 !important;
+    font-weight: 600;
+    box-shadow: none;
+    /* Removed glow for cleaner fill focus */
+    border-color: #d4b46e;
+    text-decoration: underline;
+    /* Added as requested option */
+    text-underline-offset: 4px;
+}
+
+/* 5. Product Name <-> Price Spacing */
+.product-header {
+    display: flex;
+    flex-direction: column;
+    /* Stack name and price for gap control */
+    align-items: flex-start;
+    /* Left align */
+    margin-bottom: 4px;
+    gap: 8px;
+    /* The +8-12px gap */
+}
+
+.product-header h3 {
+    font-size: 1.5rem;
+    color: var(--color-text-light);
+    margin: 0;
+}
+
+/* 6. Price Visual Weight */
+.price {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    /* Lighter */
+    font-size: 1rem;
+    /* -2px approx */
+    color: var(--color-accent);
+    opacity: 0.9;
+}
+
+/* 7. Text Block Top Padding */
+.product-info {
+    padding-top: 12px;
+    /* +8px from original tight spacing */
+}
+
+/* 8. One CTA (Overlay) */
+.product-card {
+    position: relative;
+    overflow: hidden;
+    /* For overlay containment */
+}
+
+.btn-card-cta {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 40%);
+    /* Start slightly lower */
+    width: auto;
+    min-width: 140px;
+    padding: 14px 24px;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #000;
+    border: none;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 10;
+    margin: 0;
+}
+
+.product-card:hover .btn-card-cta {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    /* Move to center */
+}
+
+/* Ensure image hover doesn't interfere too much, allow darkening? */
+.product-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.product-card:hover .product-image::after {
+    opacity: 1;
+}
+
+/* =========================================
+   TRUST BADGE MARQUEE
+   ========================================= */
+.trust-marquee-container {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 32px;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    white-space: nowrap;
+}
+
+.trust-marquee-content {
+    display: flex;
+    gap: 32px;
+    width: max-content;
+    animation: scroll-left 25s linear infinite;
+    opacity: 0.8;
+}
+
+.trust-marquee-content span {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: rgba(244, 242, 238, 0.9);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .trust-marquee-content {
+        animation-duration: 20s;
+        /* Slightly faster on mobile felt better */
+        gap: 24px;
+    }
+}

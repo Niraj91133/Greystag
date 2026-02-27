@@ -1,0 +1,13 @@
+/* Core */
+@import url('base.css');
+@import url('layout.css');
+
+/* Components */
+@import url('../components/Navigation/nav.css');
+@import url('../components/CategoryNav/category_nav.css');
+@import url('../components/Home/home.css');
+@import url('pages/plp.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

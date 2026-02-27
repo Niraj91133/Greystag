@@ -1,0 +1,67 @@
+/* [project]/Desktop/menx-next/frontend/src/components/Home/FAQSection.css [app-client] (css) */
+.faq-section {
+  max-width: 100%;
+  margin: 0;
+  padding: 64px 24px;
+}
+
+.faq-header {
+  text-align: left;
+  border-bottom: 1px solid #ffffff1a;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+}
+
+.faq-header h2 {
+  margin-bottom: 16px;
+  font-size: 2.5rem;
+}
+
+.faq-item {
+  border-bottom: 1px solid #ffffff1a;
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+}
+
+.faq-question {
+  text-align: left;
+  width: 100%;
+  color: var(--color-text-light);
+  font-size: 1.1rem;
+  font-family: var(--font-serif);
+  cursor: pointer;
+  background: none;
+  border: none;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  display: flex;
+}
+
+.faq-icon {
+  font-size: 1.5rem;
+  transition: transform .3s;
+}
+
+.faq-item.active .faq-icon {
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  opacity: .8;
+  max-height: 0;
+  font-size: .95rem;
+  line-height: 1.6;
+  font-family: var(--font-sans);
+  text-align: left;
+  padding-right: 24px;
+  transition: max-height .3s ease-out;
+  overflow: hidden;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 200px;
+  padding-bottom: 24px;
+}
+
+/*# sourceMappingURL=Desktop_menx-next_frontend_src_components_Home_FAQSection_css_bad6b30c._.single.css.map*/

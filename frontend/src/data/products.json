@@ -1,0 +1,268 @@
+[
+  {
+    "_id": "1",
+    "name": "The Noir Overshirt",
+    "price": 4999,
+    "category": "Shirts",
+    "images": [
+      "/assets/product_1.png"
+    ],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      "Black"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Shirts designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "2",
+    "name": "Signature Trousers",
+    "price": 3499,
+    "category": "Trousers",
+    "images": [
+      "/assets/product_2.png"
+    ],
+    "sizes": [
+      "30",
+      "32",
+      "34"
+    ],
+    "colors": [
+      "Navy"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Trousers designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "3",
+    "name": "Oxford Shirt",
+    "price": 4299,
+    "category": "Shirts",
+    "images": [
+      "/assets/product_1.png"
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "colors": [
+      "White"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Shirts designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "4",
+    "name": "Pleated Chino",
+    "price": 3999,
+    "category": "Chinos",
+    "images": [
+      "/assets/product_2.png"
+    ],
+    "sizes": [
+      "30",
+      "32",
+      "36"
+    ],
+    "colors": [
+      "Beige"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Chinos designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "5",
+    "name": "Linen Blazer",
+    "price": 8999,
+    "category": "Blazers",
+    "images": [
+      "/assets/product_1.png"
+    ],
+    "sizes": [
+      "38",
+      "40",
+      "42"
+    ],
+    "colors": [
+      "Beige"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Blazers designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "6",
+    "name": "Silk Blend Polo",
+    "price": 5499,
+    "category": "Shirts",
+    "images": [
+      "/assets/product_2.png"
+    ],
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "colors": [
+      "Navy"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Shirts designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "7",
+    "name": "Travel Jogger",
+    "price": 4299,
+    "category": "Trousers",
+    "images": [
+      "/assets/product_1.png"
+    ],
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "colors": [
+      "Black"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Trousers designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "8",
+    "name": "Weekend Bag",
+    "price": 12999,
+    "category": "Accessories",
+    "images": [
+      "/assets/product_2.png"
+    ],
+    "sizes": [
+      "M",
+      "L"
+    ],
+    "colors": [
+      "Black"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Accessories designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "_id": "9",
+    "name": "Evening Dress Shirt",
+    "price": 5999,
+    "category": "Shirts",
+    "images": [
+      "/assets/product_1.png"
+    ],
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      "White"
+    ],
+    "displayLocations": [
+      "Essential Collection",
+      "Featured"
+    ],
+    "status": "Active",
+    "description": "A premium Shirts designed for modern needs.",
+    "fabric": "Premium Blend",
+    "stock": 50,
+    "createdAt": "2026-02-18T18:13:02.661Z"
+  },
+  {
+    "name": "tryry",
+    "price": 20000,
+    "category": "Shirts",
+    "description": "No description added.",
+    "images": [
+      "/uploads/1771438364490-fit.png"
+    ],
+    "colors": [
+      "#000000"
+    ],
+    "sizes": [
+      "M",
+      "S"
+    ],
+    "details": [
+      ""
+    ],
+    "fabric": "Cotton",
+    "stock": 50,
+    "occasions": [
+      "Meeting",
+      "Office",
+      "Casual"
+    ],
+    "displayLocations": [
+      "Homepage",
+      "Category PLP",
+      "Essential Collection",
+      "New Arrivals"
+    ],
+    "status": "Active",
+    "_id": "1771438382662",
+    "createdAt": "2026-02-18T18:13:02.662Z"
+  }
+]

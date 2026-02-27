@@ -1,0 +1,221 @@
+.wizardContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 32px;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    margin-bottom: 32px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 16px;
+}
+
+.stepIndicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.stepDot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+.stepDot.active {
+    background: var(--color-accent);
+    transform: scale(1.2);
+}
+
+.stepDot.completed {
+    background: var(--color-text-light);
+}
+
+.stepText {
+    margin-left: auto;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.content {
+    flex: 1;
+}
+
+.stepContent h3 {
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    color: var(--color-accent);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card:hover, .card.selected {
+    border-color: var(--color-accent);
+    background: rgba(194, 164, 109, 0.1);
+}
+
+/* Images */
+.uploadArea {
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    padding: 32px;
+    text-align: center;
+}
+
+.imageGrid {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.imagePreview {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.imagePreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.removeBtn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: red;
+    color: white;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.badge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.7);
+    font-size: 10px;
+    padding: 2px;
+    text-align: center;
+}
+
+/* Forms */
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.formGroup input, .formGroup textarea, .row input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: var(--font-sans);
+    outline: none;
+}
+
+.formGroup input:focus, .formGroup textarea:focus {
+    border-color: var(--color-accent);
+}
+
+/* Sizes */
+.sizeGrid {
+    display: flex;
+    gap: 12px;
+}
+
+.sizePill {
+    padding: 12px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sizePill.selectedPill {
+    background: var(--color-text-light);
+    color: var(--color-bg-primary);
+    border-color: var(--color-text-light);
+}
+
+/* Colors */
+.row {
+    display: flex;
+    gap: 16px;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 16px !important; /* Exception for tags */
+    font-size: 0.9rem;
+}
+
+/* Collections */
+.checklist {
+    display: grid;
+    gap: 16px;
+}
+
+.checkLabel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.checkLabel input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-accent);
+}
+
+.footer {
+    margin-top: auto;
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}

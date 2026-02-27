@@ -1,0 +1,101 @@
+{
+  "hero": {
+    "isEnabled": true,
+    "title": "THE GREY STAG",
+    "subtitle": "Redefining Modern Luxury. Precision Tailoring for the Contemporary Gentleman.",
+    "mediaUrl": "/uploads/1771916165468-Gemini_Generated_Image_j473jjj473jjj473.png",
+    "mediaType": "image",
+    "ctaText": "Shop the Collection",
+    "ctaLink": "/category/all"
+  },
+  "videoSection": {
+    "id": "promo-video",
+    "title": "Behind the Seams",
+    "content": "/uploads/1771916229894-Hero_Video.mp4"
+  },
+  "categories": [
+    {
+      "id": "shirts",
+      "name": "Shirts",
+      "description": "Crisp cottons and linens.",
+      "imageUrl": "/assets/product_1.png",
+      "isEnabled": true
+    },
+    {
+      "id": "trousers",
+      "name": "Trousers",
+      "description": "Tailored fit for every occasion.",
+      "imageUrl": "/assets/product_2.png",
+      "isEnabled": true
+    },
+    {
+      "id": "blazers",
+      "name": "Blazers",
+      "description": "The cornerstone of a modern wardrobe.",
+      "imageUrl": "/assets/journal_1.png",
+      "isEnabled": true
+    },
+    {
+      "id": "chinos",
+      "name": "Chinos",
+      "description": "Relaxed elegance.",
+      "imageUrl": "/assets/journal_2.png",
+      "isEnabled": true
+    }
+  ],
+  "videoScrollItems": [],
+  "handpickedItems": [
+    {
+      "id": "1",
+      "title": "Meetings",
+      "slug": "meetings",
+      "imageUrl": "/assets/product_1.png"
+    },
+    {
+      "id": "2",
+      "title": "Office Essentials",
+      "slug": "office-essentials",
+      "imageUrl": "/assets/product_2.png"
+    },
+    {
+      "id": "3",
+      "title": "Students",
+      "slug": "students",
+      "imageUrl": "/assets/journal_1.png"
+    },
+    {
+      "id": "4",
+      "title": "Events",
+      "slug": "events",
+      "imageUrl": "/assets/journal_2.png"
+    }
+  ],
+  "journal": [
+    {
+      "id": "1",
+      "title": "The Art of the Long Weekend",
+      "date": "Oct 12, 2023",
+      "author": "Editor",
+      "category": "Travel",
+      "status": "published",
+      "imageUrl": "/assets/journal_1.png",
+      "content": "Discover how to pack efficiently without sacrificing style."
+    },
+    {
+      "id": "2",
+      "title": "Minimalism in Modern Metros",
+      "date": "Sep 28, 2023",
+      "author": "Editor",
+      "category": "Design",
+      "status": "published",
+      "imageUrl": "/assets/journal_2.png",
+      "content": "Navigating the city with a refined palette."
+    }
+  ],
+  "essentialsConfig": {
+    "isEnabled": true,
+    "count": 8,
+    "sortOrder": "newest",
+    "orderedProductIds": []
+  }
+}

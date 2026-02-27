@@ -1,0 +1,560 @@
+/* =====================================================
+   THE GREY STAG — PDP FINAL
+   Compatible with ProductDetailClient.jsx
+   ===================================================== */
+
+/* ===== ROOT ===== */
+.pdp-main {
+    background: #0f0f0f;
+    color: #f4f2ee;
+    min-height: 100vh;
+    font-family: var(--font-sans, Inter, sans-serif);
+}
+
+/* =====================================================
+   1. STICKY HEADER (MOBILE)
+   ===================================================== */
+.pdp-header {
+    position: sticky;
+    top: 0;
+    z-index: 120;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: #0f0f0f;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pdp-header-title {
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    text-align: center;
+    flex: 1;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: #f4f2ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Desktop hide header */
+/* Desktop show header for navigation */
+@media (min-width: 1024px) {
+    .pdp-header {
+        display: flex;
+        background: rgba(15, 15, 15, 0.95);
+        backdrop-filter: blur(8px);
+        padding: 0 48px;
+    }
+}
+
+/* =====================================================
+   2. MAIN GRID
+   ===================================================== */
+.pdp-main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+    .pdp-main-grid {
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+        max-width: none;
+        /* Removed constraint to align with screen edges */
+        padding: 32px 48px;
+        gap: 120px;
+        /* Increased gap to push content to edges if screen is very wide */
+        align-items: start;
+    }
+}
+
+/* =====================================================
+   3. HERO GALLERY
+   ===================================================== */
+/* =====================================================
+   3. HERO GALLERY (Refactored for Single View + Thumbnails)
+   ===================================================== */
+.pdp-gallery-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pdp-main-image {
+    width: 100%;
+    aspect-ratio: 3/4;
+    /* Consistent ratio */
+    background: #1a1a1a;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.pdp-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Thumbnails */
+.pdp-thumbnails {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.pdp-thumbnail {
+    aspect-ratio: 3/4;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.pdp-thumbnail:hover {
+    opacity: 0.8;
+}
+
+.pdp-thumbnail.active {
+    opacity: 1;
+    border-color: #f4f2ee;
+    /* Active border */
+}
+
+.pdp-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Desktop gallery refinement: Side Thumbnails */
+@media (min-width: 1024px) {
+    .pdp-gallery-container {
+        display: grid;
+        grid-template-columns: 1fr 80px;
+        /* Reduced from 120px to 80px */
+        gap: 20px;
+        /* Tighter gap */
+        height: auto;
+        align-items: stretch;
+        /* Align heights */
+    }
+
+    .pdp-main-image {
+        grid-column: 1;
+        /* Left */
+        width: 100%;
+        height: 100%;
+        max-height: 85vh;
+        /* Increased from 60vh */
+        /* Constrain height */
+        display: flex;
+    }
+
+    .pdp-main-image img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        max-height: 85vh;
+        /* Increased from 60vh */
+        /* Constrain image height */
+        border-radius: 2px;
+    }
+
+    /* Vertical Thumbnails on Right */
+    .pdp-thumbnails {
+        grid-column: 2;
+        /* Right */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        /* Spread evenly to match height */
+        height: 100%;
+        padding-bottom: 2px;
+    }
+
+    .pdp-thumbnail {
+        aspect-ratio: 3/4;
+        width: 100%;
+        opacity: 0.5;
+    }
+
+    .pdp-thumbnail.active {
+        opacity: 1;
+        border: 2px solid var(--color-gold, #d4af37);
+    }
+}
+
+/* Clean up old styles */
+
+/* =====================================================
+   4. RIGHT CONTENT
+   ===================================================== */
+.pdp-content-wrapper {
+    padding: 24px 16px 64px;
+}
+
+@media (min-width: 1024px) {
+    .pdp-content-wrapper {
+        padding: 0;
+        position: sticky;
+        top: 120px;
+    }
+}
+
+/* =====================================================
+   5. PRODUCT INFO
+   ===================================================== */
+.pdp-title-main {
+    font-family: var(--font-serif, Playfair Display, serif);
+    font-size: 1.6rem;
+    line-height: 1.1;
+    margin-bottom: 8px;
+}
+
+.pdp-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 16px;
+}
+
+.pdp-price-row {
+    font-size: 1rem;
+    color: var(--color-gold, #d4af37);
+    margin-bottom: 4px;
+}
+
+.pdp-stock-status {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    margin-bottom: 24px;
+}
+
+/* =====================================================
+   6. VARIANTS
+   ===================================================== */
+.variant-section {
+    margin-bottom: 32px;
+}
+
+.section-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    opacity: 0.7;
+}
+
+.size-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.size-pill {
+    min-width: 44px;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f4f2ee;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.size-pill.selected {
+    border-color: var(--color-gold, #d4af37);
+    color: var(--color-gold, #d4af37);
+}
+
+.fit-helper-row {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.fit-link {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Color Selector */
+.color-grid {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.color-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.selected {
+    border: 2px solid #f4f2ee;
+    /* White border for selection */
+    outline: 2px solid var(--color-gold, #d4af37);
+    /* Gold outer ring */
+    outline-offset: 2px;
+}
+
+.selected-color-name {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 8px;
+}
+
+/* =====================================================
+   7. CTA
+   ===================================================== */
+.action-box {
+    margin: 32px 0;
+}
+
+/* New Price Location */
+.pdp-price-final {
+    font-family: var(--font-serif, serif);
+    font-size: 1.5rem;
+    color: var(--color-gold, #d4af37);
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 48px;
+    background: #f4f2ee;
+    color: #0f0f0f;
+    border: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.trust-microcopy {
+    margin-top: 24px;
+    font-size: 0.7rem;
+    text-align: left;
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+
+
+/* =====================================================
+   9. ACCORDION
+   ===================================================== */
+.accordion-wrapper {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.accordion-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.accordion-header {
+    width: 100%;
+    background: none;
+    border: none;
+    color: #f4f2ee;
+    padding: 16px 0;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.accordion-icon {
+    transition: transform 0.2s ease;
+}
+
+.accordion-header.open .accordion-icon {
+    transform: rotate(45deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    transition: max-height 0.3s ease;
+}
+
+.accordion-content.open {
+    max-height: 400px;
+    padding-bottom: 16px;
+}
+
+/* =====================================================
+   10. STICKY BUY BAR (MOBILE)
+   ===================================================== */
+.sticky-buy-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: #0f0f0f;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    z-index: 200;
+}
+
+.sticky-buy-bar.visible {
+    transform: translateY(0);
+}
+
+.sbb-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sbb-title {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.sbb-price {
+    font-size: 0.8rem;
+    color: var(--color-gold, #d4af37);
+}
+
+.sbb-btn {
+    height: 40px;
+    padding: 0 20px;
+    background: #f4f2ee;
+    color: #0f0f0f;
+    border: none;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+/* Hide sticky bar on desktop */
+@media (min-width: 1024px) {
+    .sticky-buy-bar {
+        display: none;
+    }
+}
+
+/* =====================================================
+   11. SUGGESTIONS SECTION (You May Also Like)
+   ===================================================== */
+.pdp-suggestions {
+    padding: 64px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (min-width: 1024px) {
+    .pdp-suggestions {
+        padding: 80px 48px;
+        /* Match edge alignment */
+    }
+}
+
+.suggestions-title {
+    font-family: var(--font-serif, serif);
+    font-size: 1.5rem;
+    color: #f4f2ee;
+    margin-bottom: 32px;
+    letter-spacing: 0.02em;
+}
+
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+@media (min-width: 1024px) {
+    .suggestions-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+}
+
+/* Card Styles (Mirrored from PLP to standalone) */
+.suggestion-link {
+    text-decoration: none;
+    display: block;
+}
+
+.suggestion-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.suggestion-image-wrap {
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    border-radius: 2px;
+}
+
+.suggestion-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.suggestion-card:hover .suggestion-image-wrap img {
+    transform: scale(1.04);
+}
+
+.suggestion-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.suggestion-name {
+    font-family: var(--font-serif, serif);
+    font-size: 0.9rem;
+    color: #f4f2ee;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.suggestion-price {
+    font-size: 0.8rem;
+    color: var(--color-gold, #d4af37);
+}

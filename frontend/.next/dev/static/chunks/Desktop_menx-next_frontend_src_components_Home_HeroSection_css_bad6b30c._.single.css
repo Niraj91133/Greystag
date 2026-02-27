@@ -1,0 +1,140 @@
+/* [project]/Desktop/menx-next/frontend/src/components/Home/HeroSection.css [app-client] (css) */
+.hero-section {
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hero-bg img {
+  -o-object-fit: cover;
+  object-fit: cover;
+  -o-object-position: center 20%;
+  object-position: center 20%;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .hero-bg img {
+    -o-object-position: center 30%;
+    object-position: center 30%;
+  }
+}
+
+.hero-overlay {
+  background: linear-gradient(#0f0f0f4d 0%, #0f0f0f1a 40%, #0f0f0fb3 100%);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hero-content {
+  z-index: 5;
+  text-align: left;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 60px;
+  padding: 0 16px;
+  display: flex;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .hero-content {
+    width: 100%;
+    padding-left: 64px;
+  }
+}
+
+.hero-subtext {
+  opacity: .9;
+  max-width: none;
+  margin-bottom: 32px;
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+@media (min-width: 1024px) {
+  .hero-subtext {
+    max-width: 420px;
+  }
+}
+
+.hero-actions {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  display: flex;
+}
+
+.fade-in-up {
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(.2, 1, .3, 1), transform 1s cubic-bezier(.2, 1, .3, 1);
+  transform: translateY(30px);
+}
+
+.fade-in-up.animate-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-1 {
+  transition-delay: .2s;
+}
+
+.delay-2 {
+  transition-delay: .4s;
+}
+
+.btn-primary {
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #0f0f0f;
+  cursor: pointer;
+  white-space: nowrap;
+  background-color: #f4f2ee;
+  border: none;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  padding: 16px 36px;
+  font-size: .85rem;
+  font-weight: 500;
+  transition: transform .2s, opacity .2s, background-color .2s;
+  display: inline-flex;
+}
+
+.btn-primary:hover, .btn-primary:focus-visible {
+  opacity: .95;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  opacity: .9;
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/*# sourceMappingURL=Desktop_menx-next_frontend_src_components_Home_HeroSection_css_bad6b30c._.single.css.map*/

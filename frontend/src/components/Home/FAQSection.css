@@ -1,0 +1,75 @@
+/* FAQ Section */
+.faq-section {
+    padding: 64px 24px;
+    /* Global match */
+    max-width: 100%;
+    /* Allow full width to align left naturally */
+    margin: 0;
+    /* Remove auto centering */
+}
+
+.faq-header {
+    text-align: left;
+    /* Left aligned */
+    margin-bottom: 48px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 24px;
+}
+
+.faq-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+}
+
+.faq-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 24px;
+    /* 15. FAQ Item Spacing 24px */
+    padding-bottom: 8px;
+    /* Optional extra breathing room */
+}
+
+.faq-question {
+    width: 100%;
+    padding: 16px 0;
+    text-align: left;
+    /* 16. Left Aligned */
+    background: none;
+    border: none;
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+    font-family: var(--font-serif);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.faq-icon {
+    font-size: 1.5rem;
+    transition: transform 0.3s;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(45deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    opacity: 0.8;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    /* Sans-serif */
+    text-align: left;
+    /* Left Aligned */
+    padding-right: 24px;
+    /* Readability limit */
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px;
+    padding-bottom: 24px;
+}

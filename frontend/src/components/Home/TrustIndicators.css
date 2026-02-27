@@ -1,0 +1,57 @@
+/* Trust Strip - Thin Premium Bar */
+.trust-strip {
+    background-color: #0F0F0F;
+    border-bottom: 1px solid rgba(194, 164, 109, 0.2);
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.trust-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 48px;
+    animation: marquee 20s linear infinite;
+    width: max-content;
+    min-width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .trust-content {
+        animation: none;
+        width: 100%;
+        justify-content: center;
+        gap: 64px;
+    }
+}
+
+.trust-item {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(244, 242, 238, 0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trust-item::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}

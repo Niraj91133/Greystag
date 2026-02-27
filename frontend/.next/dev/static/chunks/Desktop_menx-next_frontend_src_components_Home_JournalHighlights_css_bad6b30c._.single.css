@@ -1,0 +1,91 @@
+/* [project]/Desktop/menx-next/frontend/src/components/Home/JournalHighlights.css [app-client] (css) */
+.journal-section {
+  padding: 32px 24px 64px;
+}
+
+@media (min-width: 1024px) {
+  .journal-section {
+    padding: 0 24px 32px;
+  }
+}
+
+.journal-grid {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 16px;
+  padding-bottom: 24px;
+  display: flex;
+  overflow-x: auto;
+}
+
+.journal-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.journal-grid {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.journal-card {
+  cursor: pointer;
+  scroll-snap-align: start;
+  flex-direction: column;
+  flex: 0 0 280px;
+  gap: 16px;
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .journal-card {
+    flex: 0 0 320px;
+  }
+}
+
+.journal-card img {
+  aspect-ratio: 3 / 2;
+  -o-object-fit: cover;
+  object-fit: cover;
+  filter: brightness(.9);
+  border-radius: 16px;
+  width: 100%;
+  transition: filter .3s;
+}
+
+.journal-card:hover img {
+  filter: brightness();
+}
+
+.journal-info {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 4px;
+  display: flex;
+}
+
+.journal-section p, .journal-info h3, .journal-info span {
+  max-width: 90%;
+}
+
+@media (min-width: 1024px) {
+  .journal-section p, .journal-info h3 {
+    max-width: none;
+  }
+}
+
+.journal-cat {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-accent);
+  margin-bottom: 8px;
+  font-size: .75rem;
+}
+
+.journal-card h3 {
+  font-family: var(--font-serif);
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+/*# sourceMappingURL=Desktop_menx-next_frontend_src_components_Home_JournalHighlights_css_bad6b30c._.single.css.map*/

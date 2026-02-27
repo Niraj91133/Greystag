@@ -1,0 +1,102 @@
+/* [project]/Desktop/menx-next/frontend/src/components/Layout/Header.css [app-client] (css) */
+.unified-header {
+  z-index: 120;
+  background: #0f0f0f;
+  border-bottom: 1px solid #ffffff0f;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+  padding: 0 16px;
+  transition: all .3s;
+  display: flex;
+  position: sticky;
+  top: 0;
+}
+
+@media (min-width: 1024px) {
+  .unified-header {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    background: #0f0f0ff2;
+    height: 64px;
+    padding: 0 48px;
+  }
+}
+
+.header-brand {
+  font-family: var(--font-sans, sans-serif);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f4f2ee;
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.header-brand:hover {
+  color: #d4af37;
+}
+
+.header-action {
+  flex: 1;
+  align-items: center;
+  display: flex;
+}
+
+.header-action.left {
+  justify-content: flex-start;
+}
+
+.header-action.right {
+  justify-content: flex-end;
+}
+
+.header-back-btn {
+  color: #f4f2ee;
+  cursor: pointer;
+  opacity: .8;
+  background: none;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  margin-left: -8px;
+  padding: 8px;
+  transition: opacity .2s, color .2s;
+  display: flex;
+}
+
+.header-back-btn:hover {
+  opacity: 1;
+  color: #d4af37;
+}
+
+.header-cart-btn {
+  cursor: pointer;
+  color: #f4f2ee;
+  background: none;
+  border: none;
+  align-items: center;
+  margin-right: -8px;
+  padding: 8px;
+  display: flex;
+  position: relative;
+}
+
+.cart-badge {
+  color: #000;
+  background-color: #c5a059;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/*# sourceMappingURL=Desktop_menx-next_frontend_src_components_Layout_Header_1ff667ea.css.map*/

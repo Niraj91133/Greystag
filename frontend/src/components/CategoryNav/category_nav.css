@@ -1,0 +1,67 @@
+/* Sticky Category Navigation */
+.category-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 12px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
+.category-list {
+    display: flex;
+    gap: 16px;
+    padding: 0 24px;
+    list-style: none;
+    width: max-content;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .category-list {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+.category-item {
+    flex-shrink: 0;
+}
+
+.category-link {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 100px;
+    /* Pill shape */
+    color: rgba(244, 242, 238, 0.6);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.category-link:hover {
+    color: var(--color-text-light);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.category-link.active {
+    color: var(--color-accent);
+    border-color: rgba(194, 164, 109, 0.3);
+    background-color: rgba(194, 164, 109, 0.05);
+}
+
+/* Hide scrollbar */
+.category-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.category-nav {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

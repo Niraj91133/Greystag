@@ -1,0 +1,63 @@
+/* Layout container */
+.home-page-root,
+.global-page-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    background-color: var(--color-bg-primary);
+    min-height: 100vh;
+}
+
+/* Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* --- Global Refinements (User Request) --- */
+
+/* 1. Global Section Spacing & 2. Text Alignment */
+section,
+.featured-section,
+.journal-section,
+.faq-section,
+.video-scroll-section,
+.promo-section {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+    /* Strict enforcement */
+}
+
+/* Force Left Alignment Global */
+h2,
+h3,
+h4,
+p,
+.section-title,
+.trust-strip {
+    text-align: left;
+}
+
+/* Exceptions: Hero & Final CTA */
+.hero-content,
+.hero-content h1,
+.hero-content p,
+.promo-content,
+.promo-content h2,
+.promo-content p {
+    text-align: center;
+}
+
+.view-all-wrap {
+    text-align: center;
+}
+
+.section-title {
+    margin-bottom: 32px;
+}
