@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/Desktop/menx-next/frontend/src/components/Navigation/nav.css"],"sourcesContent":["/* Navigation */\n.top-nav {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    padding: 24px;\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    z-index: 10;\n}\n\n.brand-logo {\n    font-family: var(--font-sans);\n    font-weight: 600;\n    letter-spacing: 3px;\n    text-transform: uppercase;\n    color: var(--color-accent);\n    font-size: 0.9rem;\n}"],"names":[],"mappings":"AACA;;;;;;;;;;;;AAYA"}}]
-}
