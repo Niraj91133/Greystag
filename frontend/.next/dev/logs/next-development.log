@@ -460,3 +460,79 @@ Import trace:
 [01:16:50.695] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
 [01:17:53.122] Browser DEBUG   🚀 POST http://localhost:8888/api/v1/orders
 [01:17:54.162] Browser DEBUG   🚀 POST http://localhost:8888/api/v1/payments/create-order
+[11:33:07.860] Server  ERROR   ⨯ ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx
+Module not found: Can't resolve 'styled-jsx/style'
+Import map: aliased to module 'styled-jsx' with subpath '/style' inside of [project]/Desktop/menx-next/node_modules/next
+
+
+Import traces:
+  Client Component Browser:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[11:33:07.862] Server  ERROR   ⨯ ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx
+Module not found: Can't resolve 'styled-jsx/style'
+Import map: aliased to module 'styled-jsx' with subpath '/style' inside of [project]/Desktop/menx-next/node_modules/next
+
+
+Import traces:
+  Client Component Browser:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[11:33:07.862] Server  ERROR   ⨯ ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx
+Module not found: Can't resolve 'styled-jsx/style'
+Import map: aliased to module 'styled-jsx' with subpath '/style' inside of [project]/Desktop/menx-next/node_modules/next
+
+
+Import traces:
+  Client Component Browser:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[11:33:07.863] Server  ERROR   ⨯ ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx
+Module not found: Can't resolve 'styled-jsx/style'
+Import map: aliased to module 'styled-jsx' with subpath '/style' inside of [project]/Desktop/menx-next/node_modules/next
+
+
+Import traces:
+  Client Component Browser:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component Browser]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./Desktop/menx-next/frontend/src/components/Admin/OrdersManager.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Client Component SSR]
+    ./Desktop/menx-next/frontend/src/app/admin/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
