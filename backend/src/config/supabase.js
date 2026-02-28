@@ -1,8 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
-import { env } from "./env.js";
+
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    console.error("❌ Supabase env missing");
+}
 
 export const supabase = createClient(
-    env.SUPABASE_URL,
-    env.SUPABASE_SERVICE_KEY
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
 );
-

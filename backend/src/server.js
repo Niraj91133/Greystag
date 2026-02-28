@@ -5,7 +5,7 @@ import logger from "./config/logger.js";
 import { initCronJobs } from "./utils/cron.js";
 
 
-const PORT = env.PORT || 8888;
+const PORT = process.env.PORT || 8888;
 
 const startServer = async () => {
     try {

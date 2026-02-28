@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import dotenv from 'dotenv';
 
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+    dotenv.config();
+}
 
 const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
@@ -12,7 +14,7 @@ const envSchema = z.object({
     JWT_REFRESH_SECRET: z.string().min(32, "JWT_REFRESH_SECRET must be at least 32 characters"),
     JWT_REFRESH_EXPIRE: z.string().default('7d'),
     CLIENT_URL: z.string().url(),
-    CORS_ORIGIN: z.string().url().optional(),
+    CORS_ORIGIN: z.string().optional(),
 
     ADMIN_SECRET_PIN: z.string().min(4),
     RAZORPAY_KEY_ID: z.string(),
@@ -20,8 +22,8 @@ const envSchema = z.object({
     RAZORPAY_WEBHOOK_SECRET: z.string(),
     EMAIL_USER: z.string().email(),
     EMAIL_PASS: z.string(),
-    SUPABASE_URL: z.string().url().optional(),
-    SUPABASE_SERVICE_KEY: z.string().optional(),
+    SUPABASE_URL: z.string().url(),
+    SUPABASE_SERVICE_KEY: z.string(),
 });
 
 const validateEnv = () => {
