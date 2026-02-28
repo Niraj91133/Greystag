@@ -4,8 +4,17 @@ import { env } from "./config/env.js";
 import logger from "./config/logger.js";
 import { initCronJobs } from "./utils/cron.js";
 
+console.log("--- ENV CHECK START ---");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("PORT:", process.env.PORT);
+console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+console.log("SUPABASE_URL exists:", !!process.env.SUPABASE_URL);
+console.log("--- ENV CHECK END ---");
 
 const PORT = process.env.PORT || 8888;
+if (isNaN(PORT)) {
+    console.error("❌ Invalid PORT:", process.env.PORT);
+}
 
 const startServer = async () => {
     try {

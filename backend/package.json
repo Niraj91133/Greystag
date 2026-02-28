@@ -9,7 +9,8 @@
         "dev": "nodemon src/server.js",
         "fresh": "kill -9 $(lsof -t -i:8888) || true && nodemon src/server.js",
         "prisma:generate": "prisma generate",
-        "prisma:migrate": "prisma migrate dev"
+        "prisma:migrate": "prisma migrate dev",
+        "postinstall": "prisma generate"
     },
     "keywords": [],
     "author": "",
