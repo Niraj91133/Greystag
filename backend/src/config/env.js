@@ -12,6 +12,7 @@ const envSchema = z.object({
     JWT_REFRESH_SECRET: z.string().min(32, "JWT_REFRESH_SECRET must be at least 32 characters"),
     JWT_REFRESH_EXPIRE: z.string().default('7d'),
     CLIENT_URL: z.string().url(),
+    CORS_ORIGIN: z.string().url().optional(),
 
     ADMIN_SECRET_PIN: z.string().min(4),
     RAZORPAY_KEY_ID: z.string(),

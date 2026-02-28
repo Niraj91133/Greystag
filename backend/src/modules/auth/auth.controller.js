@@ -29,8 +29,8 @@ const generateRefreshToken = (user) => {
 
 const getCookieOptions = (req) => ({
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production" && req.protocol === "https",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: env.NODE_ENV === "production",
+    sameSite: env.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
 });
 
