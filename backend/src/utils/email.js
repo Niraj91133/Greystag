@@ -1,12 +1,24 @@
 import nodemailer from "nodemailer";
 import prisma from "../config/db.js";
+import { env } from "../config/env.js";
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASS,
     },
+});
+
+// Verify connection configuration
+transporter.verify((error, success) => {
+    if (error) {
+        console.error("❌ Email (Nodemailer) Connection Error:", error);
+    } else {
+        console.log("✅ Email (Nodemailer) is ready to send messages");
+    }
 });
 
 /**
@@ -14,7 +26,7 @@ const transporter = nodemailer.createTransport({
  */
 export const sendEmail = async (options) => {
     const mailOptions = {
-        from: `"The Grey Stag" <${process.env.EMAIL_USER}>`,
+        from: `"The Grey Stag" <${env.EMAIL_USER}>`,
         to: options.to, // Changed from options.email to options.to to match controller call
         subject: options.subject,
         text: options.text,
@@ -117,7 +129,7 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
 
         // ALSO SEND TO ADMIN
         await sendEmail({
-            to: process.env.EMAIL_USER,
+            to: env.EMAIL_USER,
             subject: `🚨 NEW ORDER RECEIVED: #${order.id.slice(0, 8)}`,
             html: `
                 <div style="font-family: sans-serif; padding: 20px;">
