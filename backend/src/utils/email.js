@@ -9,6 +9,9 @@ const transporter = nodemailer.createTransport({
         user: env.EMAIL_USER,
         pass: env.EMAIL_PASS,
     },
+    tls: {
+        rejectUnauthorized: false // Helps with cloud environment certificate issues
+    }
 });
 
 // Verify connection configuration
@@ -34,10 +37,12 @@ export const sendEmail = async (options) => {
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log("Email sent: %s", info.messageId);
+        console.log("✅ Email sent successfully: %s", info.messageId);
         return info;
     } catch (error) {
-        console.error("Email Sending Error:", error);
+        console.error("❌ Email Sending ERROR:", error.message);
+        console.error("❌ ERROR CODE:", error.code);
+        console.error("❌ SMTP COMMAND:", error.command);
         return null;
     }
 };
