@@ -115,9 +115,9 @@ export const sendOTP = asyncHandler(async (req, res) => {
                 <p>Best regards,<br/>The Grey Stag Team</p>
             </div>
         `
-    }).catch(err => console.error("OTP Email Error:", err));
+    }).catch(err => console.error("❌ OTP Email Error:", err));
 
-    console.log(`OTP for ${email}: ${otp}`);
+    console.log(`\n👉 DEBUG OTP for ${email}: ${otp}\n`);
 
     return res.status(200).json(
         new ApiResponse(200, { otp: env.NODE_ENV === 'development' ? otp : 'sent' }, "OTP sent successfully")
