@@ -11,7 +11,7 @@
 const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:8888/api/v1";
 
-const DEFAULT_TIMEOUT = 10000; // 10s
+const DEFAULT_TIMEOUT = 60000; // 60s (To handle Render cold-starts)
 let isRefreshing = false;
 let failedQueue = [];
 
