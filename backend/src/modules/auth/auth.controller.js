@@ -99,8 +99,8 @@ export const sendOTP = asyncHandler(async (req, res) => {
         });
     }
 
-    // Send email with OTP
-    await sendEmail({
+    // Send email with OTP (Parallelize - don't block the response)
+    sendEmail({
         to: email,
         subject: "Your OTP for The Grey Stag",
         html: `
