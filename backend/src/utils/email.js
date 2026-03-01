@@ -4,13 +4,9 @@ import { env } from "../config/env.js";
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
-    pool: true,
     auth: {
         user: env.EMAIL_USER,
         pass: env.EMAIL_PASS,
-    },
-    tls: {
-        rejectUnauthorized: false // Helps with cloud environment certificate issues
     }
 });
 
