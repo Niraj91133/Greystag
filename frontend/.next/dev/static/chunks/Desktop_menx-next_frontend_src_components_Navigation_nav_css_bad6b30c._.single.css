@@ -1,0 +1,23 @@
+/* [project]/Desktop/menx-next/frontend/src/components/Navigation/nav.css [app-client] (css) */
+.top-nav {
+  z-index: 10;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 24px;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.brand-logo {
+  font-family: var(--font-sans);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+/*# sourceMappingURL=Desktop_menx-next_frontend_src_components_Navigation_nav_css_bad6b30c._.single.css.map*/

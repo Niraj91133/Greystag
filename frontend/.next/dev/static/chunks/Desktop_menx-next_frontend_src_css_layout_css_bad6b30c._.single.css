@@ -1,0 +1,38 @@
+/* [project]/Desktop/menx-next/frontend/src/css/layout.css [app-client] (css) */
+.home-page-root, .global-page-container {
+  background-color: var(--color-bg-primary);
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+section, .featured-section, .journal-section, .faq-section, .video-scroll-section, .promo-section {
+  padding-top: 64px !important;
+  padding-bottom: 64px !important;
+}
+
+h2, h3, h4, p, .section-title, .trust-strip {
+  text-align: left;
+}
+
+.hero-content, .hero-content h1, .hero-content p, .promo-content, .promo-content h2, .promo-content p, .view-all-wrap {
+  text-align: center;
+}
+
+.section-title {
+  margin-bottom: 32px;
+}
+
+/*# sourceMappingURL=Desktop_menx-next_frontend_src_css_layout_css_bad6b30c._.single.css.map*/
