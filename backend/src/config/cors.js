@@ -17,7 +17,9 @@ export const corsOptions = {
         if (!origin || env.NODE_ENV === 'development') {
             return callback(null, true);
         }
-        if (allowedOrigins.includes(origin)) {
+
+        // Check if origin is in allowed list OR is a Vercel preview URL
+        if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
             callback(null, true);
         } else {
             console.warn(`[CORS] Rejected origin: ${origin}`);
