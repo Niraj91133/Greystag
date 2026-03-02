@@ -13,6 +13,7 @@ import wishlistRoutes from "../modules/wishlist/wishlist.routes.js";
 
 const router = Router();
 
+// Modular Routes
 router.use("/auth", authRoutes);
 router.use("/products", productRoutes);
 router.use("/orders", orderRoutes);
