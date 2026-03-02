@@ -1,49 +1,45 @@
-import nodemailer from "nodemailer";
+import sgMail from '@sendgrid/mail';
 import prisma from "../config/db.js";
 import { env } from "../config/env.js";
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // Use STARTTLS
-    auth: {
-        user: env.EMAIL_USER,
-        pass: env.EMAIL_PASS,
-    },
-    connectionTimeout: 10000, // 10s
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
-});
-
-// Verify connection configuration
-transporter.verify((error, success) => {
-    if (error) {
-        console.error("❌ Email (Nodemailer) Connection Error:", error);
-    } else {
-        console.log("✅ Email (Nodemailer) is ready to send messages");
-    }
-});
+// Initialize SendGrid
+if (env.SENDGRID_API_KEY) {
+    sgMail.setApiKey(env.SENDGRID_API_KEY);
+    console.log("✅ SendGrid is ready to send messages via API");
+} else {
+    console.warn("⚠️  SendGrid API Key missing. Falling back to local logging mode.");
+}
 
 /**
- * Generic function to send email
+ * Generic function to send email via SendGrid (Bypasses Render port blocks)
  */
 export const sendEmail = async (options) => {
-    const mailOptions = {
-        from: `"The Grey Stag" <${env.EMAIL_USER}>`,
-        to: options.to, // Changed from options.email to options.to to match controller call
+    const msg = {
+        to: options.to,
+        from: {
+            email: env.EMAIL_USER,
+            name: "The Grey Stag"
+        },
         subject: options.subject,
         text: options.text,
         html: options.html,
     };
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log("✅ Email sent successfully: %s", info.messageId);
-        return info;
+        if (!env.SENDGRID_API_KEY) {
+            console.log("\n--- [LOCAL LOGGING MODE] Email not sent ---\nFrom: The Grey Stag\nTo:", options.to, "\nSubject:", options.subject, "\n------------------------------------------\n");
+            return { messageId: 'local-test-mode' };
+        }
+
+        const [response] = await sgMail.send(msg);
+        console.log("✅ Email sent successfully via SendGrid!");
+        return { messageId: response.headers['x-message-id'] };
+
     } catch (error) {
-        console.error("❌ Email Sending ERROR:", error.message);
-        console.error("❌ ERROR CODE:", error.code);
-        console.error("❌ SMTP COMMAND:", error.command);
+        console.error("❌ SendGrid Email Error:", error.message);
+        if (error.response) {
+            console.error(JSON.stringify(error.response.body, null, 2));
+        }
         return null;
     }
 };
@@ -152,4 +148,3 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
         console.error("Error generating/sending confirmation email:", error);
     }
 };
-

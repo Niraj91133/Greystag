@@ -24,6 +24,7 @@ const envSchema = z.object({
     EMAIL_PASS: z.string().trim(),
     SUPABASE_URL: z.string().trim().url(),
     SUPABASE_SERVICE_KEY: z.string().trim(),
+    SENDGRID_API_KEY: z.string().trim().optional(),
 });
 
 const validateEnv = () => {
