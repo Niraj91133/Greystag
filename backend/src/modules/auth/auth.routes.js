@@ -11,6 +11,7 @@ import {
     saveMeasurements
 } from "./auth.controller.js";
 import { protect } from "../../middleware/auth.middleware.js";
+import { sendEmail } from "../../utils/email.js";
 
 const router = express.Router();
 

@@ -9,6 +9,8 @@ console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("PORT:", process.env.PORT);
 console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
 console.log("SUPABASE_URL exists:", !!process.env.SUPABASE_URL);
+console.log("RAZORPAY_KEY exists:", !!process.env.RAZORPAY_KEY_ID);
+console.log("EMAIL_USER exists:", !!process.env.EMAIL_USER);
 console.log("--- ENV CHECK END ---");
 
 const PORT = process.env.PORT || 8888;
