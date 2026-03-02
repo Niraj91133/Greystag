@@ -27,13 +27,16 @@ const envSchema = z.object({
 });
 
 const validateEnv = () => {
-    try {
-        return envSchema.parse(process.env);
-    } catch (error) {
-        console.error('❌ Invalid environment variables:');
-        console.error(JSON.stringify(error.format(), null, 2));
-        process.exit(1);
+    const result = envSchema.safeParse(process.env);
+
+    if (!result.success) {
+        console.error('⚠️  WARNING: Incomplete or invalid environment variables detected:');
+        console.error(JSON.stringify(result.error.format(), null, 2));
+        console.error('Attempting to continue boot, but some features (like Email/OTP) may fail.');
+        return process.env; // Return raw env if validation fails to prevent boot crash
     }
+
+    return result.data;
 };
 
 export const env = validateEnv();
