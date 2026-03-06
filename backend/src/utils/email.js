@@ -25,15 +25,17 @@ export const sendEmail = async ({ to, subject, html, text }) => {
                 headers: {
                     Authorization: env.MAILBLUSTER_API_KEY,
                     "Content-Type": "application/json"
-                }
+                },
+                timeout: 5000 // 5s timeout
             }
         );
 
-        console.log("✅ Email sent successfully via MailBluster!");
+        console.log("✅ MailBluster API Success:", response.data.message);
         return response.data;
     } catch (error) {
-        console.error("❌ MailBluster Email Error:", error.response?.data || error.message);
-        // Don't throw for OTPs to prevent blocking the flow, but log carefully
+        const errorData = error.response?.data;
+        console.error("❌ MailBluster DETAIL ERROR:", JSON.stringify(errorData, null, 2));
+        console.error("❌ Stats Message:", errorData?.message || error.message);
         return null;
     }
 };
