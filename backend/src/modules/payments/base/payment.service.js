@@ -1,4 +1,4 @@
-import prisma from "../../config/db.js";
+import prisma from "../../../config/db.js";
 
 /**
  * Update order status after successful payment

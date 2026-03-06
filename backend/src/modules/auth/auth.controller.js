@@ -42,7 +42,7 @@ const sendTokenResponse = async (user, statusCode, res, message, extraData = {})
     const refreshToken = generateRefreshToken(user);
 
     // Store refresh token in DB
-    await prisma.refreshToken.create({
+    await prisma.session.create({
         data: { token: refreshToken, userId: user.id }
     });
 
@@ -271,7 +271,7 @@ export const refresh = asyncHandler(async (req, res) => {
     }
 
 
-    const stored = await prisma.refreshToken.findFirst({
+    const stored = await prisma.session.findFirst({
         where: { token: refreshToken }
     });
 
@@ -329,7 +329,7 @@ export const logout = asyncHandler(async (req, res) => {
     const { refreshToken } = req.cookies;
 
     if (refreshToken) {
-        await prisma.refreshToken.deleteMany({
+        await prisma.session.deleteMany({
             where: { token: refreshToken }
         });
     }

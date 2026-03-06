@@ -8,106 +8,154 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ==========================================
+// USER DOMAIN
+// ==========================================
+
 model User {
   id             String         @id @default(uuid())
   name           String?
   email          String         @unique
   password       String?
   role           Role           @default(USER)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  isVerified     Boolean        @default(false)
-  lastLogin      DateTime?
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  isVerified     Boolean        @default(false) @map("is_verified")
+  lastLogin      DateTime?      @map("last_login")
   otp            String?
-  otpExpires     DateTime?
+  otpExpires     DateTime?      @map("otp_expires")
   phone          String?        @unique
-  isActive       Boolean        @default(true)
+  isActive       Boolean        @default(true) @map("is_active")
+
+  // Relations
   addresses      Address[]
   cartItems      Cart[]
   loginHistories LoginHistory[]
   measurement    Measurement?
   orders         Order[]
-  refreshTokens  RefreshToken[]
+  sessions       Session[]
   reviews        Review[]
   activities     UserActivity[]
   wishlist       Wishlist[]
+
+  @@map("users")
+  @@index([email])
 }
 
 model Address {
   id        String   @id @default(uuid())
-  userId    String
+  userId    String   @map("user_id")
   label     String
   line1     String
   line2     String?
   city      String
   state     String
   pincode   String
-  isDefault Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isDefault Boolean  @default(false) @map("is_default")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders    Order[]
+
+  @@map("user_addresses")
+  @@index([userId])
 }
 
-model Order {
-  id                String      @id @default(uuid())
-  userId            String
-  total             Decimal
-  status            OrderStatus @default(PENDING)
-  razorpayOrderId   String?     @unique
-  razorpayPaymentId String?     @unique
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  courierPartner    String?
-  deliveredAt       DateTime?
-  invoiceUrl        String?
-  shippedAt         DateTime?
-  shippingAddressId String?
-  trackingId        String?
-  shippingAddress   Address?    @relation(fields: [shippingAddressId], references: [id])
-  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderItems        OrderItem[]
+model Measurement {
+  id                 String    @id @default(uuid())
+  userId             String    @unique @map("user_id")
+  chest              Float?
+  waist              Float?
+  shoulder           Float?
+  neck               Float?
+  sleeve             Float?
+  inseam             Float?
+  height             String?
+  lowerBodyShape     String?   @map("lower_body_shape")
+  preferredFit       String?   @map("preferred_fit")
+  shoulderType       String?   @map("shoulder_type")
+  upperBodyShape     String?   @map("upper_body_shape")
+  notificationSentAt DateTime? @map("notification_sent_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_measurements")
 }
 
-model OrderItem {
-  id            String  @id @default(uuid())
-  orderId       String
-  productId     String
-  quantity      Int
-  price         Decimal
-  color         String?
-  customization Json?
-  size          String?
-  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+model Session {
+  id        String   @id @default(uuid())
+  token     String
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+  @@index([userId])
 }
+
+model LoginHistory {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  loginAt   DateTime  @default(now()) @map("login_at")
+  logoutAt  DateTime? @map("logout_at")
+  ipAddress String?   @map("ip_address")
+  device    String?
+  
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_login_history")
+  @@index([userId])
+}
+
+model UserActivity {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_activity")
+  @@index([userId])
+}
+
+// ==========================================
+// COMMERCE DOMAIN
+// ==========================================
 
 model Product {
   id               String      @id @default(uuid())
   name             String?
+  title            String?
   description      String?
   price            Decimal
   stock            Int         @default(0)
-  isActive         Boolean     @default(true)
-  inStock          Boolean     @default(true)
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  categoryId       String?
+  isActive         Boolean     @default(true) @map("is_active")
+  inStock          Boolean     @default(true) @map("in_stock")
+  categoryId       String?     @map("category_id")
   colors           String[]    @default([])
   details          String[]    @default([])
-  displayLocations String[]    @default(["Category PLP"])
-  externalLink     String?
-  fabric           String?
-  images           String[]    @default([])
+  displayLocations String[]    @default(["Category PLP"]) @map("display_locations")
   occasions        String[]    @default([])
   sizes            String[]    @default([])
-  title            String?
-  videoUrl         String?
+  fabric           String?
+  videoUrl         String?     @map("video_url")
+  externalLink     String?     @map("external_link")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+
+  category         Category?   @relation(fields: [categoryId], references: [id])
   cartItems        Cart[]
   orderItems       OrderItem[]
-  category         Category?   @relation(fields: [categoryId], references: [id])
   reviews          Review[]
   wishlist         Wishlist[]
+
+  @@map("products")
+  @@index([categoryId])
 }
 
 model Category {
@@ -116,82 +164,102 @@ model Category {
   slug        String    @unique
   description String?
   image       String?
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
   products    Product[]
-}
 
-model GlobalCMS {
-  id        String   @id @default(uuid())
-  key       String   @unique
-  data      Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model LoginHistory {
-  id        String    @id @default(uuid())
-  userId    String
-  loginAt   DateTime  @default(now())
-  logoutAt  DateTime?
-  ipAddress String?
-  device    String?
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("categories")
 }
 
 model Cart {
   id          String   @id @default(uuid())
-  userId      String
-  productId   String
+  userId      String   @map("user_id")
+  productId   String   @map("product_id")
   quantity    Int      @default(1)
-  isAbandoned Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isAbandoned Boolean  @default(false) @map("is_abandoned")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
 
-model Measurement {
-  id                 String    @id @default(uuid())
-  userId             String    @unique
-  chest              Float?
-  waist              Float?
-  shoulder           Float?
-  neck               Float?
-  sleeve             Float?
-  inseam             Float?
-  updatedAt          DateTime  @updatedAt
-  height             String?
-  lowerBodyShape     String?
-  preferredFit       String?
-  shoulderType       String?
-  upperBodyShape     String?
-  notificationSentAt DateTime?
-  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("carts")
+  @@index([userId])
 }
 
 model Wishlist {
   id        String   @id @default(uuid())
-  userId    String
-  productId String
-  createdAt DateTime @default(now())
+  userId    String   @map("user_id")
+  productId String   @map("product_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
+  @@map("wishlists")
 }
 
 model Review {
   id        String   @id @default(uuid())
-  userId    String
-  productId String
+  userId    String   @map("user_id")
+  productId String   @map("product_id")
   rating    Int      @default(5)
   comment   String?
-  isPublic  Boolean  @default(true)
-  createdAt DateTime @default(now())
+  isPublic  Boolean  @default(true) @map("is_public")
+  createdAt DateTime @default(now()) @map("created_at")
+
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("product_reviews")
+}
+
+// ==========================================
+// ORDER DOMAIN
+// ==========================================
+
+model Order {
+  id                String      @id @default(uuid())
+  userId            String      @map("user_id")
+  total             Decimal
+  status            OrderStatus @default(PENDING)
+  razorpayOrderId   String?     @unique @map("razorpay_order_id")
+  razorpayPaymentId String?     @unique @map("razorpay_payment_id")
+  shippingAddressId String?     @map("shipping_address_id")
+  trackingId        String?     @map("tracking_id")
+  courierPartner    String?     @map("courier_partner")
+  invoiceUrl        String?     @map("invoice_url")
+  shippedAt         DateTime?   @map("shipped_at")
+  deliveredAt       DateTime?   @map("delivered_at")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shippingAddress   Address?    @relation(fields: [shippingAddressId], references: [id])
+  orderItems        OrderItem[]
+
+  @@map("orders")
+  @@index([userId])
+}
+
+model OrderItem {
+  id            String  @id @default(uuid())
+  orderId       String  @map("order_id")
+  productId     String  @map("product_id")
+  quantity      Int
+  price         Decimal
+  color         String?
+  size          String?
+  customization Json?
+  
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+  @@index([orderId])
 }
 
 model PromoCode {
@@ -199,29 +267,32 @@ model PromoCode {
   code       String       @unique
   discount   Decimal
   type       DiscountType @default(PERCENTAGE)
-  isActive   Boolean      @default(true)
-  expiresAt  DateTime?
-  usageLimit Int?         @default(100)
-  usedCount  Int          @default(0)
-  createdAt  DateTime     @default(now())
+  isActive   Boolean      @default(true) @map("is_active")
+  usageLimit Int?         @default(100) @map("usage_limit")
+  usedCount  Int          @default(0) @map("used_count")
+  expiresAt  DateTime?    @map("expires_at")
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  @@map("promo_codes")
 }
 
-model UserActivity {
+// ==========================================
+// CMS DOMAIN
+// ==========================================
+
+model CMSPage {
   id        String   @id @default(uuid())
-  userId    String
-  action    String
-  metadata  Json?
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key       String   @unique
+  data      Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("cms_pages")
 }
 
-model RefreshToken {
-  id        String   @id @default(uuid())
-  token     String
-  userId    String
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+// ==========================================
+// ENUMS
+// ==========================================
 
 enum Role {
   USER

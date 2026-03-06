@@ -1,10 +1,10 @@
-import prisma from "../../config/db.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
+import prisma from "../../../config/db.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
-import { ApiError } from "../../utils/ApiError.js";
-import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiError } from "../../../utils/ApiError.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
 import * as orderService from "./order.service.js";
-import { createOrder as createOrderBodySchema, updateStatus as updateStatusBodySchema } from "../../utils/validation.js";
+import { createOrder as createOrderBodySchema, updateStatus as updateStatusBodySchema } from "../../../utils/validation.js";
 
 export const createOrder = asyncHandler(async (req, res) => {
     const result = createOrderBodySchema.safeParse(req.body);

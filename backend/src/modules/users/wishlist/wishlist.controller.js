@@ -1,7 +1,7 @@
-import prisma from "../../config/db.js";
-import { asyncHandler } from "../../utils/asyncHandler.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { ApiError } from "../../utils/ApiError.js";
+import prisma from "../../../config/db.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { ApiError } from "../../../utils/ApiError.js";
 
 export const getWishlist = asyncHandler(async (req, res) => {
     const userId = req.user.id;

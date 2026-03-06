@@ -11,7 +11,7 @@ export const getCmsContent = asyncHandler(async (req, res) => {
     const { key } = req.query;
     if (!key) throw new ApiError(400, "CMS key is required");
 
-    const content = await prisma.globalCMS.findUnique({
+    const content = await prisma.cMSPage.findUnique({
         where: { key }
     });
 
@@ -26,20 +26,20 @@ export const updateCmsContent = asyncHandler(async (req, res) => {
     const { key, data } = req.body;
     if (!key || !data) throw new ApiError(400, "Key and Data are required");
 
-    const cms = await prisma.globalCMS.upsert({
+    const cmsPage = await prisma.cMSPage.upsert({
         where: { key },
         update: { data },
         create: { key, data }
     });
 
-    return res.status(200).json(new ApiResponse(200, cms.data, "CMS content updated successfully"));
+    return res.status(200).json(new ApiResponse(200, cmsPage.data, "CMS content updated successfully"));
 });
 
 export const updateCmsById = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { data } = req.body;
 
-    const cms = await prisma.globalCMS.update({
+    const cmsPage = await prisma.cMSPage.update({
         where: { id },
         data: { data }
     });

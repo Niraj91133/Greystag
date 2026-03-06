@@ -7,7 +7,7 @@ import {
     deleteProduct,
     uploadImages
 } from "./product.controller.js";
-import { protect, authorize } from "../../middleware/auth.middleware.js";
+import { protect, authorize } from "../../../middleware/auth.middleware.js";
 import multer from "multer";
 
 const router = Router();

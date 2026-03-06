@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
     getAllUsers,
+    getFullUserProfile,
     getDashboardAnalytics,
     updateUserMeasurements
 } from "./admin.controller.js";
@@ -12,6 +13,7 @@ router.use(protect);
 router.use(authorize("ADMIN"));
 
 router.get("/users", getAllUsers);
+router.get("/users/:id", getFullUserProfile);
 router.get("/analytics", getDashboardAnalytics);
 router.post("/users/:id/measurements", updateUserMeasurements);
 

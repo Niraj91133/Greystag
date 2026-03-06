@@ -5,7 +5,7 @@ import {
     getMyAddresses,
     setDefaultAddress
 } from "./address.controller.js";
-import { protect } from "../../middleware/auth.middleware.js";
+import { protect } from "../../../middleware/auth.middleware.js";
 
 const router = Router();
 

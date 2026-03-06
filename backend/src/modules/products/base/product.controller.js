@@ -1,8 +1,8 @@
-import prisma from "../../config/db.js";
-import { asyncHandler } from "../../utils/asyncHandler.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { uploadFile } from "../../utils/supabase.js";
+import prisma from "../../../config/db.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiError } from "../../../utils/ApiError.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { uploadFile } from "../../../utils/supabase.js";
 
 export const getAllProducts = asyncHandler(async (req, res) => {
     const { category, search } = req.query;

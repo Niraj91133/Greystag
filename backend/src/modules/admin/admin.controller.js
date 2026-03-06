@@ -6,9 +6,48 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 export const getAllUsers = asyncHandler(async (req, res) => {
     const users = await prisma.user.findMany({
         orderBy: { createdAt: 'desc' },
-        include: { measurement: true }
+        select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            isVerified: true,
+            createdAt: true,
+            lastLogin: true,
+            phone: true,
+            isActive: true,
+            _count: {
+                select: { orders: true }
+            }
+        }
     });
-    return res.status(200).json(new ApiResponse(200, users, "Users fetched"));
+    return res.status(200).json(new ApiResponse(200, users, "Users list fetched"));
+});
+
+export const getFullUserProfile = asyncHandler(async (req, res) => {
+    const { id: userId } = req.params;
+
+    const userProfile = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+            addresses: true,
+            orders: {
+                include: {
+                    orderItems: { include: { product: true } }
+                },
+                orderBy: { createdAt: 'desc' }
+            },
+            measurement: true,
+            cartItems: { include: { product: true } },
+            wishlist: { include: { product: true } },
+            loginHistories: { orderBy: { loginAt: 'desc' }, take: 10 },
+            activities: { orderBy: { createdAt: 'desc' }, take: 20 }
+        }
+    });
+
+    if (!userProfile) throw new ApiError(404, "User not found");
+
+    return res.status(200).json(new ApiResponse(200, userProfile, "Full user ecosystem fetched"));
 });
 
 export const getDashboardAnalytics = asyncHandler(async (req, res) => {

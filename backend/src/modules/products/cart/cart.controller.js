@@ -1,6 +1,6 @@
-import prisma from "../../config/db.js";
-import { asyncHandler } from "../../utils/asyncHandler.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
+import prisma from "../../../config/db.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 export const getCart = asyncHandler(async (req, res) => {
     const cartItems = await prisma.cart.findMany({

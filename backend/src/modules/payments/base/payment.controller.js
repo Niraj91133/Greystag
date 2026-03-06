@@ -1,11 +1,11 @@
-import { razorpay } from "../../config/razorpay.js";
-import { asyncHandler } from "../../utils/asyncHandler.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import prisma from "../../config/db.js";
+import { razorpay } from "../../../config/razorpay.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiError } from "../../../utils/ApiError.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import prisma from "../../../config/db.js";
 import crypto from "crypto";
-import { env } from "../../config/env.js";
-import { sendPaymentConfirmationEmail } from "../../utils/email.js";
+import { env } from "../../../config/env.js";
+import { sendPaymentConfirmationEmail } from "../../../utils/email.js";
 
 
 export const createRazorpayOrder = asyncHandler(async (req, res) => {

@@ -1,4 +1,4 @@
-import prisma from "../../config/db.js";
+import prisma from "../../../config/db.js";
 
 /**
  * Logs a generic user activity

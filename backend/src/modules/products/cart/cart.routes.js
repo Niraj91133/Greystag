@@ -5,7 +5,7 @@ import {
     removeFromCart,
     updateCartItem
 } from "./cart.controller.js";
-import { protect } from "../../middleware/auth.middleware.js";
+import { protect } from "../../../middleware/auth.middleware.js";
 
 const router = Router();
 
