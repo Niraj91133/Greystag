@@ -1,9 +1,33 @@
 -- ==========================================================
--- STEP 1: Enable Realtime for all core tables
+-- STEP 0: Rename existing tables to match new schema
 -- ==========================================================
 
--- Enable realtime for the specific publication 'supabase_realtime'
--- Run these one by one or as a block in Supabase SQL Editor
+-- User Domain
+ALTER TABLE IF EXISTS "User" RENAME TO "users";
+ALTER TABLE IF EXISTS "Address" RENAME TO "user_addresses";
+ALTER TABLE IF EXISTS "Measurement" RENAME TO "user_measurements";
+ALTER TABLE IF EXISTS "RefreshToken" RENAME TO "user_sessions";
+ALTER TABLE IF EXISTS "LoginHistory" RENAME TO "user_login_history";
+ALTER TABLE IF EXISTS "UserActivity" RENAME TO "user_activity";
+
+-- Commerce Domain
+ALTER TABLE IF EXISTS "Product" RENAME TO "products";
+ALTER TABLE IF EXISTS "Category" RENAME TO "categories";
+ALTER TABLE IF EXISTS "Wishlist" RENAME TO "wishlists";
+ALTER TABLE IF EXISTS "Review" RENAME TO "product_reviews";
+ALTER TABLE IF EXISTS "Cart" RENAME TO "carts";
+
+-- Orders Domain
+ALTER TABLE IF EXISTS "Order" RENAME TO "orders";
+ALTER TABLE IF EXISTS "OrderItem" RENAME TO "order_items";
+ALTER TABLE IF EXISTS "PromoCode" RENAME TO "promo_codes";
+
+-- CMS
+ALTER TABLE IF EXISTS "GlobalCMS" RENAME TO "cms_pages";
+
+-- ==========================================================
+-- STEP 1: Enable Realtime for all core tables
+-- ==========================================================
 ALTER PUBLICATION supabase_realtime ADD TABLE users;
 ALTER PUBLICATION supabase_realtime ADD TABLE orders;
 ALTER PUBLICATION supabase_realtime ADD TABLE products;
@@ -39,13 +63,3 @@ SELECT
         LIMIT 10
     ) act) as recent_activity
 FROM users u;
-
--- ==========================================================
--- STEP 3: Setup Performance Indexes (Redundant if using Prisma Migrate, but safe)
--- ==========================================================
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
-CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
-CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
-CREATE INDEX IF NOT EXISTS idx_carts_user ON carts(user_id);
-CREATE INDEX IF NOT EXISTS idx_wishlists_user ON wishlists(user_id);

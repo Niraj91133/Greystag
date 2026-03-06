@@ -16,7 +16,7 @@ const envSchema = z.object({
     CLIENT_URL: z.string().url().trim(),
     CORS_ORIGIN: z.string().optional(),
 
-    ADMIN_SECRET_PIN: z.string().trim().min(4),
+    ADMIN_SECRET_PIN: z.string().trim().min(4).default('0000'),
     RAZORPAY_KEY_ID: z.string().trim(),
     RAZORPAY_KEY_SECRET: z.string().trim(),
     RAZORPAY_WEBHOOK_SECRET: z.string().trim(),
