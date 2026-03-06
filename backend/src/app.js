@@ -40,17 +40,26 @@ if (env.NODE_ENV === "development") {
 /* -------------------- Rate Limiting -------------------- */
 app.use("/api", apiLimiter);
 
-/* -------------------- Routes -------------------- */
-app.use("/api/v1", router);
-app.use("/", router);
-
-/* -------------------- Health -------------------- */
+/* -------------------- Health & Root -------------------- */
 app.get("/health", (req, res) => {
     res.status(200).json({
         success: true,
         message: "Server is healthy",
+        timestamp: new Date().toISOString()
     });
 });
+
+app.get("/", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "🚀 MENX API is Live and Running on Vercel",
+        version: "1.0.0"
+    });
+});
+
+/* -------------------- Routes -------------------- */
+app.use("/api/v1", router);
+app.use("/", router);
 
 /* -------------------- 404 -------------------- */
 app.use("*", (req, res) => {
