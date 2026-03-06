@@ -4,7 +4,7 @@ import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { ApiError } from "../../../utils/ApiError.js";
 
 export const getMyAddresses = asyncHandler(async (req, res) => {
-    const addresses = await prisma.userAddress.findMany({
+    const addresses = await prisma.address.findMany({
         where: { userId: req.user.id }
     });
     return res.status(200).json(new ApiResponse(200, addresses, "Addresses fetched"));
@@ -15,13 +15,13 @@ export const addAddress = asyncHandler(async (req, res) => {
 
     // If setting as default, unset others first
     if (isDefault) {
-        await prisma.userAddress.updateMany({
+        await prisma.address.updateMany({
             where: { userId: req.user.id },
             data: { isDefault: false }
         });
     }
 
-    const address = await prisma.userAddress.create({
+    const address = await prisma.address.create({
         data: {
             userId: req.user.id,
             label,
@@ -39,7 +39,7 @@ export const addAddress = asyncHandler(async (req, res) => {
 
 export const removeAddress = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    await prisma.userAddress.delete({
+    await prisma.address.delete({
         where: { id, userId: req.user.id }
     });
     return res.status(200).json(new ApiResponse(200, null, "Address removed"));
@@ -49,11 +49,11 @@ export const setDefaultAddress = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     await prisma.$transaction([
-        prisma.userAddress.updateMany({
+        prisma.address.updateMany({
             where: { userId: req.user.id },
             data: { isDefault: false }
         }),
-        prisma.userAddress.update({
+        prisma.address.update({
             where: { id, userId: req.user.id },
             data: { isDefault: true }
         })
