@@ -13,6 +13,10 @@ import router from "./routes/v1.js";
 
 const app = express();
 
+// Trust Vercel Proxy for rate limiting and security headers
+app.set('trust proxy', 1);
+
+// Standard Middlewares
 /* -------------------- Security -------------------- */
 app.use(helmet({
     crossOriginResourcePolicy: false,
