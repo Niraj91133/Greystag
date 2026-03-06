@@ -2,22 +2,16 @@ import { PrismaClient } from "@prisma/client";
 import { env } from "./env.js";
 import logger from "./logger.js";
 
-const prisma = new PrismaClient({
-    log: env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-});
-
-// Middleware for logging query time in development
-if (env.NODE_ENV === "development") {
-    prisma.$use(async (params, next) => {
-        const before = Date.now();
-        const result = await next(params);
-        const after = Date.now();
-
-        // Simple query log
-        // logger.debug(`Prisma Query ${params.model}.${params.action} took ${after - before}ms`);
-
-        return result;
+const prismaClientSingleton = () => {
+    return new PrismaClient({
+        log: env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     });
-}
+};
+
+const globalForPrisma = globalThis;
+
+const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+
+if (env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export default prisma;

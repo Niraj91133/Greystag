@@ -21,7 +21,7 @@ const envSchema = z.object({
     RAZORPAY_KEY_SECRET: z.string().trim(),
     RAZORPAY_WEBHOOK_SECRET: z.string().trim(),
     EMAIL_USER: z.string().trim().email(),
-    EMAIL_PASS: z.string().trim(),
+    EMAIL_PASS: z.string().trim().optional(),
     SUPABASE_URL: z.string().trim().url(),
     SUPABASE_SERVICE_KEY: z.string().trim(),
     SENDGRID_API_KEY: z.string().trim().optional(),
