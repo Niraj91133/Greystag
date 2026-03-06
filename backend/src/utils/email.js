@@ -17,7 +17,7 @@ export const sendEmail = async ({ to, subject, html, text }) => {
         console.log(`📡 Attempting MailBluster send to ${to} from ${fromEmail}...`);
 
         const response = await axios.post(
-            "https://api.mailbluster.com/api/send-email",
+            "https://api.mailbluster.com/api/emails/send",
             {
                 to,
                 subject,
