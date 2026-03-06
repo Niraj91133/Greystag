@@ -1,45 +1,39 @@
-import sgMail from '@sendgrid/mail';
+import axios from "axios";
 import prisma from "../config/db.js";
 import { env } from "../config/env.js";
 
-// Initialize SendGrid
-if (env.SENDGRID_API_KEY) {
-    sgMail.setApiKey(env.SENDGRID_API_KEY);
-    console.log("✅ SendGrid is ready to send messages via API");
-} else {
-    console.warn("⚠️  SendGrid API Key missing. Falling back to local logging mode.");
-}
-
 /**
- * Generic function to send email via SendGrid (Bypasses Render port blocks)
+ * Generic function to send email via MailBluster API
+ * Bypasses SMTP port blocks and is compatible with Vercel serverless.
  */
-export const sendEmail = async (options) => {
-    const msg = {
-        to: options.to,
-        from: {
-            email: env.EMAIL_USER,
-            name: "The Grey Stag"
-        },
-        subject: options.subject,
-        text: options.text,
-        html: options.html,
-    };
-
+export const sendEmail = async ({ to, subject, html, text }) => {
     try {
-        if (!env.SENDGRID_API_KEY) {
-            console.log("\n--- [LOCAL LOGGING MODE] Email not sent ---\nFrom: The Grey Stag\nTo:", options.to, "\nSubject:", options.subject, "\n------------------------------------------\n");
+        if (!env.MAILBLUSTER_API_KEY) {
+            console.log("\n--- [LOCAL LOGGING MODE] Email not sent (MailBluster API Key missing) ---\nTo:", to, "\nSubject:", subject, "\n------------------------------------------\n");
             return { messageId: 'local-test-mode' };
         }
 
-        const [response] = await sgMail.send(msg);
-        console.log("✅ Email sent successfully via SendGrid!");
-        return { messageId: response.headers['x-message-id'] };
+        const response = await axios.post(
+            "https://api.mailbluster.com/api/send-email",
+            {
+                to,
+                subject,
+                html_body: html || text,
+                from: env.MAILBLUSTER_FROM_EMAIL || env.EMAIL_USER
+            },
+            {
+                headers: {
+                    Authorization: env.MAILBLUSTER_API_KEY,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
 
+        console.log("✅ Email sent successfully via MailBluster!");
+        return response.data;
     } catch (error) {
-        console.error("❌ SendGrid Email Error:", error.message);
-        if (error.response) {
-            console.error(JSON.stringify(error.response.body, null, 2));
-        }
+        console.error("❌ MailBluster Email Error:", error.response?.data || error.message);
+        // Don't throw for OTPs to prevent blocking the flow, but log carefully
         return null;
     }
 };
@@ -130,7 +124,7 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
 
         // ALSO SEND TO ADMIN
         await sendEmail({
-            to: env.EMAIL_USER,
+            to: env.MAILBLUSTER_FROM_EMAIL || env.EMAIL_USER,
             subject: `🚨 NEW ORDER RECEIVED: #${order.id.slice(0, 8)}`,
             html: `
                 <div style="font-family: sans-serif; padding: 20px;">
