@@ -99,23 +99,28 @@ export const sendOTP = asyncHandler(async (req, res) => {
         });
     }
 
-    // Send email with OTP (Parallelize - don't block the response)
-    sendEmail({
-        to: email,
-        subject: "Your OTP for The Grey Stag",
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee;">
-                <h2 style="color: #000; text-align: center;">THE GREY STAG</h2>
-                <p>Hello,</p>
-                <p>Your One-Time Password (OTP) for login/registration is:</p>
-                <div style="background: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #C2A46D;">
-                    ${otp}
+    // Send email with OTP (Awaiting for better logs, but catching to prevent crash)
+    try {
+        await sendEmail({
+            to: email,
+            subject: "Your OTP for The Grey Stag",
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee;">
+                    <h2 style="color: #000; text-align: center;">THE GREY STAG</h2>
+                    <p>Hello,</p>
+                    <p>Your One-Time Password (OTP) for login/registration is:</p>
+                    <div style="background: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #C2A46D;">
+                        ${otp}
+                    </div>
+                    <p>This OTP is valid for 10 minutes. Do not share it with anyone.</p>
+                    <p>Best regards,<br/>The Grey Stag Team</p>
                 </div>
-                <p>This OTP is valid for 10 minutes. Do not share it with anyone.</p>
-                <p>Best regards,<br/>The Grey Stag Team</p>
-            </div>
-        `
-    }).catch(err => console.error("❌ OTP Email Error:", err));
+            `
+        });
+        console.log(`✅ OTP Email triggered for ${email}`);
+    } catch (emailError) {
+        console.error("❌ OTP Email Delivery Failure:", emailError.message);
+    }
 
     console.log(`\n👉 DEBUG OTP for ${email}: ${otp}\n`);
 

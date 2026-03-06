@@ -9,9 +9,12 @@ import { env } from "../config/env.js";
 export const sendEmail = async ({ to, subject, html, text }) => {
     try {
         if (!env.MAILBLUSTER_API_KEY) {
-            console.log("\n--- [LOCAL LOGGING MODE] Email not sent (MailBluster API Key missing) ---\nTo:", to, "\nSubject:", subject, "\n------------------------------------------\n");
+            console.log("\n--- [EMAIL SKIPPED] MailBluster API Key is missing from ENV ---\nTo:", to, "\nSubject:", subject, "\n------------------------------------------\n");
             return { messageId: 'local-test-mode' };
         }
+
+        const fromEmail = env.MAILBLUSTER_FROM_EMAIL || env.EMAIL_USER;
+        console.log(`📡 Attempting MailBluster send to ${to} from ${fromEmail}...`);
 
         const response = await axios.post(
             "https://api.mailbluster.com/api/send-email",
