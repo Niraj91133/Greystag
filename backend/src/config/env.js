@@ -30,13 +30,20 @@ const envSchema = z.object({
 });
 
 const validateEnv = () => {
+    // Check if user made a typo in Vercel Dashboard
+    if (!process.env.JWT_SECRET && process.env.JMT_SECRET) {
+        process.env.JWT_SECRET = process.env.JMT_SECRET;
+        console.log("ℹ️ Automatically fixed JWT_SECRET typo (JMT_SECRET detected)");
+    }
+
     try {
         return envSchema.parse(process.env);
     } catch (error) {
         console.error('❌ Missing or Invalid environment variables:');
-        console.error(JSON.stringify(error.format(), null, 2));
-        // Hard exit for Vercel to show error logs clearly
-        throw new Error("Missing critical environment variables");
+        const formattedKeys = error.errors.map(err => err.path.join('.')).join(', ');
+        console.error(`Missing Keys: [${formattedKeys}]`);
+        // Throw for Vercel logs visibility
+        throw new Error(`Missing critical environment variables: ${formattedKeys}`);
     }
 };
 
