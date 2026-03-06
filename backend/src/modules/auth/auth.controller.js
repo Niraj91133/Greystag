@@ -200,7 +200,7 @@ export const saveMeasurements = asyncHandler(async (req, res) => {
         if (val !== undefined) data[key] = val;
     });
 
-    const updatedMeasurement = await prisma.measurement.upsert({
+    const updatedMeasurement = await prisma.userMeasurement.upsert({
         where: { userId },
         update: { ...data, notificationSentAt: null },
         create: {

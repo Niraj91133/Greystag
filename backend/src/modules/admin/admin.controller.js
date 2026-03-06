@@ -86,7 +86,7 @@ export const updateUserMeasurements = asyncHandler(async (req, res) => {
     const { id: userId } = req.params;
     const measurements = req.body;
 
-    const savedData = await prisma.measurement.upsert({
+    const savedData = await prisma.userMeasurement.upsert({
         where: { userId },
         update: { ...measurements, notificationSentAt: null },
         create: {
