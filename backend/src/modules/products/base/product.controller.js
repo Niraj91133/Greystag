@@ -47,9 +47,18 @@ const prepareProductData = async (data) => {
     let categoryId = data.categoryId;
     const catName = category || type;
     if (!categoryId && catName) {
-        const cat = await prisma.category.findFirst({
+        let cat = await prisma.category.findFirst({
             where: { name: { equals: catName, mode: 'insensitive' } }
         });
+
+        // If category doesn't exist in DB, create it
+        if (!cat) {
+            const slug = catName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+            cat = await prisma.category.create({
+                data: { name: catName, slug: slug }
+            });
+        }
+
         if (cat) categoryId = cat.id;
     }
 
