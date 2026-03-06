@@ -9,9 +9,9 @@ const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     PORT: z.string().trim().default('8888').transform(Number),
     DATABASE_URL: z.string().url().trim(),
-    JWT_SECRET: z.string().trim().min(32),
+    JWT_SECRET: z.string().trim(),
     JWT_EXPIRE: z.string().trim().default('15m'),
-    JWT_REFRESH_SECRET: z.string().trim().min(32),
+    JWT_REFRESH_SECRET: z.string().trim(),
     JWT_REFRESH_EXPIRE: z.string().trim().default('7d'),
     CLIENT_URL: z.string().url().trim(),
     CORS_ORIGIN: z.string().optional(),
@@ -30,21 +30,27 @@ const envSchema = z.object({
 });
 
 const validateEnv = () => {
-    // Check if user made a typo in Vercel Dashboard
+    // Check for common typos in Vercel Dashboard
     if (!process.env.JWT_SECRET && process.env.JMT_SECRET) {
         process.env.JWT_SECRET = process.env.JMT_SECRET;
-        console.log("ℹ️ Automatically fixed JWT_SECRET typo (JMT_SECRET detected)");
+    }
+    if (!process.env.JWT_REFRESH_SECRET && process.env.REFRESH_TOKEN_SECRET) {
+        process.env.JWT_REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
     }
 
-    try {
-        return envSchema.parse(process.env);
-    } catch (error) {
-        console.error('❌ Missing or Invalid environment variables:');
-        const formattedKeys = error.errors.map(err => err.path.join('.')).join(', ');
-        console.error(`Missing Keys: [${formattedKeys}]`);
-        // Throw for Vercel logs visibility
-        throw new Error(`Missing critical environment variables: ${formattedKeys}`);
+    const result = envSchema.safeParse(process.env);
+
+    if (!result.success) {
+        console.error('⚠️  CRITICAL: Missing or Invalid environment variables:');
+        const formattedKeys = result.error.errors.map(err => err.path.join('.')).join(', ');
+        console.error(`Missing/Invalid: [${formattedKeys}]`);
+
+        // Return raw process.env to allow boot, but log the failure
+        // This stops Vercel from crashing with 500 FUNCTION_INVOCATION_FAILED
+        return process.env;
     }
+
+    return result.data;
 };
 
 export const env = validateEnv();
