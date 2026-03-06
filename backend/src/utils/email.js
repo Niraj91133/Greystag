@@ -1,44 +1,46 @@
-import axios from "axios";
+import nodemailer from "nodemailer";
 import prisma from "../config/db.js";
 import { env } from "../config/env.js";
 
 /**
- * Generic function to send email via MailBluster API
- * Bypasses SMTP port blocks and is compatible with Vercel serverless.
+ * Switch back to Nodemailer (Gmail SMTP) as requested.
+ * Uses App Passwords for secure authentication.
+ */
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASS,
+    },
+});
+
+// Verify connection configuration
+transporter.verify((error, success) => {
+    if (error) {
+        console.error("❌ Gmail (Nodemailer) Connection Error:", error);
+    } else {
+        console.log("✅ Gmail (Nodemailer) is ready to send messages");
+    }
+});
+
+/**
+ * Generic function to send email via Gmail
  */
 export const sendEmail = async ({ to, subject, html, text }) => {
     try {
-        if (!env.MAILBLUSTER_API_KEY) {
-            console.log("\n--- [EMAIL SKIPPED] MailBluster API Key is missing from ENV ---\nTo:", to, "\nSubject:", subject, "\n------------------------------------------\n");
-            return { messageId: 'local-test-mode' };
-        }
+        const mailOptions = {
+            from: `"The Grey Stag" <${env.EMAIL_USER}>`,
+            to,
+            subject,
+            text,
+            html,
+        };
 
-        const fromEmail = env.MAILBLUSTER_FROM_EMAIL || env.EMAIL_USER;
-        console.log(`📡 Attempting MailBluster send to ${to} from ${fromEmail}...`);
-
-        const response = await axios.post(
-            "https://api.mailbluster.com/api/send-email",
-            {
-                to,
-                subject,
-                html_body: html || text,
-                from: env.MAILBLUSTER_FROM_EMAIL || env.EMAIL_USER
-            },
-            {
-                headers: {
-                    Authorization: env.MAILBLUSTER_API_KEY,
-                    "Content-Type": "application/json"
-                },
-                timeout: 5000 // 5s timeout
-            }
-        );
-
-        console.log("✅ MailBluster API Success:", response.data.message);
-        return response.data;
+        const info = await transporter.sendMail(mailOptions);
+        console.log("📧 Email sent successfully:", info.messageId);
+        return info;
     } catch (error) {
-        const errorData = error.response?.data;
-        console.error("❌ MailBluster DETAIL ERROR:", JSON.stringify(errorData, null, 2));
-        console.error("❌ Stats Message:", errorData?.message || error.message);
+        console.error("❌ Gmail Email Error:", error.message);
         return null;
     }
 };
@@ -129,7 +131,7 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
 
         // ALSO SEND TO ADMIN
         await sendEmail({
-            to: env.MAILBLUSTER_FROM_EMAIL || env.EMAIL_USER,
+            to: env.EMAIL_USER,
             subject: `🚨 NEW ORDER RECEIVED: #${order.id.slice(0, 8)}`,
             html: `
                 <div style="font-family: sans-serif; padding: 20px;">
