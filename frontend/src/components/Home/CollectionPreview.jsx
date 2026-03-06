@@ -46,9 +46,13 @@ export default function Collection() {
     const categoryTabs = ["All", ...categories.map(c => c.name)];
     const [activeFilter, setActiveFilter] = useState("All");
     // 6. View Filter: Filter the displayed essentials by selected tab
-    const displayedProducts = activeFilter === "All"
-        ? essentialProducts
-        : essentialProducts.filter(p => p.category === activeFilter);
+    const displayedProducts = useMemo(() => {
+        if (activeFilter === "All") return essentialProducts;
+        return essentialProducts.filter(p => {
+            const categoryName = typeof p.category === 'object' ? p.category?.name : p.category;
+            return categoryName === activeFilter;
+        });
+    }, [activeFilter, essentialProducts]);
     // if (essentialProducts.length === 0) return null; // Don't show empty section
     return (<section className="featured-section">
         <style dangerouslySetInnerHTML={{
@@ -109,56 +113,59 @@ export default function Collection() {
             {displayedProducts.length === 0 && (<div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', opacity: 0.6 }}>
                 No products found in this collection. Add products via Admin Dashboard and check "Essential Collection".
             </div>)}
-            {displayedProducts.map(product => (<article key={product._id || product.id} className="product-card" data-category={product.category}>
-                <div className="product-image">
-                    <Link href={`/products/${product._id || product.id}`} className="img-link-wrapper">
-                        <img src={(product.images && product.images.length > 0) ? product.images[0] : ('https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000')} alt={product.name} />
-                    </Link>
-                    <div className="cta-overlay" onClick={() => router.push(`/products/${product._id || product.id}`)} style={{ cursor: 'pointer' }}>
-                        <div style={{ display: 'flex', width: '100%', gap: '12px' }}>
-                            <button className="btn-card-cta" style={{ flex: 1, fontSize: '0.85rem', padding: '12px 0', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.8)', background: 'rgba(0,0,0,0.8)', color: '#fff' }} onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                // Quick Add Logic (Default 'M' or first size)
-                                const defaultSize = product.sizes?.includes('M') ? 'M' : product.sizes?.[0];
-                                addToCart({
-                                    id: product._id || product.id,
-                                    name: product.name,
-                                    price: product.price.toString(),
-                                    image: (product.images && product.images.length > 0) ? product.images[0] : (product.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000'),
-                                    size: defaultSize,
-                                    color: product.colors?.[0] || 'Midnight Black'
-                                });
-                                showToast("Added to Bag");
-                                openCart();
-                            }}>
-                                Add
-                            </button>
-                            <button className="btn-card-cta" style={{ flex: 1, fontSize: '0.85rem', padding: '12px 0', borderRadius: '2px', backgroundColor: '#fff', color: '#000', border: '1px solid #fff' }} onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                // "Buy It Now" implies Checkout. Using PDP pattern: Don't add default item, just open checkout.
-                                if (user) {
-                                    openCheckout();
-                                }
-                                else {
-                                    openLogin();
-                                }
-                            }}>
-                                Buy It Now
-                            </button>
+            {displayedProducts.map(product => {
+                const categoryName = typeof product.category === 'object' ? product.category?.name : product.category;
+                return (<article key={product._id || product.id} className="product-card" data-category={categoryName}>
+                    <div className="product-image">
+                        <Link href={`/products/${product._id || product.id}`} className="img-link-wrapper">
+                            <img src={(product.images && product.images.length > 0) ? product.images[0] : ('https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000')} alt={product.name} />
+                        </Link>
+                        <div className="cta-overlay" onClick={() => router.push(`/products/${product._id || product.id}`)} style={{ cursor: 'pointer' }}>
+                            <div style={{ display: 'flex', width: '100%', gap: '12px' }}>
+                                <button className="btn-card-cta" style={{ flex: 1, fontSize: '0.85rem', padding: '12px 0', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.8)', background: 'rgba(0,0,0,0.8)', color: '#fff' }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    // Quick Add Logic (Default 'M' or first size)
+                                    const defaultSize = product.sizes?.includes('M') ? 'M' : product.sizes?.[0];
+                                    addToCart({
+                                        id: product._id || product.id,
+                                        name: product.name,
+                                        price: product.price.toString(),
+                                        image: (product.images && product.images.length > 0) ? product.images[0] : (product.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000'),
+                                        size: defaultSize,
+                                        color: product.colors?.[0] || 'Midnight Black'
+                                    });
+                                    showToast("Added to Bag");
+                                    openCart();
+                                }}>
+                                    Add
+                                </button>
+                                <button className="btn-card-cta" style={{ flex: 1, fontSize: '0.85rem', padding: '12px 0', borderRadius: '2px', backgroundColor: '#fff', color: '#000', border: '1px solid #fff' }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    // "Buy It Now" implies Checkout. Using PDP pattern: Don't add default item, just open checkout.
+                                    if (user) {
+                                        openCheckout();
+                                    }
+                                    else {
+                                        openLogin();
+                                    }
+                                }}>
+                                    Buy It Now
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="product-info">
-                    <Link href={`/products/${product._id || product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className="product-header">
-                            <h3 className="serif">{product.name}</h3>
-                            <span className="price">{product.price.toString().startsWith('₹') ? product.price : `₹${product.price}`}</span>
-                        </div>
-                    </Link>
-                </div>
-            </article>))}
+                    <div className="product-info">
+                        <Link href={`/products/${product._id || product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div className="product-header">
+                                <h3 className="serif">{product.name}</h3>
+                                <span className="price">{product.price.toString().startsWith('₹') ? product.price : `₹${product.price}`}</span>
+                            </div>
+                        </Link>
+                    </div>
+                </article>);
+            })}
         </div>
 
         <div className="view-all-wrap">

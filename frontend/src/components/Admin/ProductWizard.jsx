@@ -14,16 +14,23 @@ export default function ProductWizard() {
     const [imageUploading, setImageUploading] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [data, setData] = useState({
-        type: 'Shirt', images: [], title: '', price: '', subtitle: '',
         sizes: [], colors: [], description: '', fabricCare: '',
-        videoUrl: '', externalLink: '', collections: { homepage: false, categoryPage: true, essential: true, newArrivals: true }
+        videoUrl: '', externalLink: '',
+        occasions: [],
+        displayLocations: ["Category PLP"]
     });
     const fileInputRef = useRef(null);
 
     const handleSave = async () => {
         if (!data.title || !data.price) return showToast('Title and Price required', 'error');
         setIsSaving(true);
-        const payload = { ...data, name: data.title, price: parseFloat(data.price), category: data.type, isActive: true };
+        const payload = {
+            ...data,
+            name: data.title,
+            price: parseFloat(data.price),
+            category: data.type,
+            isActive: true
+        };
         try {
             const success = editingId ? await updateProduct(editingId, payload) : await addProduct(payload);
             if (success) { showToast('Saved Successfully', 'success'); setMode('manage'); }
@@ -37,7 +44,8 @@ export default function ProductWizard() {
             title: p.name,
             price: p.price.toString(),
             type: categoryName,
-            collections: { categoryPage: true }
+            displayLocations: p.displayLocations || ["Category PLP"],
+            occasions: p.occasions || []
         });
         setEditingId(p.id || p._id);
         setMode('create');
@@ -170,7 +178,68 @@ export default function ProductWizard() {
 
                     {step === 4 && (
                         <div className="fade-in">
-                            <h3 style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Final Polish</h3>
+                            <h3 style={{ fontSize: '1.5rem', marginBottom: '12px' }}>Final Polish</h3>
+
+                            {/* Occasions Selection */}
+                            <div style={{ marginBottom: '24px' }}>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#aaa', marginBottom: '12px' }}>Select Occasions (Choose multiple)</label>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    {['Meeting', 'Office', 'Student', 'Event'].map(occ => (
+                                        <button
+                                            key={occ}
+                                            onClick={() => {
+                                                const exists = data.occasions.includes(occ);
+                                                setData({
+                                                    ...data,
+                                                    occasions: exists
+                                                        ? data.occasions.filter(o => o !== occ)
+                                                        : [...data.occasions, occ]
+                                                });
+                                            }}
+                                            style={{
+                                                padding: '8px 16px', borderRadius: '20px', fontSize: '0.8rem',
+                                                border: data.occasions.includes(occ) ? '1px solid var(--admin-accent)' : '1px solid #333',
+                                                background: data.occasions.includes(occ) ? 'var(--admin-accent-soft)' : 'transparent',
+                                                color: data.occasions.includes(occ) ? 'var(--admin-accent)' : '#999',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            {occ}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Display Locations Selection */}
+                            <div style={{ marginBottom: '24px' }}>
+                                <label style={{ display: 'block', fontSize: '0.85rem', color: '#aaa', marginBottom: '12px' }}>Display Locations</label>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    {['Essential Collection', 'Homepage Slider', 'New Arrivals', 'Category PLP'].map(loc => (
+                                        <button
+                                            key={loc}
+                                            onClick={() => {
+                                                const exists = data.displayLocations.includes(loc);
+                                                setData({
+                                                    ...data,
+                                                    displayLocations: exists
+                                                        ? data.displayLocations.filter(l => l !== loc)
+                                                        : [...data.displayLocations, loc]
+                                                });
+                                            }}
+                                            style={{
+                                                padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem',
+                                                border: data.displayLocations.includes(loc) ? '1px solid #fff' : '1px solid #333',
+                                                background: data.displayLocations.includes(loc) ? '#fff' : 'transparent',
+                                                color: data.displayLocations.includes(loc) ? '#000' : '#999',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            {loc}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <div>
                                     <label style={{ display: 'block', fontSize: '0.8rem', color: '#666', marginBottom: '8px' }}>Marketing Description</label>

@@ -42,7 +42,7 @@ export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
     const filteredProducts = useMemo(() => {
         // 1. Base Filter determined by Page Title (Intent)
         let baseProducts = mappedProducts;
-        // This is a heuristic based on implementation in page.tsx where pageTitle = Occasion Name
+
         if (pageTitle && pageTitle !== 'All' && !['Shirts', 'Pants', 'Trousers', 'Chinos', 'Blazers', 'Accessories'].includes(pageTitle)) {
             const occasionMap = {
                 'Meetings': 'Meeting',
@@ -51,15 +51,15 @@ export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
                 'Events': 'Event'
             };
             const tag = occasionMap[pageTitle] || pageTitle.replace(/s$/, ''); // naive singularize
-            // Check tags (mapped from occasions)
             baseProducts = mappedProducts.filter(p => p.tags?.includes(tag));
         }
+
         // 2. Category Filter (Active Tab)
         let result = activeCategory === 'All'
             ? [...baseProducts]
             : baseProducts.filter(p => p.category?.toLowerCase() === activeCategory.toLowerCase());
 
-        // Filters
+        // Standard Filters
         if (activeFilters.Size.length > 0)
             result = result.filter(p => p.size?.some(s => activeFilters.Size.includes(s)));
         if (activeFilters.Color.length > 0)
@@ -77,25 +77,31 @@ export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
         return result;
     }, [mappedProducts, activeCategory, activeFilters, sortType, pageTitle]);
 
-    // Grouped View for 'All'
+    // Grouped View for 'All' - Now dynamically generated
     const groupedView = useMemo(() => {
-        if (activeCategory !== 'All')
-            return null;
-        const categories = ["Shirts", "Trousers", "Chinos", "Blazers", "Suits", "Accessories"];
+        if (activeCategory !== 'All') return null;
+
+        // Dynamically extract categories from the current list of filtered products
+        const uniqueCategories = Array.from(new Set(filteredProducts.map(p => p.category).filter(Boolean)));
+
+        if (uniqueCategories.length === 0) return { "All Items": filteredProducts };
+
         const groups = {};
-        categories.forEach(cat => {
-            const catProducts = filteredProducts.filter(p => p.category?.toLowerCase() === cat.toLowerCase());
-            if (catProducts.length > 0)
-                groups[cat] = catProducts;
+        uniqueCategories.forEach(cat => {
+            const catProducts = filteredProducts.filter(p => p.category === cat);
+            if (catProducts.length > 0) groups[cat] = catProducts;
         });
+
+        // Also catch uncategorized products
+        const uncategorized = filteredProducts.filter(p => !p.category);
+        if (uncategorized.length > 0) groups["Other"] = uncategorized;
+
         return groups;
     }, [activeCategory, filteredProducts]);
 
     // Handlers
     const handleCategoryChange = (category) => {
-        if (category === activeCategory)
-            return;
-        // Scroll to top immediately or smoothly preference
+        if (category === activeCategory) return;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setIsTransitioning(true);
         setTimeout(() => {
@@ -105,6 +111,7 @@ export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
             window.history.pushState(null, '', `/category/${slug}`);
         }, 120);
     };
+
     const handleFilterChange = (type, value) => {
         setActiveFilters(prev => {
             const current = prev[type];
@@ -114,48 +121,50 @@ export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
             };
         });
     };
-    const handleSort = (type) => setSortType(type);
-    return (<main className="plp-main-frame">
-        {/* 1. FIXED HEADER STACK */}
-        <div style={{ flexShrink: 0, zIndex: 100, background: '#0f0f0f' }}>
-            <Header variant="plp" />
 
-            {/* 2. SUB-HEADER (Tabs & Filters) */}
-            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                {/* ROW: Back + Tabs */}
-                <div className="category-row">
-                    {/* Scrollable Tabs */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                        <CategoryTabs activeCategory={activeCategory} onSelect={handleCategoryChange} />
+    const handleSort = (type) => setSortType(type);
+
+    return (
+        <main className="plp-main-frame">
+            <div style={{ flexShrink: 0, zIndex: 100, background: '#0f0f0f' }}>
+                <Header variant="plp" />
+                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div className="category-row">
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                            <CategoryTabs activeCategory={activeCategory} onSelect={handleCategoryChange} />
+                        </div>
+                    </div>
+                    <div className="filter-bar-row">
+                        <FilterBar activeFilters={activeFilters} onFilterChange={handleFilterChange} onSort={handleSort} />
                     </div>
                 </div>
+            </div>
 
-                {/* ROW: Filters */}
-                <div className="filter-bar-row">
-                    <FilterBar activeFilters={activeFilters} onFilterChange={handleFilterChange} onSort={handleSort} />
+            <div ref={contentRef} className="plp-scroll-area">
+                <div className="plp-container" style={{
+                    opacity: isTransitioning ? 0 : 1,
+                    transition: 'opacity 120ms ease-out',
+                }}>
+                    {groupedView ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+                            {Object.entries(groupedView).map(([cat, items]) => (
+                                <section key={cat}>
+                                    <h2 style={{
+                                        fontFamily: 'var(--font-serif)',
+                                        fontSize: '1.5rem',
+                                        marginBottom: '24px',
+                                        color: 'rgba(255,255,255,0.8)'
+                                    }}>{cat}</h2>
+                                    <PLPGrid products={items} />
+                                </section>
+                            ))}
+                        </div>
+                    ) : (
+                        <PLPGrid products={filteredProducts} />
+                    )}
                 </div>
+                <Footer />
             </div>
-        </div>
-
-        {/* 3. SCROLLABLE CONTENT AREA */}
-        <div ref={contentRef} className="plp-scroll-area">
-            <div className="plp-container" style={{
-                opacity: isTransitioning ? 0 : 1,
-                transition: 'opacity 120ms ease-out',
-            }}>
-                {groupedView ? (<div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
-                    {Object.entries(groupedView).map(([cat, items]) => (<section key={cat}>
-                        <h2 style={{
-                            fontFamily: 'var(--font-serif)',
-                            fontSize: '1.5rem',
-                            marginBottom: '24px',
-                            color: 'rgba(255,255,255,0.8)'
-                        }}>{cat}</h2>
-                        <PLPGrid products={items} />
-                    </section>))}
-                </div>) : (<PLPGrid products={filteredProducts} />)}
-            </div>
-            <Footer />
-        </div>
-    </main>);
+        </main>
+    );
 }
