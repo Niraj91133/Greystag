@@ -73,11 +73,13 @@ export default function OrdersManager() {
     const getStatusStyle = (status) => {
         const colors = {
             'DELIVERED': { bg: '#4ade8015', text: '#4ade80', dot: '#4ade80' },
-            'PENDING': { bg: '#fbbf2415', text: '#fbbf24', dot: '#fbbf24' },
+            'PENDING': { bg: '#88888815', text: '#888888', dot: '#888888' },
             'PAID': { bg: '#60a5fa15', text: '#60a5fa', dot: '#60a5fa' },
+            'CONFIRMED': { bg: '#2dd4bf15', text: '#2dd4bf', dot: '#2dd4bf' },
+            'TAILORING': { bg: '#d4af3715', text: '#d4af37', dot: '#d4af37' },
+            'QUALITY_CHECK': { bg: '#fbbf2415', text: '#fbbf24', dot: '#fbbf24' },
             'SHIPPED': { bg: '#818cf815', text: '#818cf8', dot: '#818cf8' },
-            'CANCELLED': { bg: '#ef444415', text: '#ef4444', dot: '#ef4444' },
-            'IN_PRODUCTION': { bg: '#d4af3715', text: '#d4af37', dot: '#d4af37' }
+            'CANCELLED': { bg: '#ef444415', text: '#ef4444', dot: '#ef4444' }
         };
         return colors[status] || { bg: '#27272a', text: '#a1a1aa', dot: '#a1a1aa' };
     };
@@ -106,7 +108,9 @@ export default function OrdersManager() {
                         <option value="ALL">All Status</option>
                         <option value="PENDING">Pending</option>
                         <option value="PAID">Paid</option>
-                        <option value="IN_PRODUCTION">In Production</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="TAILORING">Tailoring</option>
+                        <option value="QUALITY_CHECK">Quality Check</option>
                         <option value="SHIPPED">Shipped</option>
                         <option value="DELIVERED">Delivered</option>
                         <option value="CANCELLED">Cancelled</option>
@@ -151,6 +155,7 @@ export default function OrdersManager() {
                                             </div>
                                             <select
                                                 value={order.status}
+                                                onClick={(e) => e.stopPropagation()}
                                                 onChange={(e) => {
                                                     e.stopPropagation();
                                                     updateStatus(order.id, e.target.value);
@@ -161,7 +166,9 @@ export default function OrdersManager() {
                                             >
                                                 <option value="PENDING">PENDING</option>
                                                 <option value="PAID">PAID</option>
-                                                <option value="IN_PRODUCTION">IN_PRODUCTION</option>
+                                                <option value="CONFIRMED">CONFIRMED</option>
+                                                <option value="TAILORING">TAILORING</option>
+                                                <option value="QUALITY_CHECK">QUALITY CHECK</option>
                                                 <option value="SHIPPED">SHIPPED</option>
                                                 <option value="DELIVERED">DELIVERED</option>
                                                 <option value="CANCELLED">CANCELLED</option>
@@ -254,7 +261,9 @@ export default function OrdersManager() {
                                     >
                                         <option value="PENDING">PENDING</option>
                                         <option value="PAID">PAID</option>
-                                        <option value="IN_PRODUCTION">PRODUCTION</option>
+                                        <option value="CONFIRMED">CONFIRMED</option>
+                                        <option value="TAILORING">TAILORING</option>
+                                        <option value="QUALITY_CHECK">QUALITY CHECK</option>
                                         <option value="SHIPPED">SHIPPED</option>
                                         <option value="DELIVERED">DELIVERED</option>
                                         <option value="CANCELLED">CANCELLED</option>
@@ -300,6 +309,39 @@ export default function OrdersManager() {
                                         </div>
                                     </div>
                                 </section>
+
+                                <section>
+                                    <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', fontWeight: '800' }}>Production Status</h5>
+                                    <div style={{ padding: '15px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <div style={{ marginBottom: '12px' }}>
+                                            <label style={{ display: 'block', fontSize: '0.6rem', color: '#666', marginBottom: '4px' }}>CURRENT STAGE</label>
+                                            <input
+                                                defaultValue={selectedOrder.productionStage || 'Pending'}
+                                                onBlur={async (e) => {
+                                                    try {
+                                                        await api.patch(`/orders/${selectedOrder.id}/status`, { productionStage: e.target.value });
+                                                        showToast('Stage updated', 'success');
+                                                    } catch (err) { showToast('Update failed', 'error'); }
+                                                }}
+                                                style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.8rem' }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style={{ display: 'block', fontSize: '0.6rem', color: '#666', marginBottom: '4px' }}>ESTIMATED DELIVERY</label>
+                                            <input
+                                                type="date"
+                                                defaultValue={selectedOrder.estimatedDelivery ? new Date(selectedOrder.estimatedDelivery).toISOString().split('T')[0] : ''}
+                                                onChange={async (e) => {
+                                                    try {
+                                                        await api.patch(`/orders/${selectedOrder.id}/status`, { estimatedDelivery: e.target.value });
+                                                        showToast('Date updated', 'success');
+                                                    } catch (err) { showToast('Update failed', 'error'); }
+                                                }}
+                                                style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.8rem' }}
+                                            />
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
 
                             {/* COLUMN 2: Logistics & Contact */}
@@ -323,6 +365,36 @@ export default function OrdersManager() {
                                                 onClick={() => window.open(`https://wa.me/${selectedOrder.user?.phone}?text=Hello ${selectedOrder.user?.name}, your order #${selectedOrder.id.substring(0, 8)} is now: ${selectedOrder.status}.`, '_blank')}
                                                 style={{ flex: 1.5, padding: '10px', background: '#25D366', borderRadius: '8px', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}
                                             >WHATSAPP</button>
+                                        </div>
+
+                                        <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <h6 style={{ fontSize: '0.6rem', color: '#666', textTransform: 'uppercase', marginBottom: '10px' }}>Shipping Details</h6>
+                                            <div style={{ marginBottom: '10px' }}>
+                                                <input
+                                                    placeholder="Tracking ID"
+                                                    defaultValue={selectedOrder.trackingId || ''}
+                                                    onBlur={async (e) => {
+                                                        try {
+                                                            await api.patch(`/orders/${selectedOrder.id}/status`, { trackingId: e.target.value });
+                                                            showToast('Tracking ID updated', 'success');
+                                                        } catch (err) { showToast('Update failed', 'error'); }
+                                                    }}
+                                                    style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem' }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <input
+                                                    placeholder="Courier (e.g. BlueDart)"
+                                                    defaultValue={selectedOrder.courierPartner || ''}
+                                                    onBlur={async (e) => {
+                                                        try {
+                                                            await api.patch(`/orders/${selectedOrder.id}/status`, { courierPartner: e.target.value });
+                                                            showToast('Courier updated', 'success');
+                                                        } catch (err) { showToast('Update failed', 'error'); }
+                                                    }}
+                                                    style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem' }}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </section>

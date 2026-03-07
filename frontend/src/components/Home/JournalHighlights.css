@@ -1,4 +1,4 @@
-/* Journal */
+/* Journal Section */
 .journal-section {
     padding: 32px 24px 64px;
 }
@@ -9,6 +9,7 @@
     }
 }
 
+/* Horizontal Scroll Grid */
 .journal-grid {
     display: flex;
     gap: 16px;
@@ -28,12 +29,13 @@
     scrollbar-width: none;
 }
 
+/* Journal Card */
 .journal-card {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     cursor: pointer;
-    flex: 0 0 280px;
+    flex: 0 0 300px;
     scroll-snap-align: start;
 }
 
@@ -43,29 +45,31 @@
     }
 }
 
+/* IMAGE FIX */
 .journal-card img {
     width: 100%;
-    aspect-ratio: 16/9;
+    height: 160px;
+    /* height control */
     object-fit: cover;
     border-radius: 16px;
-    /* Updated radius */
     filter: brightness(0.9);
-    transition: filter 0.3s;
+    transition: filter 0.3s ease;
 }
 
+/* Hover effect */
 .journal-card:hover img {
     filter: brightness(1);
 }
 
+/* Text Info */
 .journal-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0 4px;
-    /* slight padding */
 }
 
-/* 14. Text Width Control */
+/* Text Width Control */
 .journal-section p,
 .journal-info h3,
 .journal-info span {
@@ -80,6 +84,7 @@
     }
 }
 
+/* Category Label */
 .journal-cat {
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -88,9 +93,10 @@
     margin-bottom: 8px;
 }
 
+/* Title */
 .journal-card h3 {
     font-family: var(--font-serif);
-    font-size: 1.5rem;
-    margin-bottom: 12px;
-    line-height: 1.2;
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    line-height: 1.25;
 }

@@ -11,6 +11,10 @@ export function WishlistProvider({ children }) {
     const { showToast } = useToast();
     const [wishlist, setWishlist] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const openWishlist = () => setIsOpen(true);
+    const closeWishlist = () => setIsOpen(false);
 
     const fetchWishlist = async () => {
         try {
@@ -40,8 +44,17 @@ export function WishlistProvider({ children }) {
 
         try {
             const json = await api.post(`/wishlist/toggle`, { productId });
-            setWishlist(json.data || []);
-            const isNowIn = (json.data || []).some(item => item.productId === productId);
+            const newList = json.data || [];
+
+            // If the item was added (list length increased or length same but content changed)
+            // Or specifically if it's now in the list
+            const isNowIn = newList.some(item => (item.productId === productId || item.product?.id === productId));
+
+            if (isNowIn) {
+                openWishlist();
+            }
+
+            setWishlist(newList);
             showToast(isNowIn ? 'Added to favorites' : 'Removed from favorites', 'success');
             return true;
         } catch (error) {
@@ -56,7 +69,10 @@ export function WishlistProvider({ children }) {
     };
 
     return (
-        <WishlistContext.Provider value={{ wishlist, toggleWishlist, isInWishlist, isLoaded }}>
+        <WishlistContext.Provider value={{
+            wishlist, toggleWishlist, isInWishlist, isLoaded,
+            isOpen, openWishlist, closeWishlist
+        }}>
             {children}
         </WishlistContext.Provider>
     );

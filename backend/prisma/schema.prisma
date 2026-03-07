@@ -235,6 +235,9 @@ model Order {
   invoiceUrl        String?     @map("invoice_url")
   shippedAt         DateTime?   @map("shipped_at")
   deliveredAt       DateTime?   @map("delivered_at")
+  estimatedDelivery DateTime?   @map("estimated_delivery")
+  productionStage   String?     @default("Pending") @map("production_stage")
+  trackingNotes     String?     @map("tracking_notes")
   createdAt         DateTime    @default(now()) @map("created_at")
   updatedAt         DateTime    @updatedAt @map("updated_at")
 
@@ -308,7 +311,9 @@ enum DiscountType {
 enum OrderStatus {
   PENDING
   PAID
-  IN_PRODUCTION
+  CONFIRMED
+  TAILORING
+  QUALITY_CHECK
   SHIPPED
   DELIVERED
   CANCELLED

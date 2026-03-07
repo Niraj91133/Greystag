@@ -227,23 +227,46 @@ export default function ProductDetailClient({ product: initialProduct }) {
                         <h1 className="serif" style={{ fontSize: '2.5rem', lineHeight: '1.1', color: '#fff', margin: 0, flex: 1 }}>{product.name}</h1>
                         <button
                             onClick={() => toggleWishlist(product.id)}
-                            className="btn-icon"
+                            className={`btn-favorite-pdp ${isInWishlist(product.id) ? 'active' : ''}`}
                             style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: isInWishlist(product.id) ? '#d4af37' : '#fff',
+                                background: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                color: isInWishlist(product.id) ? '#ff4b4b' : '#fff',
                                 cursor: 'pointer',
-                                padding: '4px',
-                                transition: 'all 0.3s ease'
+                                width: '48px',
+                                height: '48px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
                             }}
                             title={isInWishlist(product.id) ? "Remove from Favorites" : "Add to Favorites"}
                         >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill={isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
-                                <rect x="7" y="9" width="10" height="11" rx="2" strokeLinejoin="round" />
-                                <rect x="10" y="4" width="4" height="5" rx="1" strokeLinejoin="round" />
-                                <circle cx="12" cy="14" r="1.5" />
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill={isInWishlist(product.id) ? "currentColor" : "none"}
+                                stroke="currentColor"
+                                strokeWidth="2"
+                            >
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                             </svg>
                         </button>
+                        <style jsx>{`
+                            .btn-favorite-pdp:active {
+                                transform: scale(0.8);
+                            }
+                            .btn-favorite-pdp.active {
+                                animation: heartPulse 0.4s ease-out;
+                            }
+                            @keyframes heartPulse {
+                                0% { transform: scale(1); }
+                                50% { transform: scale(1.4); }
+                                100% { transform: scale(1); }
+                            }
+                        `}</style>
                     </div>
 
                     <div style={{ fontSize: '1rem', color: '#ccc', marginBottom: '16px', letterSpacing: '0.05em' }}>The Grey Stag</div>

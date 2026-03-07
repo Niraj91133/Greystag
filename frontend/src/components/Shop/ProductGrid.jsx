@@ -1,6 +1,4 @@
-import React from 'react';
-import Link from 'next/link';
-import { useProduct } from '@/context/ProductContext';
+import ProductCard from './ProductCard';
 export default function PLPGrid({ products: propProducts }) {
     // We should ONLY use propProducts if provided, as the parent (ShopLayout) 
     // handles the filtering, sorting, and mapping.
@@ -11,19 +9,7 @@ export default function PLPGrid({ products: propProducts }) {
         const items = [];
         let productChunk = [];
         displayProducts.forEach((product, index) => {
-            const productId = product.id || product._id;
-            productChunk.push(<Link href={`/products/${productId}`} key={productId} style={{ textDecoration: 'none', display: 'block' }}>
-
-                <article className="plp-card">
-                    <div className="plp-image-wrap">
-                        <img src={(product.images && product.images.length > 0 && product.images[0] !== "[]") ? product.images[0] : (product.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000')} alt={product.name} loading="lazy" />
-                    </div>
-                    <div className="plp-info">
-                        <h3 className="plp-name">{product.name}</h3>
-                        <span className="plp-price">{product.price.toString().startsWith('₹') ? product.price : `₹${product.price}`}</span>
-                    </div>
-                </article>
-            </Link>);
+            productChunk.push(<ProductCard key={product.id || product._id} product={product} />);
             // Inject Trust Strip after every 4 items
             if ((index + 1) % 4 === 0 && index !== displayProducts.length - 1) {
                 items.push(...productChunk);

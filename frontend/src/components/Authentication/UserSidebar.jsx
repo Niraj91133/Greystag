@@ -286,16 +286,21 @@ export default function UserDrawer() {
                             <div style={{ fontSize: '0.85rem', color: '#eee', marginBottom: '12px' }}>
                                 {order.items.join(', ')}
                             </div>
-                            <button style={{
-                                width: '100%',
-                                padding: '8px',
-                                background: 'rgba(255,255,255,0.1)',
-                                border: 'none',
-                                color: '#fff',
-                                fontSize: '0.8rem',
-                                cursor: 'pointer'
-                            }}>
-                                View Details
+                            <button
+                                onClick={() => {
+                                    closeUserMenu();
+                                    router.push(`/orders/success/${order.id}`);
+                                }}
+                                style={{
+                                    width: '100%',
+                                    padding: '8px',
+                                    background: 'rgba(255,255,255,0.1)',
+                                    border: 'none',
+                                    color: '#fff',
+                                    fontSize: '0.8rem',
+                                    cursor: 'pointer'
+                                }}>
+                                View Tracking & Details
                             </button>
                         </div>))}
                     </div>) : (<p style={{ color: '#aaa', textAlign: 'center', marginTop: '40px' }}>No orders yet.</p>)}

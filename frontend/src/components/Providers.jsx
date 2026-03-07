@@ -10,6 +10,7 @@ import CartDrawer from './Cart/CartSidebar';
 import CheckoutDrawer from './Checkout/CheckoutSidebar';
 import LoginDrawer from './Authentication/LoginModal';
 import UserDrawer from './Authentication/UserSidebar';
+import WishlistDrawer from './Layout/WishlistSidebar';
 export default function Providers({ children }) {
     return (<ToastProvider>
         <AuthProvider>
@@ -22,6 +23,7 @@ export default function Providers({ children }) {
                             <CheckoutDrawer />
                             <LoginDrawer />
                             <UserDrawer />
+                            <WishlistDrawer />
                         </ProductProvider>
                     </ContentProvider>
                 </WishlistProvider>

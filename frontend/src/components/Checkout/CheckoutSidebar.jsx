@@ -5,8 +5,10 @@ import { useToast } from '@/context/ToastContext';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
 import * as gtag from '@/lib/gtag';
+import { useRouter } from 'next/navigation';
 
 export default function CheckoutDrawer() {
+    const router = useRouter();
     const { isCheckoutOpen, closeCheckout, cartItems, cartTotal, clearCart } = useCart();
     const { showToast } = useToast();
     const { user, addAddress } = useAuth();
@@ -182,7 +184,6 @@ export default function CheckoutDrawer() {
                         });
 
                         if (verifyJson.success) {
-                            setIsSuccess(true);
                             gtag.purchase({
                                 id: orderJson.data.id,
                                 total: orderJson.data.total,
@@ -190,6 +191,8 @@ export default function CheckoutDrawer() {
                             });
                             clearCart();
                             showToast('Order Placed Successfully!', 'success');
+                            closeCheckout();
+                            router.push(`/orders/success/${orderJson.data.id}`);
                         }
                     } catch (err) {
                         showToast('Payment verification failed', 'error');
