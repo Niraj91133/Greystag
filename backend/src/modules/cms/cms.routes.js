@@ -27,6 +27,7 @@ const upload = multer({
 router.get("/", getCmsContent);
 
 // Admin-Protected Routes
+router.post("/reels/upload", protect, authorize("ADMIN"), upload.single("images"), uploadMedia);
 router.post("/upload", protect, authorize("ADMIN"), upload.single("images"), uploadMedia);
 router.post("/", protect, authorize("ADMIN"), updateCmsContent);
 router.put("/:id", protect, authorize("ADMIN"), updateCmsById);

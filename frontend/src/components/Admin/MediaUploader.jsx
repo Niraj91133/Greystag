@@ -37,13 +37,14 @@ export default function MediaUploader({
             const mediaType = file.type.startsWith('video') ? 'video' : 'image';
 
             // 1. Try Backend Upload First (More reliable, uses service key)
-            // Use specific endpoint for CMS vs Products
-            const isProduct = folder === 'products';
-            const endpoint = isProduct ? '/products/upload' : '/cms/upload';
+            // Divide uploads into Product, Reels, and CMS as requested
+            let endpoint = '/cms/upload';
+            if (folder === 'products') endpoint = '/products/upload';
+            if (folder === 'reels') endpoint = '/cms/reels/upload';
 
-            console.log(`[MediaUploader] Attempting backend upload via ${endpoint}...`);
+            console.log(`[MediaUploader] Attempting backend upload via ${endpoint} (folder: ${folder})...`);
             const formData = new FormData();
-            formData.append('images', file);
+            formData.append('images', file); // Multer on backend expects 'images'
             formData.append('folder', folder);
 
             let publicUrl = null;
