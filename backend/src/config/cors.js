@@ -6,6 +6,7 @@ const allowedOrigins = [
     "https://thegreystag.in",
     "https://www.thegreystag.in",
     "https://greystag-frontend-23ir.vercel.app",
+    "https://greystag-frontend.vercel.app",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:3001",

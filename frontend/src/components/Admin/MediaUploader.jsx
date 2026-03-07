@@ -37,17 +37,24 @@ export default function MediaUploader({
             const mediaType = file.type.startsWith('video') ? 'video' : 'image';
 
             // 1. Try Backend Upload First (More reliable, uses service key)
-            console.log("[MediaUploader] Attempting backend upload via /products/upload...");
+            // Use specific endpoint for CMS vs Products
+            const isProduct = folder === 'products';
+            const endpoint = isProduct ? '/products/upload' : '/cms/upload';
+
+            console.log(`[MediaUploader] Attempting backend upload via ${endpoint}...`);
             const formData = new FormData();
             formData.append('images', file);
+            formData.append('folder', folder);
 
             let publicUrl = null;
             let backendErrorMsg = null;
 
             try {
-                const response = await api.post('/products/upload', formData);
-                // response should be ApiResponse { data: [url1, url2...], ... }
-                publicUrl = Array.isArray(response.data) ? response.data[0] : (response.data || null);
+                const response = await api.post(endpoint, formData);
+                // response should be ApiResponse { data: string | [url1, url2...], ... }
+                // For CMS upload, it returns a single string. For Products, an array.
+                const data = response.data;
+                publicUrl = Array.isArray(data) ? data[0] : (typeof data === 'string' ? data : (data?.url || null));
 
                 if (!publicUrl) {
                     console.warn("[MediaUploader] Backend returned success but no URL in data:", response);

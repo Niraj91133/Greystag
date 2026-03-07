@@ -2,6 +2,7 @@ import prisma from "../../config/db.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { uploadFile } from "../../utils/supabase.js";
 
 /**
  * CMS Controller - Handles dynamic content management
@@ -45,4 +46,20 @@ export const updateCmsById = asyncHandler(async (req, res) => {
     });
 
     return res.status(200).json(new ApiResponse(200, cms.data, "CMS content updated by ID"));
+});
+
+export const uploadMedia = asyncHandler(async (req, res) => {
+    if (!req.file) {
+        throw new ApiError(400, "No media file provided");
+    }
+
+    // folder name can be passed via field, or default to cms
+    const { folder = "cms" } = req.body;
+
+    // uploadFile internally handles the Supabase interaction
+    const url = await uploadFile(req.file, "cms-media"); // Dedicated bucket for CMS
+
+    if (!url) throw new ApiError(500, "Failed to upload to Supabase");
+
+    return res.status(200).json(new ApiResponse(200, url, "Media uploaded successfully"));
 });
