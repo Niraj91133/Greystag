@@ -11,7 +11,10 @@ import { protect, authorize } from "../../../middleware/auth.middleware.js";
 import multer from "multer";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 router.get("/", getAllProducts);
 router.get("/:id", getProductById);
