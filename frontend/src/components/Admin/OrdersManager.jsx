@@ -274,71 +274,33 @@ export default function OrdersManager() {
                             </div>
                         </div>
 
-                        {/* Modal Body - Dense 3-Column Layout */}
+                        {/* Modal Body */}
                         <div className="modal-body-scroll" style={{
-                            padding: '24px 30px', display: 'grid', gridTemplateColumns: 'minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr)',
+                            padding: '24px 30px', display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr)',
                             gap: '24px', flex: 1, overflowY: 'auto'
                         }}>
-
-                            {/* COLUMN 1: Items Overview (Highest priority to shrink) */}
+                            {/* COLUMN 1: Items */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <section>
-                                    <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', fontWeight: '800' }}>Review Order Items</h5>
+                                    <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', fontWeight: '800' }}>Review Items</h5>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
                                         {selectedOrder.orderItems.map((item, i) => (
                                             <div key={i} style={{ display: 'grid', gridTemplateColumns: '50px 1fr auto', gap: '12px', alignItems: 'center', padding: '12px', background: '#09090b' }}>
                                                 <div style={{ width: '50px', height: '65px', background: '#1a1a1a', borderRadius: '8px', overflow: 'hidden' }}>
-                                                    <img src={item.product?.images?.[0] || item.product?.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    <img src={item.product?.images?.[0] || item.product?.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                 </div>
                                                 <div style={{ minWidth: 0 }}>
-                                                    <div style={{ color: '#fff', fontSize: '0.85rem', fontWeight: '500', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.product?.name}</div>
-                                                    <div style={{ color: '#666', fontSize: '0.75rem' }}>Size: {item.size || 'M'} · Qty: {item.quantity}</div>
+                                                    <div style={{ color: '#fff', fontSize: '0.8rem', fontWeight: '500', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.product?.name}</div>
+                                                    <div style={{ color: '#666', fontSize: '0.7rem' }}>Size: {item.size} · Qty: {item.quantity}</div>
                                                 </div>
-                                                <div style={{ textAlign: 'right', color: 'var(--admin-accent)', fontWeight: 'bold', fontSize: '0.9rem' }}>₹{(Number(item.price) * item.quantity).toLocaleString()}</div>
+                                                <div style={{ textAlign: 'right', color: 'var(--admin-accent)', fontWeight: 'bold', fontSize: '0.85rem' }}>₹{(Number(item.price) * item.quantity).toLocaleString()}</div>
                                             </div>
                                         ))}
                                     </div>
-                                    <div style={{ marginTop: '15px', padding: '15px', borderRadius: '12px', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.02)' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                            <span style={{ color: '#666', fontSize: '0.8rem' }}>Subtotal Items</span>
-                                            <span style={{ color: '#fff', fontSize: '0.8rem' }}>₹{Number(selectedOrder.total).toLocaleString()}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
-                                            <span style={{ color: '#999', fontSize: '0.75rem', fontWeight: '600' }}>TOTAL AMOUNT</span>
-                                            <span style={{ color: 'var(--admin-accent)', fontSize: '1.2rem', fontWeight: 'bold' }}>₹{Number(selectedOrder.total).toLocaleString()}</span>
-                                        </div>
-                                    </div>
-                                </section>
-
-                                <section>
-                                    <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', fontWeight: '800' }}>Production Status</h5>
-                                    <div style={{ padding: '15px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <div style={{ marginBottom: '12px' }}>
-                                            <label style={{ display: 'block', fontSize: '0.6rem', color: '#666', marginBottom: '4px' }}>CURRENT STAGE</label>
-                                            <input
-                                                defaultValue={selectedOrder.productionStage || 'Pending'}
-                                                onBlur={async (e) => {
-                                                    try {
-                                                        await api.patch(`/orders/${selectedOrder.id}/status`, { productionStage: e.target.value });
-                                                        showToast('Stage updated', 'success');
-                                                    } catch (err) { showToast('Update failed', 'error'); }
-                                                }}
-                                                style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.8rem' }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: 'block', fontSize: '0.6rem', color: '#666', marginBottom: '4px' }}>ESTIMATED DELIVERY</label>
-                                            <input
-                                                type="date"
-                                                defaultValue={selectedOrder.estimatedDelivery ? new Date(selectedOrder.estimatedDelivery).toISOString().split('T')[0] : ''}
-                                                onChange={async (e) => {
-                                                    try {
-                                                        await api.patch(`/orders/${selectedOrder.id}/status`, { estimatedDelivery: e.target.value });
-                                                        showToast('Date updated', 'success');
-                                                    } catch (err) { showToast('Update failed', 'error'); }
-                                                }}
-                                                style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.8rem' }}
-                                            />
+                                    <div style={{ marginTop: '12px', padding: '12px', borderRadius: '12px', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.02)' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span style={{ color: '#999', fontSize: '0.7rem', fontWeight: '600' }}>TOTAL</span>
+                                            <span style={{ color: 'var(--admin-accent)', fontSize: '1.1rem', fontWeight: 'bold' }}>₹{Number(selectedOrder.total).toLocaleString()}</span>
                                         </div>
                                     </div>
                                 </section>
@@ -347,119 +309,78 @@ export default function OrdersManager() {
                             {/* COLUMN 2: Logistics & Contact */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <section>
-                                    <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', fontWeight: '800' }}>Logistics & Contact</h5>
-                                    <div style={{ padding: '18px', borderRadius: '16px', background: '#121214', border: '1px solid rgba(255,255,255,0.04)' }}>
-                                        <div style={{ fontWeight: '600', fontSize: '1rem', color: '#fff', marginBottom: '4px' }}>{selectedOrder.user?.name || 'Guest User'}</div>
-                                        <div style={{ color: 'var(--admin-accent)', fontSize: '0.75rem', marginBottom: '14px' }}>{selectedOrder.user?.email}</div>
+                                    <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', fontWeight: '800' }}>Logistics</h5>
+                                    <div style={{ padding: '16px', borderRadius: '16px', background: '#121214', border: '1px solid rgba(255,255,255,0.04)' }}>
+                                        <div style={{ fontWeight: '600', fontSize: '0.9rem', color: '#fff', marginBottom: '2px' }}>{selectedOrder.user?.name}</div>
+                                        <div style={{ color: 'var(--admin-accent)', fontSize: '0.75rem', marginBottom: '12px' }}>{selectedOrder.user?.email}</div>
+                                        <div style={{ color: '#888', fontSize: '0.8rem', marginBottom: '16px' }}>{selectedOrder.shippingAddress?.line1}, {selectedOrder.shippingAddress?.city}</div>
 
-                                        <div style={{ color: '#888', lineHeight: '1.6', fontSize: '0.85rem', marginBottom: '16px' }}>
-                                            <span style={{ color: '#444', fontSize: '0.7rem', display: 'block', marginBottom: '4px' }}>DELIVERY TO:</span>
-                                            {selectedOrder.shippingAddress?.line1}
-                                            <br />
-                                            <span style={{ fontWeight: 'bold', color: '#666' }}>{selectedOrder.shippingAddress?.city}, {selectedOrder.shippingAddress?.pincode}</span>
+                                        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                                            <a href={`tel:${selectedOrder.user?.phone}`} style={{ flex: 1, padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', color: '#fff', textDecoration: 'none', textAlign: 'center', fontSize: '0.65rem' }}>CALL</a>
+                                            <button onClick={() => window.open(`https://wa.me/${selectedOrder.user?.phone}`, '_blank')} style={{ flex: 1, padding: '8px', background: '#25D366', borderRadius: '6px', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '0.65rem', fontWeight: 'bold' }}>WHATSAPP</button>
                                         </div>
 
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <a href={`tel:${selectedOrder.user?.phone}`} style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', color: '#fff', textDecoration: 'none', textAlign: 'center', fontSize: '0.7rem' }}>CALL</a>
-                                            <button
-                                                onClick={() => window.open(`https://wa.me/${selectedOrder.user?.phone}?text=Hello ${selectedOrder.user?.name}, your order #${selectedOrder.id.substring(0, 8)} is now: ${selectedOrder.status}.`, '_blank')}
-                                                style={{ flex: 1.5, padding: '10px', background: '#25D366', borderRadius: '8px', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}
-                                            >WHATSAPP</button>
-                                        </div>
-
-                                        <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                            <h6 style={{ fontSize: '0.6rem', color: '#666', textTransform: 'uppercase', marginBottom: '10px' }}>Shipping Details</h6>
-                                            <div style={{ marginBottom: '10px' }}>
-                                                <input
-                                                    placeholder="Tracking ID"
-                                                    defaultValue={selectedOrder.trackingId || ''}
-                                                    onBlur={async (e) => {
-                                                        try {
-                                                            await api.patch(`/orders/${selectedOrder.id}/status`, { trackingId: e.target.value });
-                                                            showToast('Tracking ID updated', 'success');
-                                                        } catch (err) { showToast('Update failed', 'error'); }
-                                                    }}
-                                                    style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem' }}
-                                                />
-                                            </div>
-                                            <div>
-                                                <input
-                                                    placeholder="Courier (e.g. BlueDart)"
-                                                    defaultValue={selectedOrder.courierPartner || ''}
-                                                    onBlur={async (e) => {
-                                                        try {
-                                                            await api.patch(`/orders/${selectedOrder.id}/status`, { courierPartner: e.target.value });
-                                                            showToast('Courier updated', 'success');
-                                                        } catch (err) { showToast('Update failed', 'error'); }
-                                                    }}
-                                                    style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem' }}
-                                                />
-                                            </div>
+                                        <div style={{ padding: '12px', background: 'rgba(0,0,0,0.3)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <input
+                                                placeholder="Tracking ID"
+                                                defaultValue={selectedOrder.trackingId}
+                                                onBlur={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { trackingId: e.target.value })}
+                                                style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', marginBottom: '8px' }}
+                                            />
+                                            <input
+                                                placeholder="Courier"
+                                                defaultValue={selectedOrder.courierPartner}
+                                                onBlur={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { courierPartner: e.target.value })}
+                                                style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem' }}
+                                            />
                                         </div>
                                     </div>
                                 </section>
                             </div>
 
-                            {/* COLUMN 3: Tailoring Archive & Workflow */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            {/* COLUMN 3: Production Flow & Technical Profile */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <section>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                                        <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '800', margin: 0 }}>Technical Profile</h5>
-                                        <button
-                                            onClick={async () => {
-                                                const m = selectedOrder.user?.measurement || {};
-                                                const fields = ['chest', 'waist', 'shoulder', 'neck', 'sleeve', 'inseam'];
-                                                const newData = { ...m };
-                                                let changed = false;
-
-                                                for (const f of fields) {
-                                                    const val = prompt(`Enter ${f.toUpperCase()} (inches):`, m[f] || '');
-                                                    if (val !== null && val !== String(m[f])) {
-                                                        newData[f] = parseFloat(val);
-                                                        changed = true;
-                                                    }
-                                                }
-
-                                                if (changed) {
-                                                    try {
-                                                        await api.post(`/admin/users/${selectedOrder.user.id}/measurements`, newData);
-                                                        showToast('Measurements updated!', 'success');
-                                                        fetchOrders();
-                                                    } catch (e) {
-                                                        showToast('Failed to update', 'error');
-                                                    }
-                                                }
-                                            }}
-                                            style={{ background: 'transparent', border: '1px solid #333', color: '#fff', fontSize: '0.6rem', padding: '2px 8px', borderRadius: '4px', cursor: 'pointer' }}
-                                        >
-                                            EDIT FIT
-                                        </button>
+                                    <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', fontWeight: '800' }}>Production</h5>
+                                    <div style={{ padding: '16px', borderRadius: '16px', background: 'rgba(212, 175, 55, 0.04)', border: '1px solid rgba(212, 175, 55, 0.1)' }}>
+                                        <div style={{ marginBottom: '12px' }}>
+                                            <label style={{ fontSize: '0.6rem', color: '#666', display: 'block', marginBottom: '4px' }}>CURRENT STAGE</label>
+                                            <select
+                                                defaultValue={selectedOrder.productionStage || 'Pending'}
+                                                onChange={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { productionStage: e.target.value })}
+                                                style={{ width: '100%', background: '#000', border: '1px solid #333', color: '#fff', padding: '8px', borderRadius: '8px', fontSize: '0.8rem' }}
+                                            >
+                                                {['Pending', 'Fabric Selection', 'Cutting', 'Stitching', 'Tailoring', 'Quality Check', 'Ready'].map(s => <option key={s} value={s}>{s}</option>)}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label style={{ fontSize: '0.6rem', color: '#666', display: 'block', marginBottom: '4px' }}>ESTIMATED DELIVERY</label>
+                                            <input
+                                                type="date"
+                                                defaultValue={selectedOrder.estimatedDelivery ? new Date(selectedOrder.estimatedDelivery).toISOString().split('T')[0] : ''}
+                                                onChange={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { estimatedDelivery: e.target.value })}
+                                                style={{ width: '100%', background: '#000', border: '1px solid #333', color: '#fff', padding: '8px', borderRadius: '8px', fontSize: '0.8rem' }}
+                                            />
+                                        </div>
                                     </div>
-                                    <div style={{ background: 'rgba(212, 175, 55, 0.05)', border: '1px solid rgba(212, 175, 55, 0.1)', borderRadius: '16px', padding: '18px' }}>
+                                </section>
+
+                                <section>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                        <h5 style={{ color: '#444', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '800', margin: 0 }}>Fit Specs</h5>
+                                        <button style={{ background: 'transparent', border: '1px solid #333', color: '#fff', fontSize: '0.55rem', padding: '2px 6px', borderRadius: '4px' }}>EDIT</button>
+                                    </div>
+                                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '12px' }}>
                                         {selectedOrder.user?.measurement ? (
-                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                                {[
-                                                    { l: 'Chest', v: selectedOrder.user.measurement.chest, s: '"' },
-                                                    { l: 'Waist', v: selectedOrder.user.measurement.waist, s: '"' },
-                                                    { l: 'Shoulder', v: selectedOrder.user.measurement.shoulder, s: '"' },
-                                                    { l: 'Neck', v: selectedOrder.user.measurement.neck, s: '"' },
-                                                    { l: 'Sleeve', v: selectedOrder.user.measurement.sleeve, s: '"' },
-                                                    { l: 'Inseam', v: selectedOrder.user.measurement.inseam, s: '"' },
-                                                    { l: 'Height', v: selectedOrder.user.measurement.height },
-                                                    { l: 'Fit', v: selectedOrder.user.measurement.preferredFit?.replace('_', ' ') },
-                                                    { l: 'Shoulder', v: selectedOrder.user.measurement.shoulderType },
-                                                    { l: 'Upper Body', v: selectedOrder.user.measurement.upperBodyShape?.replace('-', ' ') },
-                                                    { l: 'Lower Body', v: selectedOrder.user.measurement.lowerBodyShape?.replace('-', ' ') }
-                                                ].map((m, idx) => m.v ? (
-                                                    <div key={idx} style={{ padding: '8px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px' }}>
-                                                        <div style={{ fontSize: '0.55rem', color: '#555', textTransform: 'uppercase', marginBottom: '2px' }}>{m.l}</div>
-                                                        <div style={{ color: '#d4af37', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'capitalize' }}>{m.v}{m.s || ''}</div>
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                                {['chest', 'waist', 'shoulder', 'neck', 'sleeve'].map(f => (
+                                                    <div key={f} style={{ padding: '6px', background: 'rgba(0,0,0,0.2)', borderRadius: '6px' }}>
+                                                        <div style={{ fontSize: '0.5rem', color: '#555', textTransform: 'uppercase' }}>{f}</div>
+                                                        <div style={{ color: '#d4af37', fontSize: '0.75rem', fontWeight: 'bold' }}>{selectedOrder.user.measurement[f]}"</div>
                                                     </div>
-                                                ) : null)}
+                                                ))}
                                             </div>
-                                        ) : (
-                                            <div style={{ textAlign: 'center', color: '#444', fontStyle: 'italic', fontSize: '0.75rem' }}>Using standard brand fit.</div>
-                                        )}
+                                        ) : <div style={{ fontSize: '0.7rem', color: '#444', fontStyle: 'italic' }}>Standard Fit</div>}
                                     </div>
                                 </section>
                             </div>
@@ -467,7 +388,6 @@ export default function OrdersManager() {
                     </div>
                 </div>
             )}
-
 
             <style jsx>{`
                 @keyframes fadeIn {

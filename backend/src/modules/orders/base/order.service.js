@@ -56,9 +56,10 @@ export const createOrder = async (userId, items, shippingAddressId) => {
 
 export const updateOrderStatus = async (orderId, status, trackingData = {}) => {
     const allowedStatuses = ["PENDING", "PAID", "CONFIRMED", "TAILORING", "QUALITY_CHECK", "SHIPPED", "DELIVERED", "CANCELLED"];
-    if (!allowedStatuses.includes(status)) throw new ApiError(400, "Invalid status");
+    if (status && !allowedStatuses.includes(status)) throw new ApiError(400, "Invalid status");
 
-    const updateData = { status };
+    const updateData = {};
+    if (status) updateData.status = status;
 
     if (trackingData.trackingId) updateData.trackingId = trackingData.trackingId;
     if (trackingData.courierPartner) updateData.courierPartner = trackingData.courierPartner;

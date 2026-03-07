@@ -145,8 +145,8 @@ export default function UserDrawer() {
             top: 0,
             right: 0,
             bottom: 0,
-            width: '100%',
-            maxWidth: '400px',
+            width: '90%',
+            maxWidth: '420px',
             backgroundColor: '#0f0f0f',
             zIndex: 9999,
             transform: showUserMenu ? 'translateX(0)' : 'translateX(100%)',
@@ -179,27 +179,36 @@ export default function UserDrawer() {
 
                 <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {/* Orders Nav */}
-                        <button onClick={() => setView('orders')} style={{
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '20px 0',
-                            background: 'transparent',
-                            border: 'none',
-                            borderBottom: '1px solid rgba(255,255,255,0.06)',
-                            color: '#f4f2ee',
-                            fontSize: '1.1rem',
-                            cursor: 'pointer',
-                            textAlign: 'left'
-                        }}>
-                            <span style={{ fontFamily: 'var(--font-serif)' }}>Orders</span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ fontSize: '0.85rem', background: '#d4af37', color: '#000', padding: '2px 8px', borderRadius: '100px' }}>{user.orders?.length || 0}</span>
-                                <span style={{ fontSize: '1.2rem', opacity: 0.5 }}>›</span>
-                            </div>
-                        </button>
+                        {/* Orders Section */}
+                        <div style={{ marginTop: '12px' }}>
+                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: '#555', marginBottom: '12px', letterSpacing: '2px', fontWeight: '800' }}>MY ACTIVITY</h3>
+                            <button onClick={() => setView('orders')} style={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '24px 20px',
+                                background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(0,0,0,0) 100%)',
+                                borderRadius: '16px',
+                                border: '1px solid rgba(212, 175, 55, 0.15)',
+                                color: '#f4f2ee',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                                marginBottom: '24px'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                    <div style={{ fontSize: '1.5rem' }}>📦</div>
+                                    <div>
+                                        <div style={{ fontSize: '1.1rem', fontFamily: 'var(--font-serif)', marginBottom: '4px' }}>My Orders</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>Track your tailored pieces</div>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{ fontSize: '0.8rem', background: '#d4af37', color: '#000', padding: '2px 10px', borderRadius: '100px', fontWeight: 'bold' }}>{user.orders?.length || 0}</span>
+                                    <span style={{ fontSize: '1.2rem', opacity: 0.5 }}>›</span>
+                                </div>
+                            </button>
+                        </div>
 
                         {/* Settings Navs */}
                         <div style={{ marginTop: '24px' }}>

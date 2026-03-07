@@ -26,9 +26,11 @@ const createOrderBody = z.object({
 });
 
 const updateStatusBody = z.object({
-    status: z.enum(["PENDING", "PAID", "IN_PRODUCTION", "SHIPPED", "DELIVERED", "CANCELLED"]),
+    status: z.enum(["PENDING", "PAID", "CONFIRMED", "TAILORING", "QUALITY_CHECK", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(),
     trackingId: z.string().optional(),
     courierPartner: z.string().optional(),
+    productionStage: z.string().optional(),
+    estimatedDelivery: z.string().optional(),
 });
 
 // Full Schemas (for middleware)
