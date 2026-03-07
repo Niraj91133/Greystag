@@ -75,12 +75,23 @@ const DEFAULT_ESSENTIALS_CONFIG = {
     sortOrder: 'newest',
     orderedProductIds: []
 };
+const DEFAULT_BEHIND_SEAMS = {
+    isEnabled: true,
+    title: 'Behind The Seams',
+    description: 'Discover the craftsmanship and attention to detail that goes into every piece we create.',
+    mediaType: 'image',
+    mediaUrl: '',
+    ctaText: 'Explore the Story',
+    ctaLink: '/story'
+};
+
 const ContentContext = createContext(undefined);
 import { api } from '@/lib/api';
 
 export function ContentProvider({ children }) {
     const [hero, setHero] = useState(DEFAULT_HERO);
     const [videoSection, setVideoSection] = useState(DEFAULT_VIDEO_SECTION);
+    const [behindSeams, setBehindSeams] = useState(DEFAULT_BEHIND_SEAMS);
     const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
     const [videoScrollItems, setVideoScrollItems] = useState(DEFAULT_VIDEO_SCROLL);
     const [handpickedItems, setHandpickedItems] = useState(DEFAULT_HANDPICKED);
@@ -92,8 +103,13 @@ export function ContentProvider({ children }) {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const json = await api.get('/cms?key=global-cms');
-                const data = json.data;
+                const [globalJson, behindSeamsJson] = await Promise.all([
+                    api.get('/cms?key=global-cms'),
+                    api.get('/cms/behind-seams')
+                ]);
+
+                const data = globalJson.data;
+                const behindData = behindSeamsJson.data;
 
                 if (data) {
                     if (data.hero) setHero(data.hero);
@@ -103,6 +119,10 @@ export function ContentProvider({ children }) {
                     if (data.handpickedItems) setHandpickedItems(data.handpickedItems);
                     if (data.journal) setJournal(data.journal);
                     if (data.essentialsConfig) setEssentialsConfig(data.essentialsConfig);
+                }
+
+                if (behindData && Object.keys(behindData).length > 0) {
+                    setBehindSeams(behindData);
                 }
             }
             catch (error) {
@@ -150,7 +170,10 @@ export function ContentProvider({ children }) {
                     essentialsConfig
                 };
 
-                await api.post('/cms', { key: 'global-cms', data: payload });
+                await Promise.all([
+                    api.post('/cms', { key: 'global-cms', data: payload }),
+                    api.put('/cms/behind-seams', { data: behindSeams })
+                ]);
 
                 // Trigger Next.js revalidation
                 await triggerRevalidate();
@@ -165,7 +188,7 @@ export function ContentProvider({ children }) {
         // Debounce slightly to avoid rapid-fire saves if multiple updates happen
         const timeoutId = setTimeout(saveContent, 3000);
         return () => clearTimeout(timeoutId);
-    }, [hero, videoSection, categories, videoScrollItems, handpickedItems, journal, essentialsConfig, isLoaded, user]);
+    }, [hero, videoSection, behindSeams, categories, videoScrollItems, handpickedItems, journal, essentialsConfig, isLoaded, user]);
 
 
     const updateHero = (data) => {
@@ -173,6 +196,9 @@ export function ContentProvider({ children }) {
     };
     const updateVideoSection = (data) => {
         setVideoSection(prev => ({ ...prev, ...data }));
+    };
+    const updateBehindSeams = (data) => {
+        setBehindSeams(prev => ({ ...prev, ...data }));
     };
     const updateCategory = (id, data) => {
         setCategories(prev => prev.map(cat => cat.id === id ? { ...cat, ...data } : cat));
@@ -223,8 +249,8 @@ export function ContentProvider({ children }) {
         setEssentialsConfig(prev => ({ ...prev, ...data }));
     };
     return (<ContentContext.Provider value={{
-        hero, videoSection, categories, videoScrollItems, journal, essentialsConfig, handpickedItems,
-        updateHero, updateVideoSection, updateCategory, addCategory, deleteCategory,
+        hero, videoSection, behindSeams, categories, videoScrollItems, journal, essentialsConfig, handpickedItems,
+        updateHero, updateVideoSection, updateBehindSeams, updateCategory, addCategory, deleteCategory,
         addVideoScrollItem, deleteVideoScrollItem,
 
         addJournalEntry, updateJournalEntry, deleteJournalEntry, updateEssentialsConfig, updateHandpickedItem

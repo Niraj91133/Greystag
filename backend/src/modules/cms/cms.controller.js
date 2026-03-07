@@ -45,7 +45,7 @@ export const updateCmsById = asyncHandler(async (req, res) => {
         data: { data }
     });
 
-    return res.status(200).json(new ApiResponse(200, cms.data, "CMS content updated by ID"));
+    return res.status(200).json(new ApiResponse(200, cmsPage.data, "CMS content updated by ID"));
 });
 
 export const uploadMedia = asyncHandler(async (req, res) => {

@@ -1,0 +1,133 @@
+.behind-seams-section {
+    padding: 100px 0;
+    background: var(--bg-main);
+    overflow: hidden;
+}
+
+.behind-seams-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.behind-seams-media {
+    position: relative;
+    height: 600px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+.behind-seams-media img,
+.behind-seams-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.behind-seams-media:hover img,
+.behind-seams-media:hover video {
+    transform: scale(1.05);
+}
+
+.media-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
+    pointer-events: none;
+}
+
+.behind-seams-content {
+    padding-right: 40px;
+}
+
+.section-tag {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.section-title {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 30px;
+    color: var(--text-main);
+}
+
+.section-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    max-width: 500px;
+}
+
+.behind-seams-content .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 36px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.behind-seams-content .btn-primary svg {
+    transition: transform 0.3s ease;
+}
+
+.behind-seams-content .btn-primary:hover svg {
+    transform: translateX(5px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .behind-seams-grid {
+        gap: 40px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+    }
+
+    .behind-seams-media {
+        height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .behind-seams-section {
+        padding: 60px 0;
+    }
+
+    .behind-seams-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .behind-seams-media {
+        height: 400px;
+        order: 1;
+    }
+
+    .behind-seams-content {
+        order: 2;
+        padding-right: 0;
+        text-align: center;
+    }
+
+    .section-description {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .behind-seams-content .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+}

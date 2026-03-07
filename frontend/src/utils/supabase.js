@@ -27,13 +27,17 @@ export const uploadFile = async (file, folder = "general") => {
     }
 
     try {
-        console.log(`[Supabase Frontend] Uploading to bucket 'menx', folder: ${folder}`);
+        // Selection of bucket based on folder
+        const isProduct = folder === 'products';
+        const bucket = isProduct ? "menx" : "cms-media";
+
+        console.log(`[Supabase Frontend] Uploading to bucket '${bucket}', folder: ${folder}`);
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `${folder}/${fileName}`;
 
         const { data, error } = await supabase.storage
-            .from("menx")
+            .from(bucket)
             .upload(filePath, file, {
                 cacheControl: '3600',
                 upsert: false
@@ -41,15 +45,11 @@ export const uploadFile = async (file, folder = "general") => {
 
         if (error) {
             console.error("[Supabase Frontend Error]:", error);
-            // If bucket not found, it might be the reason
-            if (error.message?.includes('bucket not found')) {
-                console.warn("Bucket 'menx' not found. Please ensure it exists in Supabase storage.");
-            }
             return null;
         }
 
         const { data: publicUrlData } = supabase.storage
-            .from("menx")
+            .from(bucket)
             .getPublicUrl(filePath);
 
         console.log("[Supabase Frontend Success]:", publicUrlData.publicUrl);

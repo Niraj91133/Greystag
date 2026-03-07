@@ -8,6 +8,7 @@ import PromoEditor from '@/components/Admin/PromoEditor';
 import VideoScrollEditor from '@/components/Admin/VideoScrollEditor';
 import JournalEditor from '@/components/Admin/JournalEditor';
 import HandpickedEditor from '@/components/Admin/HandpickedEditor';
+import BehindSeamsEditor from '@/components/Admin/BehindSeamsEditor';
 import OrdersManager from '@/components/Admin/OrdersManager';
 import DashboardOverview from '@/components/Admin/DashboardOverview'; // New
 import TailoringCRM from '@/components/Admin/TailoringCRM'; // New
@@ -26,6 +27,7 @@ const TABS = [
     { id: 'reels', label: 'CMS: Reels', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> },
     { id: 'journal', label: 'CMS: Journal', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> },
     { id: 'collections', label: 'CMS: Picks', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" /></svg> },
+    { id: 'behind-seams', label: 'CMS: Behind The Seams', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
 ];
 
 export default function AdminDashboard() {
@@ -75,6 +77,7 @@ export default function AdminDashboard() {
             case 'reels': return <VideoScrollEditor />;
             case 'journal': return <JournalEditor />;
             case 'collections': return <HandpickedEditor />;
+            case 'behind-seams': return <BehindSeamsEditor />;
             default: return <DashboardOverview orders={orders} />;
         }
     };
