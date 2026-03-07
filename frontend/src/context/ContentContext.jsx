@@ -43,7 +43,7 @@ const DEFAULT_VIDEO_SECTION = {
 };
 const DEFAULT_CATEGORIES = [
     { id: 'shirts', name: 'Shirts', description: 'Crisp cottons and linens.', imageUrl: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2940&auto=format&fit=crop', isEnabled: true },
-    { id: 'trousers', name: 'Trousers', description: 'Tailored fit for every occasion.', imageUrl: 'https://images.unsplash.com/photo-1594938298603-c8148c47e356?q=80&w=2787&auto=format&fit=crop', isEnabled: true },
+    { id: 'trousers', name: 'Trousers', description: 'Tailored fit for every occasion.', imageUrl: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=2787&auto=format&fit=crop', isEnabled: true },
     { id: 'blazers', name: 'Blazers', description: 'The cornerstone of a modern wardrobe.', imageUrl: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?q=80&w=2000&auto=format&fit=crop', isEnabled: true },
     { id: 'chinos', name: 'Chinos', description: 'Relaxed elegance.', imageUrl: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=2787&auto=format&fit=crop', isEnabled: true }
 ];
@@ -118,11 +118,28 @@ export function ContentProvider({ children }) {
     const { user } = useAuth();
 
     // Persist changes to Server API - ADMIN ONLY
+    const [isSaving, setIsSaving] = useState(false);
+
+    const triggerRevalidate = async () => {
+        try {
+            await fetch('/api/revalidate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/' })
+            });
+            console.log('Revalidation triggered for /');
+        } catch (error) {
+            console.error('Failed to trigger revalidation:', error);
+        }
+    };
+
     useEffect(() => {
         if (!isLoaded || user?.role !== 'ADMIN')
             return;
+
         const saveContent = async () => {
             try {
+                setIsSaving(true);
                 const payload = {
                     hero,
                     videoSection,
@@ -134,13 +151,19 @@ export function ContentProvider({ children }) {
                 };
 
                 await api.post('/cms', { key: 'global-cms', data: payload });
+
+                // Trigger Next.js revalidation
+                await triggerRevalidate();
+
+                setIsSaving(false);
             }
             catch (error) {
                 console.error('Failed to auto-save CMS content:', error);
+                setIsSaving(false);
             }
         };
         // Debounce slightly to avoid rapid-fire saves if multiple updates happen
-        const timeoutId = setTimeout(saveContent, 5000);
+        const timeoutId = setTimeout(saveContent, 3000);
         return () => clearTimeout(timeoutId);
     }, [hero, videoSection, categories, videoScrollItems, handpickedItems, journal, essentialsConfig, isLoaded, user]);
 

@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useContent } from '@/context/ContentContext';
 import styles from './HeroEditor.module.css'; // Reusing styles
 import { useToast } from '@/context/ToastContext';
-import { api } from '@/lib/api';
+import MediaUploader from './MediaUploader';
 
 export default function PromoEditor() {
     const { videoSection, updateVideoSection } = useContent();
     const { showToast } = useToast();
     const [formData, setFormData] = useState(videoSection);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         setFormData(videoSection);
@@ -18,32 +19,27 @@ export default function PromoEditor() {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleSave = () => {
-        updateVideoSection(formData);
-        showToast('Promo section updated', 'success');
+    const handleMediaChange = (url) => {
+        setFormData(prev => ({ ...prev, content: url }));
     };
 
-    const handleMediaUpload = async (e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            try {
-                const uploadFormData = new FormData();
-                uploadFormData.append('images', file);
-                showToast('Uploading...', 'info');
+    const handleSave = async () => {
+        try {
+            setIsSaving(true);
+            showToast('Saving promo section...', 'info');
 
-                const json = await api.post('/products/upload', uploadFormData);
-                const url = Array.isArray(json.data) ? json.data[0] : json.data;
+            await updateVideoSection(formData);
 
-                // Update content (which is the media URL)
-                setFormData(prev => ({ ...prev, content: url }));
-                showToast('File uploaded successfully', 'success');
-            }
-            catch (error) {
-                console.error('Upload failed:', error);
-                showToast('Failed to upload file', 'error');
-            }
+            setTimeout(() => {
+                showToast('Promo section updated successfully', 'success');
+                setIsSaving(false);
+            }, 500);
+        } catch (error) {
+            console.error('Save error:', error);
+            showToast('Failed to save promo section', 'error');
+            setIsSaving(false);
         }
-    }
+    };
 
     return (<div className={styles.container} style={{ marginTop: '40px' }}>
         <div className={styles.title}>Promo / Video Section Editor</div>
@@ -51,40 +47,41 @@ export default function PromoEditor() {
         <div className={styles.grid}>
             <div className={styles.formGroup}>
                 <label>Title</label>
-                <input value={formData.title} onChange={(e) => handleChange('title', e.target.value)} />
-            </div>
-
-            <div className={styles.formGroup}>
-                <label>Content Source (Video/Image)</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <label className="btn-secondary" style={{
-                        display: 'inline-block',
-                        textAlign: 'center',
-                        cursor: 'pointer',
-                        padding: '12px',
-                        color: '#d4af37',
-                        border: '1px solid #d4af37',
-                        background: 'transparent'
-                    }}>
-                        Choose from Device
-                        <input type="file" accept="image/*,video/*" hidden onChange={handleMediaUpload} />
-                    </label>
-                    <div style={{ fontSize: '0.8rem', color: '#666' }}>
-                        Current: {formData.content?.substring(0, 30) + '...'}
-                    </div>
-                </div>
+                <input
+                    className={styles.input}
+                    value={formData.title}
+                    onChange={(e) => handleChange('title', e.target.value)}
+                />
             </div>
         </div>
 
-        <button className="btn-primary" onClick={handleSave} style={{ marginTop: '20px' }}>
-            Save Promo Section
+        <div className={styles.mediaSection}>
+            <MediaUploader
+                label="Promo Media (Video/Image)"
+                value={formData.content}
+                onChange={handleMediaChange}
+                folder="promo"
+            />
+        </div>
+
+        <button
+            className="btn-primary"
+            onClick={handleSave}
+            disabled={isSaving}
+            style={{ marginTop: '20px', width: '200px' }}
+        >
+            {isSaving ? 'Saving...' : 'Save Changes'}
         </button>
 
         {/* Preview */}
         <div className={styles.preview}>
             <h3>Live Preview</h3>
             <div className={styles.previewFrame}>
-                {formData.content?.endsWith('.mp4') || formData.content?.includes('video') ? (<video src={formData.content} muted loop autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />) : (<img src={formData.content} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />)}
+                {formData.content?.match(/\.(mp4|webm|mov)$/) || formData.content?.includes('video') ? (
+                    <video src={formData.content} muted loop autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />
+                ) : (
+                    <img src={formData.content} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />
+                )}
                 <div style={{
                     position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                     textAlign: 'center', width: '80%'

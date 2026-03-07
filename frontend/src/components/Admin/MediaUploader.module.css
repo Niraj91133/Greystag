@@ -1,0 +1,118 @@
+.uploaderContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.uploaderBox {
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    min-height: 180px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.uploaderBox:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+}
+
+.emptyBox {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-direction: column;
+}
+
+.placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #d4af37;
+}
+
+.icon {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+.previewContainer {
+    position: relative;
+    height: 100%;
+    min-height: 180px;
+}
+
+.previewMedia {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.previewContainer:hover .overlay {
+    opacity: 1;
+}
+
+.replaceBtn, .removeBtn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.replaceBtn {
+    background: #d4af37;
+    color: #000;
+}
+
+.replaceBtn:hover {
+    background: #f1c40f;
+}
+
+.removeBtn {
+    background: transparent;
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+}
+
+.removeBtn:hover {
+    background: #ff4d4d;
+    color: #fff;
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.spinner {
+    color: #d4af37;
+    font-size: 14px;
+}
