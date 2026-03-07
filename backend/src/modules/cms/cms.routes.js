@@ -1,3 +1,4 @@
+import { Router } from "express";
 import { getCmsContent, updateCmsContent, updateCmsById, uploadMedia } from "./cms.controller.js";
 import { protect, authorize } from "../../middleware/auth.middleware.js";
 import multer from "multer";
