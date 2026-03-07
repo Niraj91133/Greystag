@@ -11,6 +11,8 @@ import { ApiError } from "./ApiError.js";
 export const uploadFile = async (file, bucket = "menx") => {
     if (!file) return null;
 
+    console.log(`[Supabase Upload] Starting upload to bucket: ${bucket}, file: ${file.originalname}`);
+
     const fileExt = file.originalname.split(".").pop();
     const fileName = `${uuidv4()}.${fileExt}`;
     const filePath = `${fileName}`;
@@ -23,14 +25,15 @@ export const uploadFile = async (file, bucket = "menx") => {
         });
 
     if (error) {
-        console.error("Supabase Upload Error:", error);
-        throw new ApiError(500, `Failed to upload file to Supabase: ${error.message}`);
+        console.error("[Supabase Upload Error]:", JSON.stringify(error, null, 2));
+        throw new ApiError(500, `Supabase Error: ${error.message} (Bucket: ${bucket})`);
     }
 
     const { data: publicUrlData } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
 
+    console.log(`[Supabase Upload Success] Public URL: ${publicUrlData.publicUrl}`);
     return publicUrlData.publicUrl;
 };
 

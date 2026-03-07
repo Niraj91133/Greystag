@@ -2,16 +2,16 @@
 import React, { useState } from 'react';
 import { useContent } from '@/context/ContentContext';
 import { useProduct } from '@/context/ProductContext';
-import styles from './HeroEditor.module.css'; // Reuse styles
+import styles from './CategoryEditor.module.css'; // Use compact category styles
 import { useToast } from '@/context/ToastContext';
-import { api } from '@/lib/api';
+import MediaUploader from './MediaUploader';
 
 export default function HandpickedEditor() {
     const { handpickedItems, updateHandpickedItem } = useContent();
     const { products, updateProduct } = useProduct();
     const { showToast } = useToast();
     const [openItemId, setOpenItemId] = useState(null);
-    // Filter products by Tag
+
     const getTagForItem = (item) => {
         const slug = item.slug;
         const map = {
@@ -22,93 +22,87 @@ export default function HandpickedEditor() {
         };
         return map[slug] || item.title;
     };
+
     const toggleProductTag = (productId, tag) => {
         const product = products.find(p => p.id === productId || p._id === productId);
-        if (!product)
-            return;
-        const currentTags = product.occasions || []; // Map to 'occasions' field in Product
+        if (!product) return;
+        const currentTags = product.occasions || [];
         let newTags;
         if (currentTags.includes(tag)) {
             newTags = currentTags.filter(t => t !== tag);
-        }
-        else {
+        } else {
             newTags = [...currentTags, tag];
         }
         updateProduct(productId, { occasions: newTags });
     };
-    const handleImageUpload = async (id, e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            try {
-                const uploadFormData = new FormData();
-                uploadFormData.append('images', file);
-                showToast('Uploading...', 'info');
 
-                const json = await api.post('/products/upload', uploadFormData);
-                const imageUrl = Array.isArray(json.data) ? json.data[0] : json.data;
-
-                updateHandpickedItem(id, { imageUrl });
-                showToast('Card image updated', 'success');
-            }
-            catch (error) {
-                console.error('Upload failed:', error);
-                showToast('Failed to upload image', 'error');
-            }
-        }
+    const handleMediaChange = (id, url) => {
+        updateHandpickedItem(id, { imageUrl: url });
+        showToast('Card image updated', 'success');
     };
 
-    return (<div className={styles.container} style={{ marginTop: '40px' }}>
-        <div className={styles.title}>Handpicked Section Editor</div>
+    return (<div className={styles.container}>
+        <div className={styles.title}>Handpicked Dashboard</div>
 
         <div className={styles.grid}>
             {handpickedItems.map((item) => {
                 const tag = getTagForItem(item);
-                return (<div key={item.id} className={styles.formGroup} style={{ background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                        <input value={item.title} onChange={(e) => updateHandpickedItem(item.id, { title: e.target.value })} style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: '1.1rem', fontWeight: 'bold' }} />
-                        <span style={{ fontSize: '0.8rem', color: '#666' }}>Tag: {tag}</span>
+                return (<div key={item.id} className={styles.card}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', alignItems: 'center' }}>
+                        <input
+                            value={item.title}
+                            onChange={(e) => updateHandpickedItem(item.id, { title: e.target.value })}
+                            className={styles.input}
+                            style={{ border: 'none', background: 'transparent', width: 'auto', fontWeight: 'bold', fontSize: '1rem' }}
+                        />
+                        <span style={{ fontSize: '0.75rem', color: '#666', background: 'rgba(212, 175, 55, 0.1)', padding: '4px 8px', borderRadius: '4px' }}>Tag: {tag}</span>
                     </div>
 
-                    {/* Image Editor */}
-                    <div style={{ marginBottom: '16px' }}>
-                        <div style={{ marginBottom: '8px' }}>Card Image:</div>
-                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                            <img src={item.imageUrl} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px' }} />
-                            <label className="btn-secondary" style={{ cursor: 'pointer', padding: '8px 12px', fontSize: '0.8rem' }}>
-                                Change Image
-                                <input type="file" accept="image/*" hidden onChange={(e) => handleImageUpload(item.id, e)} />
-                            </label>
-                        </div>
-                    </div>
+                    {/* Image Editor with MediaUploader */}
+                    <MediaUploader
+                        label="Card Cover Image"
+                        value={item.imageUrl}
+                        onChange={(url) => handleMediaChange(item.id, url)}
+                        accept="image/*"
+                        folder="handpicked"
+                    />
 
                     {/* Product Selector Toggle */}
-                    <button className="btn-outline-gold" style={{ width: '100%', fontSize: '0.9rem' }} onClick={() => setOpenItemId(openItemId === item.id ? null : item.id)}>
-                        {openItemId === item.id ? 'Done Selecting Products' : 'Select Displayed Products'}
+                    <button
+                        className={styles.button}
+                        style={{ width: '100%', background: openItemId === item.id ? '#333' : '#d4af37', color: openItemId === item.id ? '#fff' : '#000' }}
+                        onClick={() => setOpenItemId(openItemId === item.id ? null : item.id)}
+                    >
+                        {openItemId === item.id ? 'Close Product Selection' : 'Manage Products'}
                     </button>
 
                     {/* Product Selection List */}
                     {openItemId === item.id && (<div style={{
                         marginTop: '12px',
-                        maxHeight: '300px',
+                        maxHeight: '200px',
                         overflowY: 'auto',
                         background: '#111',
-                        padding: '10px',
+                        padding: '12px',
                         borderRadius: '4px',
                         border: '1px solid #333'
                     }}>
-                        <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>
-                            Check products to appear in "{item.title}" section:
+                        <div style={{ fontSize: '0.7rem', color: '#888', marginBottom: '12px', textTransform: 'uppercase' }}>
+                            Linked Products:
                         </div>
-                        {products.map(p => {
-                            const isChecked = p.occasions?.includes(tag);
-                            return (<div key={p.id || p._id} onClick={() => toggleProductTag(p.id || p._id, tag)} style={{
-                                display: 'flex', alignItems: 'center', gap: '8px', padding: '6px',
-                                cursor: 'pointer', background: isChecked ? 'rgba(212, 175, 55, 0.1)' : 'transparent'
-                            }}>
-                                <input type="checkbox" checked={isChecked || false} readOnly />
-                                <span style={{ fontSize: '0.9rem', color: isChecked ? '#fff' : '#aaa' }}>{p.name}</span>
-                            </div>);
-                        })}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {products.map(p => {
+                                const isChecked = p.occasions?.includes(tag);
+                                return (<div key={p.id || p._id} onClick={() => toggleProductTag(p.id || p._id, tag)} style={{
+                                    display: 'flex', alignItems: 'center', gap: '8px', padding: '8px',
+                                    cursor: 'pointer', borderRadius: '4px',
+                                    background: isChecked ? 'rgba(212, 175, 55, 0.05)' : 'transparent',
+                                    border: isChecked ? '1px solid rgba(212, 175, 55, 0.2)' : '1px solid transparent'
+                                }}>
+                                    <input type="checkbox" checked={isChecked || false} readOnly style={{ accentColor: '#d4af37' }} />
+                                    <span style={{ fontSize: '0.85rem', color: isChecked ? '#fff' : '#888' }}>{p.name}</span>
+                                </div>);
+                            })}
+                        </div>
                     </div>)}
                 </div>);
             })}

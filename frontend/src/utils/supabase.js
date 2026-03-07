@@ -21,32 +21,41 @@ export const supabase = (supabaseUrl && supabaseUrl.startsWith('http'))
  * @returns {Promise<string|null>} - Public URL of the uploaded file or null if failed
  */
 export const uploadFile = async (file, folder = "general") => {
-    if (!file || !supabase) return null;
+    if (!file || !supabase) {
+        console.error("Upload failed: File or Supabase client missing", { file, hasSupabase: !!supabase });
+        return null;
+    }
 
     try {
+        console.log(`[Supabase Frontend] Uploading to bucket 'menx', folder: ${folder}`);
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `${folder}/${fileName}`;
 
         const { data, error } = await supabase.storage
-            .from("website-media")
+            .from("menx")
             .upload(filePath, file, {
                 cacheControl: '3600',
                 upsert: false
             });
 
         if (error) {
-            console.error("Upload Error:", error.message);
+            console.error("[Supabase Frontend Error]:", error);
+            // If bucket not found, it might be the reason
+            if (error.message?.includes('bucket not found')) {
+                console.warn("Bucket 'menx' not found. Please ensure it exists in Supabase storage.");
+            }
             return null;
         }
 
         const { data: publicUrlData } = supabase.storage
-            .from("website-media")
+            .from("menx")
             .getPublicUrl(filePath);
 
+        console.log("[Supabase Frontend Success]:", publicUrlData.publicUrl);
         return publicUrlData.publicUrl;
     } catch (err) {
-        console.error("Unexpected Error during upload:", err);
+        console.error("[Supabase Frontend Unexpected Error]:", err);
         return null;
     }
 };

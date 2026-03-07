@@ -2,14 +2,15 @@
 import React, { useState, useRef } from 'react';
 import { uploadFile } from '@/utils/supabase';
 import { useToast } from '@/context/ToastContext';
+import { api } from '@/lib/api';
 import styles from './MediaUploader.module.css';
 
 /**
  * Global Media Uploader Component
  * Features:
- * - Direct upload to Supabase Storage
+ * - Backend-first upload (via server API)
+ * - Frontend fallback (direct to Supabase)
  * - Image/Video detection
- * - Instant Preview
  * - Integrated Toasts
  */
 export default function MediaUploader({
@@ -29,23 +30,55 @@ export default function MediaUploader({
 
         setIsUploading(true);
         showToast('Uploading...', 'info');
+        console.log(`[MediaUploader] Starting upload for ${file.name} (${file.type})`);
 
         try {
             // Determine media type
             const mediaType = file.type.startsWith('video') ? 'video' : 'image';
 
-            // Direct frontend upload to Supabase for better reliability
-            const publicUrl = await uploadFile(file, folder);
+            // 1. Try Backend Upload First (More reliable, uses service key)
+            console.log("[MediaUploader] Attempting backend upload via /products/upload...");
+            const formData = new FormData();
+            formData.append('images', file);
+
+            let publicUrl = null;
+            let backendErrorMsg = null;
+
+            try {
+                const response = await api.post('/products/upload', formData);
+                // response should be ApiResponse { data: [url1, url2...], ... }
+                publicUrl = Array.isArray(response.data) ? response.data[0] : (response.data || null);
+
+                if (!publicUrl) {
+                    console.warn("[MediaUploader] Backend returned success but no URL in data:", response);
+                    backendErrorMsg = "No URL returned from server";
+                } else {
+                    console.log("[MediaUploader] Backend upload success:", publicUrl);
+                }
+            } catch (err) {
+                backendErrorMsg = err.message || "Network Error";
+                console.warn("[MediaUploader] Backend upload failed:", backendErrorMsg, err);
+            }
+
+            // 2. Fallback to direct frontend upload if backend failed
+            if (!publicUrl) {
+                console.log("[MediaUploader] Trying frontend fallback (direct to Supabase)...");
+                publicUrl = await uploadFile(file, folder);
+                console.log("[MediaUploader] Frontend fallback result:", publicUrl ? "SUCCESS" : "FAILED");
+            }
 
             if (publicUrl) {
                 onChange(publicUrl, mediaType);
                 showToast('Upload successful', 'success');
             } else {
-                throw new Error("Failed to get public URL");
+                throw new Error(backendErrorMsg || "All upload attempts failed.");
             }
         } catch (error) {
-            console.error('Media upload error:', error);
-            showToast('Failed to upload media', 'error');
+            console.error('[MediaUploader Error]:', error);
+            const msg = error.message?.includes('401') ? 'Unauthorized (Please login as admin)' :
+                error.message?.includes('413') ? 'File too large' :
+                    error.message;
+            showToast(`Upload failed: ${msg}`, 'error');
         } finally {
             setIsUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';

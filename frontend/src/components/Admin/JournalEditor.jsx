@@ -1,15 +1,15 @@
 'use client';
 import React, { useState } from 'react';
 import { useContent } from '@/context/ContentContext';
-import styles from './HeroEditor.module.css'; // Reusing styles
+import styles from './CategoryEditor.module.css'; // Use compact category styles
 import { useToast } from '@/context/ToastContext';
-import { api } from '@/lib/api';
+import MediaUploader from './MediaUploader';
 
 export default function JournalEditor() {
     const { journal, addJournalEntry, updateJournalEntry, deleteJournalEntry } = useContent();
     const { showToast } = useToast();
     const [isEditing, setIsEditing] = useState(false);
-    // Form State
+
     const [formData, setFormData] = useState({
         id: '',
         title: '',
@@ -19,6 +19,7 @@ export default function JournalEditor() {
         author: 'Editor',
         status: 'published'
     });
+
     const resetForm = () => {
         setFormData({
             id: '',
@@ -31,10 +32,12 @@ export default function JournalEditor() {
         });
         setIsEditing(false);
     };
+
     const handleEdit = (post) => {
         setFormData(post);
         setIsEditing(true);
     };
+
     const handleSave = async () => {
         if (!formData.title || !formData.imageUrl || !formData.category) {
             showToast('Please fill all required fields', 'error');
@@ -46,7 +49,7 @@ export default function JournalEditor() {
                 showToast('Article updated', 'success');
             }
             else {
-                addJournalEntry(formData); // ID and Date added by context
+                addJournalEntry(formData);
                 showToast('Article created', 'success');
             }
             resetForm();
@@ -56,88 +59,93 @@ export default function JournalEditor() {
         }
     };
 
-    const handleImageUpload = async (e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            try {
-                const uploadFormData = new FormData();
-                uploadFormData.append('images', file);
-                showToast('Uploading...', 'info');
-
-                const json = await api.post('/products/upload', uploadFormData);
-                const url = Array.isArray(json.data) ? json.data[0] : json.data;
-
-                setFormData(prev => ({ ...prev, imageUrl: url }));
-                showToast('Image uploaded', 'success');
-            }
-            catch (error) {
-                console.error('Upload failed:', error);
-                showToast('Failed to upload image', 'error');
-            }
-        }
+    const handleMediaChange = (url) => {
+        setFormData(prev => ({ ...prev, imageUrl: url }));
     };
 
-    return (<div className={styles.container} style={{ marginTop: '40px' }}>
-        <div className={styles.title}>Journal Editor</div>
+    return (<div className={styles.container}>
+        <div className={styles.title}>Journal Dashboard</div>
 
         {/* FORM */}
-        <div className={styles.grid} style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '8px', marginBottom: '32px' }}>
-            <div className={styles.fullWidth}>
-                <h4 style={{ color: '#fff', marginBottom: '16px' }}>{isEditing ? 'Edit Article' : 'Write New Article'}</h4>
-            </div>
+        <div className={styles.addSection} style={{ flexDirection: 'column', alignItems: 'stretch', gap: '20px' }}>
+            <h4 style={{ color: '#fff', fontSize: '0.9rem', textTransform: 'uppercase' }}>{isEditing ? 'Edit Article' : 'Write New Article'}</h4>
 
-            <div className={styles.formGroup}>
-                <label>Title</label>
-                <input value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} placeholder="Article Headline" />
-            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ fontSize: '12px', color: '#666' }}>Title</label>
+                    <input
+                        className={styles.input}
+                        style={{ maxWidth: '100%', width: '100%' }}
+                        value={formData.title}
+                        onChange={e => setFormData({ ...formData, title: e.target.value })}
+                        placeholder="Article Headline"
+                    />
+                </div>
 
-            <div className={styles.formGroup}>
-                <label>Category</label>
-                <input value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} placeholder="e.g. Style, Travel" />
-            </div>
-
-            <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
-                <label>Cover Image (Max 2MB)</label>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    <label className="btn-secondary" style={{ cursor: 'pointer', padding: '10px', border: '1px solid #d4af37', color: '#d4af37' }}>
-                        Upload Photo from Device
-                        <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
-                    </label>
-                    {formData.imageUrl && (<img src={formData.imageUrl} style={{ height: '40px', width: '40px', objectFit: 'cover', borderRadius: '4px' }} alt="preview" />)}
-                    {formData.imageUrl && <span style={{ fontSize: '0.8rem', color: '#666' }}>Image Ready</span>}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ fontSize: '12px', color: '#666' }}>Category</label>
+                    <input
+                        className={styles.input}
+                        style={{ maxWidth: '100%', width: '100%' }}
+                        value={formData.category}
+                        onChange={e => setFormData({ ...formData, category: e.target.value })}
+                        placeholder="e.g. Style, Travel"
+                    />
                 </div>
             </div>
 
-            <div className={styles.fullWidth}>
-                <label>Content (HTML supported)</label>
-                <textarea value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} placeholder="<p>Write your article here...</p>" rows={10} style={{
-                    width: '100%', padding: '12px', background: '#222', color: '#fff', border: '1px solid #333', borderRadius: '4px', fontFamily: 'monospace'
-                }} />
+            <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '24px' }}>
+                <MediaUploader
+                    label="Cover Image"
+                    value={formData.imageUrl}
+                    onChange={handleMediaChange}
+                    accept="image/*"
+                    folder="journal"
+                />
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ fontSize: '12px', color: '#666' }}>Content (Markdown/HTML Support)</label>
+                    <textarea
+                        value={formData.content}
+                        onChange={e => setFormData({ ...formData, content: e.target.value })}
+                        placeholder="Once upon a time..."
+                        rows={6}
+                        style={{
+                            width: '100%', padding: '12px', background: '#222', color: '#fff',
+                            border: '1px solid #333', borderRadius: '4px', fontSize: '14px', resize: 'vertical'
+                        }}
+                    />
+                </div>
             </div>
 
-            <div className={styles.fullWidth} style={{ display: 'flex', gap: '12px' }}>
-                <button onClick={handleSave} className="btn-primary" style={{ flex: 1 }}>
+            <div style={{ display: 'flex', gap: '12px' }}>
+                <button onClick={handleSave} className={styles.button} style={{ width: '200px' }}>
                     {isEditing ? 'Update Article' : 'Publish Article'}
                 </button>
-                {isEditing && (<button onClick={resetForm} className="btn-secondary">Cancel</button>)}
+                {isEditing && (<button onClick={resetForm} className={styles.button} style={{ background: '#333' }}>Cancel</button>)}
             </div>
         </div>
 
         {/* LIST */}
-        <div className={styles.fullWidth}>
-            <h4 style={{ color: '#fff', marginBottom: '16px' }}>Published Articles</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {journal.map(post => (<div key={post.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#1a1a1a', padding: '12px', borderRadius: '4px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <img src={post.imageUrl} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '2px' }} />
-                        <div>
-                            <div style={{ fontWeight: 'bold', color: '#e0e0e0' }}>{post.title}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#888' }}>{post.date} • {post.category}</div>
+        <div style={{ marginTop: '32px' }}>
+            <h4 style={{ color: '#888', marginBottom: '16px', fontSize: '0.8rem', textTransform: 'uppercase' }}>Published Articles</h4>
+            <div className={styles.grid}>
+                {journal.map(post => (<div key={post.id} className={styles.card}>
+                    <button
+                        onClick={() => deleteJournalEntry(post.id)}
+                        className={styles.deleteBtn}
+                    >×</button>
+
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        <img src={post.imageUrl} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }} />
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '1rem', marginBottom: '4px' }}>{post.title}</div>
+                            <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '12px' }}>{post.date} • {post.category}</div>
+                            <button
+                                onClick={() => handleEdit(post)}
+                                style={{ background: 'none', border: 'none', color: '#d4af37', padding: 0.8, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold' }}
+                            >EDIT ARTICLE</button>
                         </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={() => handleEdit(post)} style={{ background: 'none', border: 'none', color: '#d4af37', cursor: 'pointer' }}>Edit</button>
-                        <button onClick={() => deleteJournalEntry(post.id)} style={{ background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer' }}>Delete</button>
                     </div>
                 </div>))}
             </div>
