@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
     // UI States
     const [showLogin, setShowLogin] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
+    const [userMenuView, setUserMenuView] = useState('home');
 
     const { showToast } = useToast();
     const router = useRouter();
@@ -167,7 +168,10 @@ export function AuthProvider({ children }) {
 
     const openLogin = () => setShowLogin(true);
     const closeLogin = () => setShowLogin(false);
-    const openUserMenu = () => setShowUserMenu(true);
+    const openUserMenu = (view = 'home') => {
+        setUserMenuView(view);
+        setShowUserMenu(true);
+    };
     const closeUserMenu = () => setShowUserMenu(false);
 
     return (
@@ -175,7 +179,8 @@ export function AuthProvider({ children }) {
             user, isLoaded, sendOTP, verifyOTP, completeProfile, logout,
             addAddress, removeAddress, addPayment, deactivateAccount,
             saveMeasurements,
-            showLogin, openLogin, closeLogin, showUserMenu, openUserMenu, closeUserMenu
+            showLogin, openLogin, closeLogin, showUserMenu, openUserMenu, closeUserMenu,
+            userMenuView, setUserMenuView
         }}>
             {children}
         </AuthContext.Provider>

@@ -10,6 +10,38 @@ export default function OrdersManager() {
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [selectedOrder, setSelectedOrder] = useState(null);
     const { showToast } = useToast();
+    const [modalData, setModalData] = useState({
+        trackingId: '',
+        courierPartner: '',
+        productionStage: 'Pending',
+        estimatedDelivery: ''
+    });
+
+    useEffect(() => {
+        if (selectedOrder) {
+            setModalData({
+                trackingId: selectedOrder.trackingId || '',
+                courierPartner: selectedOrder.courierPartner || '',
+                productionStage: selectedOrder.productionStage || 'Pending',
+                estimatedDelivery: selectedOrder.estimatedDelivery ? new Date(selectedOrder.estimatedDelivery).toISOString().split('T')[0] : ''
+            });
+        }
+    }, [selectedOrder]);
+
+    const handleSaveOrderDetails = async () => {
+        if (!selectedOrder) return;
+        try {
+            await api.patch(`/orders/${selectedOrder.id}/status`, modalData);
+            showToast('Order details saved to database', 'success');
+            // Refresh main order list
+            const json = await api.get('/orders');
+            setOrders(json.data || []);
+            // Update selected order reference to reflect new values in modal
+            setSelectedOrder(prev => ({ ...prev, ...modalData }));
+        } catch (error) {
+            showToast('Failed to save details', 'error');
+        }
+    };
 
     const fetchOrders = async () => {
         try {
@@ -323,14 +355,14 @@ export default function OrdersManager() {
                                         <div style={{ padding: '12px', background: 'rgba(0,0,0,0.3)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                             <input
                                                 placeholder="Tracking ID"
-                                                defaultValue={selectedOrder.trackingId}
-                                                onBlur={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { trackingId: e.target.value })}
+                                                value={modalData.trackingId}
+                                                onChange={(e) => setModalData({ ...modalData, trackingId: e.target.value })}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', marginBottom: '8px' }}
                                             />
                                             <input
                                                 placeholder="Courier"
-                                                defaultValue={selectedOrder.courierPartner}
-                                                onBlur={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { courierPartner: e.target.value })}
+                                                value={modalData.courierPartner}
+                                                onChange={(e) => setModalData({ ...modalData, courierPartner: e.target.value })}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem' }}
                                             />
                                         </div>
@@ -346,22 +378,28 @@ export default function OrdersManager() {
                                         <div style={{ marginBottom: '12px' }}>
                                             <label style={{ fontSize: '0.6rem', color: '#666', display: 'block', marginBottom: '4px' }}>CURRENT STAGE</label>
                                             <select
-                                                defaultValue={selectedOrder.productionStage || 'Pending'}
-                                                onChange={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { productionStage: e.target.value })}
+                                                value={modalData.productionStage}
+                                                onChange={(e) => setModalData({ ...modalData, productionStage: e.target.value })}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #333', color: '#fff', padding: '8px', borderRadius: '8px', fontSize: '0.8rem' }}
                                             >
                                                 {['Pending', 'Fabric Selection', 'Cutting', 'Stitching', 'Tailoring', 'Quality Check', 'Ready'].map(s => <option key={s} value={s}>{s}</option>)}
                                             </select>
                                         </div>
-                                        <div>
+                                        <div style={{ marginBottom: '16px' }}>
                                             <label style={{ fontSize: '0.6rem', color: '#666', display: 'block', marginBottom: '4px' }}>ESTIMATED DELIVERY</label>
                                             <input
                                                 type="date"
-                                                defaultValue={selectedOrder.estimatedDelivery ? new Date(selectedOrder.estimatedDelivery).toISOString().split('T')[0] : ''}
-                                                onChange={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { estimatedDelivery: e.target.value })}
+                                                value={modalData.estimatedDelivery}
+                                                onChange={(e) => setModalData({ ...modalData, estimatedDelivery: e.target.value })}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #333', color: '#fff', padding: '8px', borderRadius: '8px', fontSize: '0.8rem' }}
                                             />
                                         </div>
+                                        <button
+                                            onClick={handleSaveOrderDetails}
+                                            style={{ width: '100%', padding: '10px', background: 'var(--admin-accent)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer' }}
+                                        >
+                                            SAVE CHANGES
+                                        </button>
                                     </div>
                                 </section>
 

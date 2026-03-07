@@ -11,7 +11,7 @@ export default function CheckoutDrawer() {
     const router = useRouter();
     const { isCheckoutOpen, closeCheckout, cartItems, cartTotal, clearCart } = useCart();
     const { showToast } = useToast();
-    const { user, addAddress } = useAuth();
+    const { user, addAddress, openUserMenu } = useAuth();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -192,7 +192,7 @@ export default function CheckoutDrawer() {
                             clearCart();
                             showToast('Order Placed Successfully!', 'success');
                             closeCheckout();
-                            router.push(`/orders/success/${orderJson.data.id}`);
+                            openUserMenu('orders');
                         }
                     } catch (err) {
                         showToast('Payment verification failed', 'error');

@@ -310,7 +310,24 @@ export const getMe = asyncHandler(async (req, res) => {
         where: { id: req.user.id },
         include: {
             addresses: true,
-            measurement: true
+            measurement: true,
+            orders: {
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    orderItems: {
+                        include: {
+                            product: {
+                                select: {
+                                    name: true,
+                                    images: true,
+                                    price: true
+                                }
+                            }
+                        }
+                    },
+                    shippingAddress: true
+                }
+            }
         }
     });
 
