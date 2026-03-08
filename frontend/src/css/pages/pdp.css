@@ -66,11 +66,13 @@
 
 @media (min-width: 1024px) {
     .pdp-main-grid {
-        grid-template-columns: 45% 55%;
+        grid-template-columns: 50% 50%;
         width: 100%;
-        max-width: none;
-        padding: 32px 48px;
-        gap: 80px;
+        max-width: 1600px;
+        /* Center more on ultra-wide screens */
+        margin: 0 auto;
+        padding: 64px 80px;
+        gap: 100px;
         align-items: start;
     }
 }
@@ -214,7 +216,7 @@
 
 @media (min-width: 1024px) {
     .pdp-content-wrapper {
-        padding: 0;
+        padding: 0 40px 0 0;
         position: sticky;
         top: 120px;
     }
@@ -306,6 +308,7 @@
     z-index: 10;
     letter-spacing: 0.05em;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: none !important;
 }
 
 /* Gallery Controls */
@@ -315,19 +318,19 @@
     left: 0;
     right: 0;
     bottom: 0;
-    display: flex;
+    display: none;
+    /* Hidden by default */
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
     z-index: 20;
     pointer-events: none;
+    background: transparent;
 }
 
-.pdp-gallery-wrapper:hover .pdp-gallery-controls,
+/* Only show when open in lightbox */
 .pdp-gallery-controls.is-open {
-    opacity: 1;
+    display: flex;
 }
 
 .gallery-ctrl {
@@ -697,12 +700,14 @@
         background: #f4f2ee;
         color: #000;
         border: none;
+        box-shadow: none !important;
     }
 
     .btn-secondary.cta-half {
         background: transparent;
         color: #d4af37;
         border: 1px solid #d4af37;
+        box-shadow: none !important;
     }
 
     /* Hide the old sticky buy bar if it conflicts */
