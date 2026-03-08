@@ -51,8 +51,19 @@ export default function ProductDetailClient({ product: initialProduct }) {
     const [showFitModal, setShowFitModal] = useState(false);
     const [pendingAction, setPendingAction] = useState(null);
     const [customizationData, setCustomizationData] = useState(null);
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [currentImgIndex, setCurrentImgIndex] = useState(0);
     // REFS
     const heroRef = useRef(null);
+    const scrollContainerRef = useRef(null);
+
+    // Sync scroll index
+    const handleScroll = () => {
+        if (scrollContainerRef.current) {
+            const index = Math.round(scrollContainerRef.current.scrollLeft / scrollContainerRef.current.clientWidth);
+            setCurrentImgIndex(index);
+        }
+    };
     // EFFECT: Sticky Buy Bar Visibility
     useEffect(() => {
         const observer = new IntersectionObserver(([entry]) => {
@@ -207,54 +218,89 @@ export default function ProductDetailClient({ product: initialProduct }) {
 
             <div className="pdp-main-grid">
                 {/* 2. HERO GALLERY (Single View + Thumbnails) */}
-                <div className="pdp-gallery-container" ref={heroRef}>
-                    <div className="pdp-main-image">
-                        <img src={galleryImages[activeImage]} alt={`${product.name} view ${activeImage + 1}`} />
+                <div className="pdp-gallery-outer" ref={heroRef}>
+                    <div className="pdp-gallery-wrapper">
+                        {/* Image Counter */}
+                        <div className="pdp-image-counter">
+                            {currentImgIndex + 1} / {galleryImages.length}
+                        </div>
+
+                        {/* Gallery Controls Overlay (Visible when "open" or on hover) */}
+                        <div className={`pdp-gallery-controls ${isLightboxOpen ? 'is-open' : ''}`}>
+                            <button className="gallery-ctrl prev" onClick={() => {
+                                scrollContainerRef.current?.scrollBy({ left: -scrollContainerRef.current.clientWidth, behavior: 'smooth' });
+                            }}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
+                            </button>
+                            <button className="gallery-ctrl close-toggle" onClick={() => setIsLightboxOpen(!isLightboxOpen)}>
+                                {isLightboxOpen ? (
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                ) : (
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
+                                )}
+                            </button>
+                            <button className="gallery-ctrl next" onClick={() => {
+                                scrollContainerRef.current?.scrollBy({ left: scrollContainerRef.current.clientWidth, behavior: 'smooth' });
+                            }}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
+                            </button>
+                        </div>
+
+                        <div
+                            className={`pdp-main-image-slider ${isLightboxOpen ? 'pdp-image-expanded' : ''}`}
+                            ref={scrollContainerRef}
+                            onScroll={handleScroll}
+                        >
+                            {galleryImages.map((img, idx) => (
+                                <div key={idx} className="pdp-slide-item">
+                                    <img src={img} alt={`${product.name} view ${idx + 1}`} onClick={() => setIsLightboxOpen(true)} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Thumbnails - Hidden on mobile */}
+                    {/* Progress Indicator Line */}
+                    <div className="pdp-gallery-progress-bg">
+                        <div
+                            className="pdp-gallery-progress-fill"
+                            style={{ width: `${((currentImgIndex + 1) / galleryImages.length) * 100}%` }}
+                        />
+                    </div>
+
+                    {/* Thumbnails - Only for Desktop */}
                     <div className="pdp-thumbnails desktop-only">
-                        {galleryImages.map((img, idx) => (<div key={idx} className={`pdp-thumbnail ${activeImage === idx ? 'active' : ''}`} onClick={() => setActiveImage(idx)}>
-                            <img src={img} alt={`Thumbnail ${idx + 1}`} />
-                        </div>))}
+                        {galleryImages.map((img, idx) => (
+                            <div
+                                key={idx}
+                                className={`pdp-thumbnail ${currentImgIndex === idx ? 'active' : ''}`}
+                                onClick={() => {
+                                    scrollContainerRef.current?.scrollTo({ left: idx * scrollContainerRef.current.clientWidth, behavior: 'smooth' });
+                                }}
+                            >
+                                <img src={img} alt={`Thumbnail ${idx + 1}`} />
+                            </div>
+                        ))}
                     </div>
                 </div>
 
                 {/* RIGHT COLUMN WRAPPER */}
                 <div className="pdp-content-wrapper">
 
-                    <div className="pdp-title-container">
+                    <div className="pdp-title-row">
                         <h1 className="serif pdp-product-name">{product.name}</h1>
                         <button
                             onClick={() => toggleWishlist(product.id)}
                             className={`btn-favorite-pdp ${isInWishlist(product.id) ? 'active' : ''}`}
                             style={{
-                                background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(255,255,255,0.1)',
                                 color: isInWishlist(product.id) ? '#ff4b4b' : '#fff',
-                                cursor: 'pointer',
-                                width: '48px',
-                                height: '48px',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
                             }}
                             title={isInWishlist(product.id) ? "Remove from Favorites" : "Add to Favorites"}
                         >
-                            <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill={isInWishlist(product.id) ? "currentColor" : "none"}
-                                stroke="currentColor"
-                                strokeWidth="2"
-                            >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill={isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                             </svg>
                         </button>
-                        <style jsx>{`
+                    </div>    <style jsx>{`
                             .btn-favorite-pdp:active {
                                 transform: scale(0.8);
                             }
@@ -267,8 +313,6 @@ export default function ProductDetailClient({ product: initialProduct }) {
                                 100% { transform: scale(1); }
                             }
                         `}</style>
-                    </div>
-
                     <div className="pdp-brand-name">The Grey Stag</div>
 
                     <div className="pdp-price-final">{product.price}</div>
@@ -386,18 +430,19 @@ export default function ProductDetailClient({ product: initialProduct }) {
                             { id: 'description', label: 'Description', content: contextProduct?.description || "Combined with minimal aesthetics and maximum comfort, this piece defines the new standard of luxury." },
                             { id: 'fabric', label: 'Fabric & Care', content: contextProduct?.fabric || `${fabricText} <br/> <br/> ${careText}` },
                             { id: 'shipping', label: 'Delivery & Returns', content: "Free shipping on all prepaid orders. Returns accepted within 15 days of delivery." }
-                        ].map((item) => (<div key={item.id} className="accordion-item">
-                            <button className={`accordion-header ${openAccordion === item.id ? 'open' : ''}`} onClick={() => toggleAccordion(item.id)}>
-                                {item.label}
-                                <svg className="accordion-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor">
-                                    <path d="M6 1V11M1 6H11" strokeWidth="1.5" strokeLinecap="round" />
-                                </svg>
-                            </button>
-                            <div className={`accordion-content ${openAccordion === item.id ? 'open' : ''}`} dangerouslySetInnerHTML={{ __html: item.content }} />
-                        </div>))}
+                        ].map((item) => (
+                            <div key={item.id} className="accordion-item">
+                                <button className={`accordion-header ${openAccordion === item.id ? 'open' : ''}`} onClick={() => toggleAccordion(item.id)}>
+                                    {item.label}
+                                    <svg className="accordion-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor">
+                                        <path d="M6 1V11M1 6H11" strokeWidth="1.5" strokeLinecap="round" />
+                                    </svg>
+                                </button>
+                                <div className={`accordion-content ${openAccordion === item.id ? 'open' : ''}`} dangerouslySetInnerHTML={{ __html: item.content }} />
+                            </div>
+                        ))}
                     </div>
                 </div>
-
             </div>
 
             {/* 8. STICKY BUY BAR (Mobile) */}
@@ -430,6 +475,6 @@ export default function ProductDetailClient({ product: initialProduct }) {
                     ))}
                 </div>
             </div>
-
-        </div >);
+        </div>
+    );
 }
