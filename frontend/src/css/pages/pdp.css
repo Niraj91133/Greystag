@@ -66,20 +66,30 @@
 
 @media (min-width: 1024px) {
     .pdp-main-grid {
-        grid-template-columns: 60% 40%;
+        display: flex;
+        justify-content: center;
         width: 100%;
-        max-width: 1700px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 48px 64px;
-        gap: 64px;
-        align-items: start;
+        padding: 60px 40px;
+        gap: 80px;
+        align-items: flex-start;
+        /* CRITICAL: Allows right side to be sticky relative to parent */
     }
 }
 
-/* 3. HERO GALLERY - Unified Slider Experience */
+/* =====================================================
+   3. HERO GALLERY - Vertical Stack (Luxury Style)
+   ===================================================== */
 .pdp-gallery-outer {
     width: 100%;
-    margin-bottom: 32px;
+}
+
+@media (min-width: 1024px) {
+    .pdp-gallery-outer {
+        flex: 0 0 650px;
+        /* Consistently 650px wide as requested */
+    }
 }
 
 .pdp-gallery-wrapper {
@@ -87,11 +97,11 @@
     width: 100%;
 }
 
-/* DESKTOP: Vertical Stack */
+/* DESKTOP: Vertical Stack of Large Images */
 .pdp-gallery-vertical-stack {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
 .pdp-stack-item {
@@ -106,11 +116,11 @@
     height: 100%;
     object-fit: cover;
     cursor: zoom-in;
-    transition: opacity 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
 .pdp-stack-item img:hover {
-    opacity: 0.95;
+    transform: scale(1.02);
 }
 
 /* MOBILE: Horizontal Slider */
@@ -120,7 +130,6 @@
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    background: #1a1a1a;
 }
 
 .pdp-main-image-slider::-webkit-scrollbar {
@@ -132,15 +141,12 @@
     width: 100%;
     scroll-snap-align: start;
     aspect-ratio: 4/5;
-    overflow: hidden;
 }
 
 .pdp-slide-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    cursor: zoom-in;
-    transition: transform 0.3s ease;
 }
 
 /* Clean up old styles */
@@ -599,171 +605,37 @@
     color: var(--color-gold, #d4af37);
 }
 
-/* =====================================================
-   MOBILE OPTIMIZATIONS (The Grey Stag Refinement)
-   ===================================================== */
+/* MOBILE OVERRIDES */
 @media (max-width: 1023px) {
-    .desktop-only {
-        display: none !important;
-    }
-
     .pdp-main-grid {
-        gap: 0;
-    }
-
-    .pdp-gallery-container {
         gap: 0;
     }
 
     .pdp-gallery-outer {
         padding: 0 16px;
-        /* Added padding to make image slightly smaller */
         margin-bottom: 24px;
-    }
-
-    .pdp-slide-item {
-        border-radius: 4px;
-        /* Matches the slightly smaller style */
-    }
-
-    .pdp-main-image {
-        aspect-ratio: 4/5;
-        border-radius: 0;
     }
 
     .pdp-content-wrapper {
         padding: 16px;
         margin-top: -8px;
-        /* Slight pull up */
     }
 
     .pdp-product-name {
         font-size: 24px !important;
         margin-bottom: 4px !important;
     }
+}
 
-    .pdp-brand-name {
-        font-size: 14px !important;
-        color: #aaa;
-        margin-bottom: 12px;
-    }
-
-    .pdp-price-final {
-        font-size: 14px !important;
-        color: #fff !important;
-        margin-bottom: 2px !important;
-    }
-
-    .pdp-mrp-label {
-        font-size: 10px;
-        color: #666;
-        margin-bottom: 16px;
-    }
-
-    .variant-section {
-        margin-bottom: 16px !important;
-    }
-
-    .section-label {
-        margin-bottom: 8px !important;
-    }
-
-    /* Sticky CTA */
-    .sticky-mobile-cta {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #0f0f0f;
-        padding: 12px 16px 24px;
-        /* Bottom padding for safe area */
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        z-index: 1000;
-        margin: 0 !important;
-    }
-
-    .cta-flex-group {
-        display: flex;
-        gap: 12px;
-        width: 100%;
-    }
-
-    .cta-half {
-        flex: 1;
-        height: 50px;
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        border-radius: 2px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-    }
-
-    .btn-primary.cta-half {
-        background: #f4f2ee;
-        color: #000;
-        border: none;
-        box-shadow: none !important;
-    }
-
-    .btn-secondary.cta-half {
-        background: transparent;
-        color: #d4af37;
-        border: 1px solid #d4af37;
-        box-shadow: none !important;
-    }
-
-    /* Hide the old sticky buy bar if it conflicts */
-    .sticky-buy-bar {
+/* VISIBILITY HELPERS */
+@media (max-width: 1023px) {
+    .desktop-only {
         display: none !important;
-    }
-
-    /* Adjust padding for bottom navigation */
-    .pdp-main {
-        padding-bottom: 100px;
     }
 }
 
-/* Ensure desktop remains unaffected */
 @media (min-width: 1024px) {
-    .pdp-product-name {
-        font-size: 2.5rem;
-        line-height: 1.1;
-        color: #fff;
-        margin-bottom: 8px;
-    }
-
-    .pdp-brand-name {
-        font-size: 1rem;
-        color: #ccc;
-        margin-bottom: 16px;
-        letter-spacing: 0.05em;
-    }
-
-    .pdp-price-final {
-        font-size: 1.5rem;
-        font-weight: 500;
-        color: var(--color-gold, #d4af37);
-        margin-bottom: 16px;
-    }
-
-    .pdp-mrp-label {
-        font-size: 0.75rem;
-        color: #888;
-        margin-bottom: 24px;
-    }
-
-    .cta-flex-group {
-        display: flex;
-        gap: 12px;
-        margin-top: 16px;
-    }
-
-    .cta-half {
-        flex: 1;
-        height: 50px;
+    .mobile-only {
+        display: none !important;
     }
 }
