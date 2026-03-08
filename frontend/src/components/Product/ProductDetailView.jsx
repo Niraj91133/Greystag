@@ -64,6 +64,16 @@ export default function ProductDetailClient({ product: initialProduct }) {
             setCurrentImgIndex(index);
         }
     };
+
+    // Keep scroll aligned on mode change or resize
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({
+                left: currentImgIndex * scrollContainerRef.current.clientWidth,
+                behavior: 'auto'
+            });
+        }
+    }, [isLightboxOpen]);
     // EFFECT: Sticky Buy Bar Visibility
     useEffect(() => {
         const observer = new IntersectionObserver(([entry]) => {
@@ -257,7 +267,12 @@ export default function ProductDetailClient({ product: initialProduct }) {
                         >
                             {galleryImages.map((img, idx) => (
                                 <div key={idx} className="pdp-slide-item">
-                                    <img src={img} alt={`${product.name} view ${idx + 1}`} onClick={() => setIsLightboxOpen(true)} />
+                                    <img
+                                        src={img}
+                                        alt={`${product.name} view ${idx + 1}`}
+                                        onClick={() => setIsLightboxOpen(!isLightboxOpen)}
+                                        loading={idx === 0 ? "eager" : "lazy"}
+                                    />
                                 </div>
                             ))}
                         </div>

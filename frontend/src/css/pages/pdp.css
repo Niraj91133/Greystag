@@ -78,122 +78,97 @@
 }
 
 /* =====================================================
-   3. HERO GALLERY
+   3. HERO GALLERY (Slider & Grid)
    ===================================================== */
-/* =====================================================
-   3. HERO GALLERY (Refactored for Single View + Thumbnails)
-   ===================================================== */
-.pdp-gallery-container {
+.pdp-gallery-outer {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    margin-bottom: 32px;
 }
 
-.pdp-main-image {
+@media (min-width: 1024px) {
+    .pdp-gallery-outer {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        /* Thumbnails on left for premium look */
+        gap: 24px;
+        align-items: start;
+        margin-bottom: 0;
+    }
+}
+
+.pdp-gallery-wrapper {
+    position: relative;
     width: 100%;
+    overflow: hidden;
+}
+
+.pdp-main-image-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pdp-main-image-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.pdp-slide-item {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
     aspect-ratio: 4/5;
-    /* Slightly shorter to save vertical space on mobile */
     background: #1a1a1a;
     overflow: hidden;
-    border-radius: 4px;
 }
 
-.pdp-main-image img {
+.pdp-slide-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    cursor: zoom-in;
     display: block;
 }
 
-/* Thumbnails */
-.pdp-thumbnails {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-.pdp-thumbnail {
-    aspect-ratio: 3/4;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 2px;
-    overflow: hidden;
-    opacity: 0.6;
-    transition: all 0.2s ease;
-}
-
-.pdp-thumbnail:hover {
-    opacity: 0.8;
-}
-
-.pdp-thumbnail.active {
-    opacity: 1;
-    border-color: #f4f2ee;
-    /* Active border */
-}
-
-.pdp-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Desktop gallery refinement: Side Thumbnails */
+/* Desktop Side Thumbnails Positioning */
 @media (min-width: 1024px) {
-    .pdp-gallery-container {
-        display: grid;
-        grid-template-columns: 1fr 80px;
-        /* Reduced from 120px to 80px */
-        gap: 20px;
-        /* Tighter gap */
-        height: auto;
-        align-items: stretch;
-        /* Align heights */
-    }
-
-    .pdp-main-image {
+    .pdp-thumbnails.desktop-only {
         grid-column: 1;
-        /* Left */
-        width: 100%;
-        height: 100%;
-        max-height: 85vh;
-        /* Increased from 60vh */
-        /* Constrain height */
-        display: flex;
-    }
-
-    .pdp-main-image img {
-        object-fit: cover;
-        width: 100%;
-        height: 100%;
-        max-height: 85vh;
-        /* Increased from 60vh */
-        /* Constrain image height */
-        border-radius: 2px;
-    }
-
-    /* Vertical Thumbnails on Right */
-    .pdp-thumbnails {
-        grid-column: 2;
-        /* Right */
-        display: flex;
+        /* Left side */
+        display: flex !important;
         flex-direction: column;
-        justify-content: space-between;
-        /* Spread evenly to match height */
-        height: 100%;
-        padding-bottom: 2px;
+        gap: 12px;
+    }
+
+    .pdp-gallery-wrapper {
+        grid-column: 2;
+        /* Right of thumbnails */
     }
 
     .pdp-thumbnail {
         aspect-ratio: 3/4;
         width: 100%;
+        cursor: pointer;
         opacity: 0.5;
+        border: 1.5px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .pdp-thumbnail:hover {
+        opacity: 0.8;
     }
 
     .pdp-thumbnail.active {
         opacity: 1;
-        border: 2px solid var(--color-gold, #d4af37);
+        border-color: var(--color-gold, #d4af37);
+    }
+
+    .pdp-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }
 
@@ -225,48 +200,6 @@
 /* =====================================================
    GALLERY SLIDER & LIGHTBOX
    ===================================================== */
-.pdp-gallery-outer {
-    width: 100%;
-    margin-bottom: 32px;
-}
-
-.pdp-gallery-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-.pdp-main-image-slider {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    /* Hide scrollbar Firefox */
-    -ms-overflow-style: none;
-    /* Hide scrollbar IE */
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.pdp-main-image-slider::-webkit-scrollbar {
-    display: none;
-    /* Hide scrollbar Chrome/Safari */
-}
-
-.pdp-slide-item {
-    flex: 0 0 100%;
-    width: 100%;
-    scroll-snap-align: start;
-    aspect-ratio: 4/5;
-    background: #1a1a1a;
-    overflow: hidden;
-}
-
-.pdp-slide-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: zoom-in;
-}
-
 /* Expanded View / Lightbox */
 .pdp-image-expanded {
     position: fixed !important;
@@ -281,15 +214,18 @@
 
 .pdp-image-expanded .pdp-slide-item {
     height: 100vh;
+    width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    padding: 0;
+    /* Removed padding to allow full-width as requested */
 }
 
 .pdp-image-expanded img {
     object-fit: contain;
-    width: auto;
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
     cursor: zoom-out;

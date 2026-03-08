@@ -4,19 +4,19 @@ import { useAuth } from './AuthContext';
 const DEFAULT_VIDEO_SCROLL = [
     {
         id: 'v1',
-        videoUrl: 'https://cdn.pixabay.com/video/2021/04/12/70914-536968846_tiny.mp4',
-        linkedProductId: 'seed_prod_1', // We will map these in VideoCard fallback
+        videoUrl: 'https://videos.pexels.com/video-files/4458593/4458593-uhd_2560_1440_24fps.mp4',
+        linkedProductId: 'seed_prod_1',
         title: 'Midnight Suit'
     },
     {
         id: 'v2',
-        videoUrl: 'https://cdn.pixabay.com/video/2021/04/12/70915-536968847_tiny.mp4',
+        videoUrl: 'https://videos.pexels.com/video-files/4458595/4458595-uhd_2560_1440_24fps.mp4',
         linkedProductId: 'seed_prod_2',
         title: 'Summer Collection'
     },
     {
         id: 'v3',
-        videoUrl: 'https://cdn.pixabay.com/video/2021/04/12/70916-536968848_tiny.mp4',
+        videoUrl: 'https://videos.pexels.com/video-files/2499611/2499611-uhd_2560_1440_24fps.mp4',
         linkedProductId: 'seed_prod_3',
         title: 'Royal Ethnic'
     }
@@ -31,7 +31,7 @@ const DEFAULT_HERO = {
     isEnabled: true,
     title: 'THE GREY STAG',
     subtitle: 'Redefining Modern Luxury. Precision Tailoring for the Contemporary Gentleman.',
-    mediaUrl: 'https://v.ftcdn.net/05/60/05/65/700_F_560056525_N3Q3c3c3c3c3c3c3c3c3c3c3c3c3c3c3.mp4',
+    mediaUrl: 'https://videos.pexels.com/video-files/4255167/4255167-uhd_2560_1440_25fps.mp4',
     mediaType: 'video',
     ctaText: 'Shop the Collection',
     ctaLink: '/category/all'
