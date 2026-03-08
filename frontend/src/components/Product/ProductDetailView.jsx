@@ -1,5 +1,5 @@
-'use client';
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import '@/css/pages/pdp.css';
 import { useProduct } from '@/context/ProductContext'; // Import context
 import Link from 'next/link';
@@ -64,16 +64,6 @@ export default function ProductDetailClient({ product: initialProduct }) {
             setCurrentImgIndex(index);
         }
     };
-
-    // Keep scroll aligned on mode change or resize
-    useEffect(() => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollTo({
-                left: currentImgIndex * scrollContainerRef.current.clientWidth,
-                behavior: 'auto'
-            });
-        }
-    }, [isLightboxOpen]);
     // EFFECT: Sticky Buy Bar Visibility
     useEffect(() => {
         const observer = new IntersectionObserver(([entry]) => {
@@ -115,7 +105,36 @@ export default function ProductDetailClient({ product: initialProduct }) {
             setSavedFitProfile(null);
         }
     }, [user, user?.measurement]); // Reload when user or their measurements change
-    const galleryImages = (product.images && product.images.length > 0) ? product.images : [product.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000'];
+    // Filter duplicates and ensure valid URLs
+    const galleryImages = Array.from(new Set(
+        (product.images && product.images.length > 0)
+            ? product.images
+            : [product.image || '/images/placeholder.jpg']
+    )).filter(Boolean);
+
+    // Zoom/Lightbox States
+    const [scale, setScale] = useState(1);
+
+    // Keyboard Navigation for Lightbox
+    useEffect(() => {
+        if (!isLightboxOpen) return;
+
+        const handleKeyDown = (e) => {
+            if (e.key === 'ArrowLeft') {
+                setCurrentImgIndex(prev => (prev - 1 + galleryImages.length) % galleryImages.length);
+                setScale(1);
+            } else if (e.key === 'ArrowRight') {
+                setCurrentImgIndex(prev => (prev + 1) % galleryImages.length);
+                setScale(1);
+            } else if (e.key === 'Escape') {
+                setIsLightboxOpen(false);
+                setScale(1);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isLightboxOpen, galleryImages.length]);
 
     const handleAddToCart = () => {
         setPendingAction('CART');
@@ -227,41 +246,16 @@ export default function ProductDetailClient({ product: initialProduct }) {
                 }} />)}
 
             <div className="pdp-main-grid">
-                {/* 2. HERO GALLERY (Single View + Thumbnails) */}
+                {/* 2. PRODUCT GALLERY (CLEAN ONE-FRAME EXPERIENCE) */}
                 <div className="pdp-gallery-outer" ref={heroRef}>
                     <div className="pdp-gallery-wrapper">
-                        {/* Image Counter */}
+                        {/* Static Image Counter (Standard View) */}
                         <div className="pdp-image-counter">
                             {currentImgIndex + 1} / {galleryImages.length}
                         </div>
 
-                        {/* Lightbox Controls (Only visible when expanded) */}
-                        {isLightboxOpen && (
-                            <div className="pdp-lightbox-controls-overlay">
-                                <button className="lightbox-close-btn" onClick={() => setIsLightboxOpen(false)}>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                                </button>
-
-                                <div className="pdp-lightbox-nav-pill">
-                                    <button className="nav-pill-btn" onClick={(e) => {
-                                        e.stopPropagation();
-                                        scrollContainerRef.current?.scrollBy({ left: -scrollContainerRef.current.clientWidth, behavior: 'smooth' });
-                                    }}>
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"><path d="M15 18l-6-6 6-6" /></svg>
-                                    </button>
-                                    <span className="nav-pill-counter">{currentImgIndex + 1} / {galleryImages.length}</span>
-                                    <button className="nav-pill-btn" onClick={(e) => {
-                                        e.stopPropagation();
-                                        scrollContainerRef.current?.scrollBy({ left: scrollContainerRef.current.clientWidth, behavior: 'smooth' });
-                                    }}>
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"><path d="M9 18l6-6-6-6" /></svg>
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
                         <div
-                            className={`pdp-main-image-slider ${isLightboxOpen ? 'pdp-image-expanded' : ''}`}
+                            className="pdp-main-image-slider"
                             ref={scrollContainerRef}
                             onScroll={handleScroll}
                         >
@@ -270,7 +264,10 @@ export default function ProductDetailClient({ product: initialProduct }) {
                                     <img
                                         src={img}
                                         alt={`${product.name} view ${idx + 1}`}
-                                        onClick={() => setIsLightboxOpen(!isLightboxOpen)}
+                                        onClick={() => {
+                                            setCurrentImgIndex(idx);
+                                            setIsLightboxOpen(true);
+                                        }}
                                         loading={idx === 0 ? "eager" : "lazy"}
                                     />
                                 </div>
@@ -278,29 +275,74 @@ export default function ProductDetailClient({ product: initialProduct }) {
                         </div>
                     </div>
 
-                    {/* Progress Indicator Line */}
+                    {/* Progress Indicator (Thin Gold Line) */}
                     <div className="pdp-gallery-progress-bg">
                         <div
                             className="pdp-gallery-progress-fill"
                             style={{ width: `${((currentImgIndex + 1) / galleryImages.length) * 100}%` }}
                         />
                     </div>
-
-                    {/* Thumbnails - Only for Desktop */}
-                    <div className="pdp-thumbnails desktop-only">
-                        {galleryImages.map((img, idx) => (
-                            <div
-                                key={idx}
-                                className={`pdp-thumbnail ${currentImgIndex === idx ? 'active' : ''}`}
-                                onClick={() => {
-                                    scrollContainerRef.current?.scrollTo({ left: idx * scrollContainerRef.current.clientWidth, behavior: 'smooth' });
-                                }}
-                            >
-                                <img src={img} alt={`Thumbnail ${idx + 1}`} />
-                            </div>
-                        ))}
-                    </div>
                 </div>
+
+                {/* ADVANCED FULL-SCREEN LIGHTBOX (90% BLACK) */}
+                <AnimatePresence>
+                    {isLightboxOpen && (
+                        <motion.div
+                            className="pdp-advanced-lightbox"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                        >
+                            <div className="lightbox-content-root" onClick={() => setIsLightboxOpen(false)}>
+                                <div className="lightbox-image-viewport" onClick={e => e.stopPropagation()}>
+                                    <motion.div
+                                        className="lightbox-zoom-wrapper"
+                                        drag={scale > 1}
+                                        dragConstraints={{ top: -500, bottom: 500, left: -500, right: 500 }}
+                                        animate={{ scale }}
+                                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                    >
+                                        <img
+                                            src={galleryImages[currentImgIndex]}
+                                            alt="Zoomed product"
+                                            onDoubleClick={() => setScale(scale > 1 ? 1 : 2)}
+                                            style={{
+                                                cursor: scale > 1 ? 'grab' : 'zoom-in',
+                                                userSelect: 'none'
+                                            }}
+                                        />
+                                    </motion.div>
+                                </div>
+
+                                {/* UNIFIED BOTTOM PILL: [ < ] [ X ] [ > ] */}
+                                <div className="pdp-unified-nav-pill" onClick={e => e.stopPropagation()}>
+                                    <button className="pill-btn" onClick={() => {
+                                        setCurrentImgIndex((currentImgIndex - 1 + galleryImages.length) % galleryImages.length);
+                                        setScale(1);
+                                    }}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
+                                    </button>
+
+                                    <button className="pill-btn close-action" onClick={() => {
+                                        setIsLightboxOpen(false);
+                                        setScale(1);
+                                    }}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                    </button>
+
+                                    <button className="pill-btn" onClick={() => {
+                                        setCurrentImgIndex((currentImgIndex + 1) % galleryImages.length);
+                                        setScale(1);
+                                    }}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
+                                    </button>
+
+                                    <div className="pill-index-label">{currentImgIndex + 1} / {galleryImages.length}</div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* RIGHT COLUMN WRAPPER */}
                 <div className="pdp-content-wrapper">
