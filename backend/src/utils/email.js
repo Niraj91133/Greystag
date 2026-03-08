@@ -53,7 +53,14 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
         const order = await prisma.order.findUnique({
             where: { id: orderId },
             include: {
-                user: { select: { email: true, name: true } },
+                user: {
+                    select: {
+                        email: true,
+                        name: true,
+                        phone: true,
+                        measurement: true
+                    }
+                },
                 orderItems: {
                     include: { product: { select: { name: true } } }
                 }
@@ -67,6 +74,30 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
             month: "long",
             year: "numeric"
         });
+
+        const measurements = order.user.measurement;
+        let measurementsHtml = '';
+        if (measurements) {
+            measurementsHtml = `
+            <div style="margin-top: 30px; padding: 20px; background: #fdfaf3; border: 1px solid #eedebe; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: #8a6d3b; font-size: 16px; border-bottom: 1px solid #eedebe; padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Tailoring Measurements</h3>
+                <table style="width: 100%; font-size: 14px; border-collapse: collapse; line-height: 1.6;">
+                    <tr><td style="color: #666; width: 40%;">Height:</td><td style="font-weight: bold; color: #000;">${measurements.height || 'N/A'}</td></tr>
+                    <tr><td style="color: #666;">Chest/Shirt:</td><td style="font-weight: bold; color: #000;">${measurements.chest || 'N/A'}"</td></tr>
+                    <tr><td style="color: #666;">Shoulder Type:</td><td style="font-weight: bold; color: #000;">${measurements.shoulderType || 'N/A'}</td></tr>
+                    <tr><td style="color: #666;">Preferred Fit:</td><td style="font-weight: bold; color: #000;">${measurements.preferredFit || 'N/A'}</td></tr>
+                    <tr><td style="color: #666;">Upper Body:</td><td style="font-weight: bold; color: #000;">${measurements.upperBodyShape || 'N/A'}</td></tr>
+                    <tr><td style="color: #666;">Lower Body:</td><td style="font-weight: bold; color: #000;">${measurements.lowerBodyShape || 'N/A'}</td></tr>
+                    ${measurements.waist ? `<tr><td style="color: #666;">Waist:</td><td style="font-weight: bold; color: #000;">${measurements.waist}"</td></tr>` : ''}
+                    ${measurements.shoulder ? `<tr><td style="color: #666;">Shoulder width:</td><td style="font-weight: bold; color: #000;">${measurements.shoulder}"</td></tr>` : ''}
+                    ${measurements.neck ? `<tr><td style="color: #666;">Neck:</td><td style="font-weight: bold; color: #000;">${measurements.neck}"</td></tr>` : ''}
+                </table>
+                <p style="font-size: 11px; color: #999; margin-top: 15px; border-top: 1px solid #f0e6d2; pt: 10px;">
+                    *These measurements are saved for your tailored fit. If you wish to change them, please contact us immediately.
+                </p>
+            </div>
+            `;
+        }
 
         const itemsHtml = order.orderItems.map(item => `
             <tr>
@@ -116,6 +147,8 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
           </tfoot>
         </table>
 
+        ${measurementsHtml}
+
         <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #999; text-align: center;">
             <p>This is a computer-generated invoice and doesn't require a signature.</p>
             <p>&copy; 2026 THE GREY STAG. All rights reserved.</p>
@@ -134,14 +167,23 @@ export const sendPaymentConfirmationEmail = async (orderId) => {
             to: env.EMAIL_USER,
             subject: `🚨 NEW ORDER RECEIVED: #${order.id.slice(0, 8)}`,
             html: `
-                <div style="font-family: sans-serif; padding: 20px;">
-                    <h2>New Paid Order Received!</h2>
-                    <p><strong>Customer:</strong> ${order.user.name}</p>
-                    <p><strong>Email:</strong> ${order.user.email}</p>
-                    <p><strong>Total Amount:</strong> ₹${Number(order.total).toLocaleString()}</p>
-                    <p><strong>Items:</strong> ${order.orderItems.length}</p>
-                    <hr/>
-                    <p>Check the admin dashboard for technical measurements and shipping details.</p>
+                <div style="font-family: sans-serif; padding: 20px; color: #000; border: 1px solid #eee; border-radius: 8px;">
+                    <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">New Paid Order Received!</h2>
+                    <p><strong>Customer Name:</strong> ${order.user.name}</p>
+                    <p><strong>Customer Email:</strong> ${order.user.email}</p>
+                    <p><strong>Customer Phone:</strong> ${order.user.phone || 'N/A'}</p>
+                    <p><strong>Order ID:</strong> #${order.id.slice(0, 8).toUpperCase()}</p>
+                    <p><strong>Total Paid:</strong> ₹${Number(order.total).toLocaleString()}</p>
+                    
+                    ${measurementsHtml ? `
+                    <div style="background: #fdfaf3; padding: 15px; margin-top: 20px; border: 1px solid #eedebe;">
+                        <h3 style="margin-top: 0; font-size: 15px;">Tailoring Data for Production:</h3>
+                        ${measurementsHtml}
+                    </div>
+                    ` : '<p style="color: red;">⚠️ WARNING: No measurements found for this user!</p>'}
+                    
+                    <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;"/>
+                    <p style="font-size: 12px; color: #666;">Visit the <a href="${env.CLIENT_URL}/admin">Admin Dashboard</a> to manage this order.</p>
                 </div>
             `
         });
