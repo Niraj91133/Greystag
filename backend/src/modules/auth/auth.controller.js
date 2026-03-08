@@ -312,21 +312,10 @@ export const getMe = asyncHandler(async (req, res) => {
             addresses: true,
             measurement: true,
             orders: {
-                orderBy: { createdAt: 'desc' },
                 include: {
-                    orderItems: {
-                        include: {
-                            product: {
-                                select: {
-                                    name: true,
-                                    images: true,
-                                    price: true
-                                }
-                            }
-                        }
-                    },
-                    shippingAddress: true
-                }
+                    orderItems: { include: { product: true } }
+                },
+                orderBy: { createdAt: 'desc' }
             }
         }
     });

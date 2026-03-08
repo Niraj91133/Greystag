@@ -13,26 +13,24 @@ export function AuthProvider({ children }) {
     // UI States
     const [showLogin, setShowLogin] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
-    const [userMenuView, setUserMenuView] = useState('home');
 
     const { showToast } = useToast();
     const router = useRouter();
 
+    const refreshUser = async () => {
+        try {
+            const json = await api.get('/auth/me');
+            if (json.success) {
+                setUser(json.data);
+            }
+        } catch (err) {
+            console.log("Failed to refresh user");
+        }
+    };
+
     // Verify session on app mount
     useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const json = await api.get('/auth/me');
-                if (json.success) {
-                    setUser(json.data);
-                }
-            } catch (err) {
-                console.log("No active session");
-            } finally {
-                setIsLoaded(true);
-            }
-        };
-        checkAuth();
+        refreshUser().finally(() => setIsLoaded(true));
     }, []);
 
     const sendOTP = async (email) => {
@@ -168,19 +166,15 @@ export function AuthProvider({ children }) {
 
     const openLogin = () => setShowLogin(true);
     const closeLogin = () => setShowLogin(false);
-    const openUserMenu = (view = 'home') => {
-        setUserMenuView(view);
-        setShowUserMenu(true);
-    };
+    const openUserMenu = () => setShowUserMenu(true);
     const closeUserMenu = () => setShowUserMenu(false);
 
     return (
         <AuthContext.Provider value={{
-            user, isLoaded, sendOTP, verifyOTP, completeProfile, logout,
+            user, isLoaded, refreshUser, sendOTP, verifyOTP, completeProfile, logout,
             addAddress, removeAddress, addPayment, deactivateAccount,
             saveMeasurements,
-            showLogin, openLogin, closeLogin, showUserMenu, openUserMenu, closeUserMenu,
-            userMenuView, setUserMenuView
+            showLogin, openLogin, closeLogin, showUserMenu, openUserMenu, closeUserMenu
         }}>
             {children}
         </AuthContext.Provider>

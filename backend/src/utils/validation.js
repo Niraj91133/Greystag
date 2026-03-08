@@ -31,6 +31,7 @@ const updateStatusBody = z.object({
     courierPartner: z.string().optional(),
     productionStage: z.string().optional(),
     estimatedDelivery: z.string().optional(),
+    adminNotes: z.string().optional(),
 });
 
 // Full Schemas (for middleware)

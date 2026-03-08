@@ -51,8 +51,8 @@ export default function ProductCard({ product }) {
                             viewBox="0 0 24 24"
                             fill={isFavorited ? "#ff4b4b" : "none"}
                             stroke={isFavorited ? "#ff4b4b" : "#fff"}
-                            strokeWidth="2"
-                            style={{ transition: 'all 0.3s ease' }}
+                            strokeWidth="1.5"
+                            style={{ transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}
                         >
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                         </svg>

@@ -238,6 +238,8 @@ model Order {
   estimatedDelivery DateTime?   @map("estimated_delivery")
   productionStage   String?     @default("Pending") @map("production_stage")
   trackingNotes     String?     @map("tracking_notes")
+  adminNotes        String?     @map("admin_notes")
+  orderNumber       String?     @unique @map("order_number")
   createdAt         DateTime    @default(now()) @map("created_at")
   updatedAt         DateTime    @updatedAt @map("updated_at")
 

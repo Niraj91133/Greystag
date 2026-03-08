@@ -32,6 +32,10 @@ export const createOrder = async (userId, items, shippingAddressId) => {
         }
 
 
+        // Generate Order Number GSTXXXX
+        const orderCount = await tx.order.count();
+        const orderNumber = `GST${1001 + orderCount}`;
+
         // Create the order
         const order = await tx.order.create({
             data: {
@@ -39,6 +43,7 @@ export const createOrder = async (userId, items, shippingAddressId) => {
                 shippingAddressId,
                 total,
                 status: 'PENDING',
+                orderNumber,
                 orderItems: { create: orderItemsData },
             },
             include: {
@@ -65,6 +70,7 @@ export const updateOrderStatus = async (orderId, status, trackingData = {}) => {
     if (trackingData.courierPartner) updateData.courierPartner = trackingData.courierPartner;
     if (trackingData.estimatedDelivery) updateData.estimatedDelivery = new Date(trackingData.estimatedDelivery);
     if (trackingData.productionStage) updateData.productionStage = trackingData.productionStage;
+    if (trackingData.adminNotes) updateData.adminNotes = trackingData.adminNotes;
 
     if (status === 'SHIPPED') updateData.shippedAt = new Date();
     if (status === 'DELIVERED') updateData.deliveredAt = new Date();

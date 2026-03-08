@@ -57,13 +57,11 @@ export default function WishlistDrawer() {
             />
 
             {/* Drawer Panel */}
-            <div style={{
+            <div className="favorite-drawer" style={{
                 position: 'fixed',
                 top: 0,
                 right: 0,
                 bottom: 0,
-                width: '100%',
-                maxWidth: '400px',
                 backgroundColor: '#0f0f0f',
                 zIndex: 9999,
                 transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
@@ -73,6 +71,22 @@ export default function WishlistDrawer() {
                 borderLeft: '1px solid rgba(255,255,255,0.1)',
                 boxShadow: '-10px 0 30px rgba(0,0,0,0.5)'
             }}>
+                <style jsx>{`
+                    .favorite-drawer {
+                        width: 85%;
+                    }
+                    @media (min-width: 768px) {
+                        .favorite-drawer {
+                            width: 50%;
+                        }
+                    }
+                    @media (min-width: 1024px) {
+                        .favorite-drawer {
+                            width: 35%;
+                            max-width: 380px;
+                        }
+                    }
+                `}</style>
                 {/* Header */}
                 <div style={{
                     padding: '24px',

@@ -10,37 +10,23 @@ export default function OrdersManager() {
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [selectedOrder, setSelectedOrder] = useState(null);
     const { showToast } = useToast();
-    const [modalData, setModalData] = useState({
-        trackingId: '',
-        courierPartner: '',
-        productionStage: 'Pending',
-        estimatedDelivery: ''
-    });
+    const [editData, setEditData] = useState({});
 
-    useEffect(() => {
-        if (selectedOrder) {
-            setModalData({
-                trackingId: selectedOrder.trackingId || '',
-                courierPartner: selectedOrder.courierPartner || '',
-                productionStage: selectedOrder.productionStage || 'Pending',
-                estimatedDelivery: selectedOrder.estimatedDelivery ? new Date(selectedOrder.estimatedDelivery).toISOString().split('T')[0] : ''
-            });
-        }
-    }, [selectedOrder]);
-
-    const handleSaveOrderDetails = async () => {
+    const saveOrderDetails = async () => {
         if (!selectedOrder) return;
         try {
-            await api.patch(`/orders/${selectedOrder.id}/status`, modalData);
-            showToast('Order details saved to database', 'success');
-            // Refresh main order list
-            const json = await api.get('/orders');
-            setOrders(json.data || []);
-            // Update selected order reference to reflect new values in modal
-            setSelectedOrder(prev => ({ ...prev, ...modalData }));
+            const response = await api.patch(`/orders/${selectedOrder.id}/status`, editData);
+            showToast('Order details saved', 'success');
+            await fetchOrders();
+            setSelectedOrder(response.data);
+            setEditData({}); // Clear temporary edits
         } catch (error) {
             showToast('Failed to save details', 'error');
         }
+    };
+
+    const handleEditChange = (field, value) => {
+        setEditData(prev => ({ ...prev, [field]: value }));
     };
 
     const fetchOrders = async () => {
@@ -215,6 +201,14 @@ export default function OrdersManager() {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setSelectedOrder(order);
+                                                    setEditData({
+                                                        status: order.status,
+                                                        productionStage: order.productionStage,
+                                                        estimatedDelivery: order.estimatedDelivery ? new Date(order.estimatedDelivery).toISOString().split('T')[0] : '',
+                                                        trackingId: order.trackingId || '',
+                                                        courierPartner: order.courierPartner || '',
+                                                        adminNotes: order.adminNotes || ''
+                                                    });
                                                 }}
                                                 style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fff', cursor: 'pointer', padding: '6px', borderRadius: '6px', fontSize: '0.7rem' }}
                                             >
@@ -355,14 +349,14 @@ export default function OrdersManager() {
                                         <div style={{ padding: '12px', background: 'rgba(0,0,0,0.3)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                             <input
                                                 placeholder="Tracking ID"
-                                                value={modalData.trackingId}
-                                                onChange={(e) => setModalData({ ...modalData, trackingId: e.target.value })}
+                                                defaultValue={selectedOrder.trackingId}
+                                                onBlur={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { trackingId: e.target.value })}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', marginBottom: '8px' }}
                                             />
                                             <input
                                                 placeholder="Courier"
-                                                value={modalData.courierPartner}
-                                                onChange={(e) => setModalData({ ...modalData, courierPartner: e.target.value })}
+                                                defaultValue={selectedOrder.courierPartner}
+                                                onBlur={(e) => api.patch(`/orders/${selectedOrder.id}/status`, { courierPartner: e.target.value })}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #222', color: '#fff', padding: '8px', borderRadius: '6px', fontSize: '0.75rem' }}
                                             />
                                         </div>
@@ -378,27 +372,49 @@ export default function OrdersManager() {
                                         <div style={{ marginBottom: '12px' }}>
                                             <label style={{ fontSize: '0.6rem', color: '#666', display: 'block', marginBottom: '4px' }}>CURRENT STAGE</label>
                                             <select
-                                                value={modalData.productionStage}
-                                                onChange={(e) => setModalData({ ...modalData, productionStage: e.target.value })}
+                                                value={editData.productionStage || selectedOrder.productionStage || 'Order Received'}
+                                                onChange={(e) => handleEditChange('productionStage', e.target.value)}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #333', color: '#fff', padding: '8px', borderRadius: '8px', fontSize: '0.8rem' }}
                                             >
-                                                {['Pending', 'Fabric Selection', 'Cutting', 'Stitching', 'Tailoring', 'Quality Check', 'Ready'].map(s => <option key={s} value={s}>{s}</option>)}
+                                                {['Order Received', 'Fabric Cutting', 'Tailoring', 'Quality Check', 'Ready to Ship', 'Shipped', 'Delivered'].map(s => <option key={s} value={s}>{s}</option>)}
                                             </select>
                                         </div>
-                                        <div style={{ marginBottom: '16px' }}>
+                                        <div style={{ marginBottom: '12px' }}>
                                             <label style={{ fontSize: '0.6rem', color: '#666', display: 'block', marginBottom: '4px' }}>ESTIMATED DELIVERY</label>
                                             <input
                                                 type="date"
-                                                value={modalData.estimatedDelivery}
-                                                onChange={(e) => setModalData({ ...modalData, estimatedDelivery: e.target.value })}
+                                                value={editData.estimatedDelivery || (selectedOrder.estimatedDelivery ? new Date(selectedOrder.estimatedDelivery).toISOString().split('T')[0] : '')}
+                                                onChange={(e) => handleEditChange('estimatedDelivery', e.target.value)}
                                                 style={{ width: '100%', background: '#000', border: '1px solid #333', color: '#fff', padding: '8px', borderRadius: '8px', fontSize: '0.8rem' }}
                                             />
                                         </div>
+                                        <div>
+                                            <label style={{ fontSize: '0.6rem', color: '#666', display: 'block', marginBottom: '4px' }}>ADMIN NOTES</label>
+                                            <textarea
+                                                value={editData.adminNotes || selectedOrder.adminNotes || ''}
+                                                onChange={(e) => handleEditChange('adminNotes', e.target.value)}
+                                                placeholder="Internal notes for this order..."
+                                                style={{ width: '100%', background: '#000', border: '1px solid #333', color: '#fff', padding: '10px', borderRadius: '8px', fontSize: '0.75rem', minHeight: '80px', resize: 'none' }}
+                                            />
+                                        </div>
+
                                         <button
-                                            onClick={handleSaveOrderDetails}
-                                            style={{ width: '100%', padding: '10px', background: 'var(--admin-accent)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer' }}
+                                            onClick={saveOrderDetails}
+                                            style={{
+                                                width: '100%',
+                                                marginTop: '16px',
+                                                padding: '12px',
+                                                background: '#d4af37',
+                                                color: '#000',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                fontWeight: 'bold',
+                                                cursor: 'pointer',
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '1px'
+                                            }}
                                         >
-                                            SAVE CHANGES
+                                            Save All Details
                                         </button>
                                     </div>
                                 </section>

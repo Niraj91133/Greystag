@@ -190,9 +190,9 @@ export default function CheckoutDrawer() {
                                 orderItems: orderItems
                             });
                             clearCart();
-                            showToast('Order Placed Successfully!', 'success');
-                            closeCheckout();
-                            openUserMenu('orders');
+                            setIsSuccess(true);
+                            setIsLoading(false);
+                            // router.push(`/orders/success/${orderJson.data.id}`);
                         }
                     } catch (err) {
                         showToast('Payment verification failed', 'error');
@@ -252,11 +252,39 @@ export default function CheckoutDrawer() {
 
                 <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
                     {isSuccess ? (
-                        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-                            <div style={{ fontSize: '3rem', color: '#d4af37', marginBottom: '20px' }}>✓</div>
-                            <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>Thank You</h2>
-                            <p>Your order has been placed.</p>
-                            <button onClick={handleClose} className="btn-primary" style={{ marginTop: '30px' }}>Continue</button>
+                        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 40px' }}>
+                            <div style={{
+                                width: '80px', height: '80px', borderRadius: '50%', backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px',
+                                border: '1px solid #4CAF50'
+                            }}>
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', marginBottom: '16px' }}>Order Confirmed</h2>
+                            <p style={{ color: '#aaa', fontSize: '1rem', lineHeight: '1.5', marginBottom: '40px' }}>
+                                Your order has been placed successfully. <br />
+                                You can track your order status and tailoring progress from your profile.
+                            </p>
+
+                            <button
+                                onClick={() => {
+                                    handleClose();
+                                    setTimeout(() => {
+                                        openUserMenu && openUserMenu();
+                                    }, 500);
+                                }}
+                                id="go-to-my-orders-btn"
+                                style={{
+                                    width: '100%', padding: '16px', background: '#f4f2ee', color: '#0f0f0f',
+                                    border: 'none', borderRadius: '4px', fontWeight: '700', cursor: 'pointer',
+                                    textTransform: 'uppercase', letterSpacing: '1px'
+                                }}
+                            >
+                                Go to My Orders
+                            </button>
                         </div>
                     ) : (
                         <>

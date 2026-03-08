@@ -44,6 +44,7 @@ export const updateStatus = asyncHandler(async (req, res) => {
         courierPartner: result.data.courierPartner,
         productionStage: result.data.productionStage,
         estimatedDelivery: result.data.estimatedDelivery,
+        adminNotes: result.data.adminNotes,
     });
 
     return res.status(200).json(new ApiResponse(200, order, "Order status updated"));
