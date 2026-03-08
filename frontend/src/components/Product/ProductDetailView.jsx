@@ -225,26 +225,30 @@ export default function ProductDetailClient({ product: initialProduct }) {
                             {currentImgIndex + 1} / {galleryImages.length}
                         </div>
 
-                        {/* Gallery Controls Overlay (Visible when "open" or on hover) */}
-                        <div className={`pdp-gallery-controls ${isLightboxOpen ? 'is-open' : ''}`}>
-                            <button className="gallery-ctrl prev" onClick={() => {
-                                scrollContainerRef.current?.scrollBy({ left: -scrollContainerRef.current.clientWidth, behavior: 'smooth' });
-                            }}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
-                            </button>
-                            <button className="gallery-ctrl close-toggle" onClick={() => setIsLightboxOpen(!isLightboxOpen)}>
-                                {isLightboxOpen ? (
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                                ) : (
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
-                                )}
-                            </button>
-                            <button className="gallery-ctrl next" onClick={() => {
-                                scrollContainerRef.current?.scrollBy({ left: scrollContainerRef.current.clientWidth, behavior: 'smooth' });
-                            }}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
-                            </button>
-                        </div>
+                        {/* Lightbox Controls (Only visible when expanded) */}
+                        {isLightboxOpen && (
+                            <div className="pdp-lightbox-controls-overlay">
+                                <button className="lightbox-close-btn" onClick={() => setIsLightboxOpen(false)}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                </button>
+
+                                <div className="pdp-lightbox-nav-pill">
+                                    <button className="nav-pill-btn" onClick={(e) => {
+                                        e.stopPropagation();
+                                        scrollContainerRef.current?.scrollBy({ left: -scrollContainerRef.current.clientWidth, behavior: 'smooth' });
+                                    }}>
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"><path d="M15 18l-6-6 6-6" /></svg>
+                                    </button>
+                                    <span className="nav-pill-counter">{currentImgIndex + 1} / {galleryImages.length}</span>
+                                    <button className="nav-pill-btn" onClick={(e) => {
+                                        e.stopPropagation();
+                                        scrollContainerRef.current?.scrollBy({ left: scrollContainerRef.current.clientWidth, behavior: 'smooth' });
+                                    }}>
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"><path d="M9 18l6-6-6-6" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         <div
                             className={`pdp-main-image-slider ${isLightboxOpen ? 'pdp-image-expanded' : ''}`}

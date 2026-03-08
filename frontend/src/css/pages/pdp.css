@@ -269,13 +269,14 @@
 
 /* Expanded View / Lightbox */
 .pdp-image-expanded {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
     z-index: 2000;
-    background: #000;
+    background: #f4f2ee;
+    /* Matches reference light background */
 }
 
 .pdp-image-expanded .pdp-slide-item {
@@ -283,6 +284,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 40px;
 }
 
 .pdp-image-expanded img {
@@ -293,7 +295,80 @@
     cursor: zoom-out;
 }
 
-/* Image Counter Pill */
+/* Lightbox Controls Overlay */
+.pdp-lightbox-controls-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2100;
+    pointer-events: none;
+    /* Let clicks pass through to slider unless on buttons */
+}
+
+.lightbox-close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    background: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+}
+
+.lightbox-close-btn:hover {
+    transform: scale(1.05);
+}
+
+.pdp-lightbox-nav-pill {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 8px 16px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    pointer-events: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.nav-pill-btn {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.nav-pill-btn:hover {
+    opacity: 0.6;
+}
+
+.nav-pill-counter {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    min-width: 40px;
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+/* Image Counter Pill (Main View) */
 .pdp-image-counter {
     position: absolute;
     bottom: 20px;
@@ -311,76 +386,9 @@
     box-shadow: none !important;
 }
 
-/* Gallery Controls */
+/* Remove old gallery controls styles */
 .pdp-gallery-controls {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: none;
-    /* Hidden by default */
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    z-index: 20;
-    pointer-events: none;
-    background: transparent;
-}
-
-/* Only show when open in lightbox */
-.pdp-gallery-controls.is-open {
-    display: flex;
-}
-
-.gallery-ctrl {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(15, 15, 15, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    pointer-events: auto;
-    transition: all 0.2s;
-}
-
-.gallery-ctrl:hover {
-    background: #fff;
-    color: #000;
-}
-
-.gallery-ctrl.close-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.pdp-gallery-controls.is-open .gallery-ctrl.close-toggle {
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    z-index: 2100;
-}
-
-.pdp-gallery-controls.is-open .gallery-ctrl.prev,
-.pdp-gallery-controls.is-open .gallery-ctrl.next {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2100;
-}
-
-.pdp-gallery-controls.is-open .gallery-ctrl.prev {
-    left: 40px;
-}
-
-.pdp-gallery-controls.is-open .gallery-ctrl.next {
-    right: 40px;
+    display: none !important;
 }
 
 /* Progress Indicator */
