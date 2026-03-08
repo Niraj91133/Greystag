@@ -97,11 +97,12 @@
     width: 100%;
 }
 
-/* DESKTOP: Vertical Stack of Large Images */
+/* DESKTOP: Vertical Stack of Large Images (Seamless) */
 .pdp-gallery-vertical-stack {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0;
+    /* Remove gap as requested: 'sata hona chahiye' */
 }
 
 .pdp-stack-item {
@@ -109,6 +110,8 @@
     aspect-ratio: 4/5;
     background: #1a1a1a;
     overflow: hidden;
+    margin: 0;
+    /* Strict no gap */
 }
 
 .pdp-stack-item img {
@@ -362,12 +365,8 @@
 
 @media (min-width: 1024px) {
     .pdp-image-counter {
-        bottom: auto;
-        top: 24px;
-        left: 24px;
-        background: #fff;
-        color: #000;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: none !important;
+        /* Hide on seamless desktop gallery */
     }
 }
 
