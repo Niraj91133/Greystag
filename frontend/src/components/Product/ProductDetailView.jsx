@@ -246,21 +246,18 @@ export default function ProductDetailClient({ product: initialProduct }) {
                 }} />)}
 
             <div className="pdp-main-grid">
-                {/* 2. PRODUCT GALLERY (CLEAN ONE-FRAME EXPERIENCE) */}
+                {/* 2. PRODUCT GALLERY (Vertical Stack on Desktop, Slider on Mobile) */}
                 <div className="pdp-gallery-outer" ref={heroRef}>
                     <div className="pdp-gallery-wrapper">
-                        {/* Static Image Counter (Standard View) */}
+                        {/* Static Image Counter (Shows on both Mobile/Desktop now as requested) */}
                         <div className="pdp-image-counter">
                             {currentImgIndex + 1} / {galleryImages.length}
                         </div>
 
-                        <div
-                            className="pdp-main-image-slider"
-                            ref={scrollContainerRef}
-                            onScroll={handleScroll}
-                        >
+                        {/* DESKTOP: Vertical Stack of Images */}
+                        <div className="pdp-gallery-vertical-stack desktop-only">
                             {galleryImages.map((img, idx) => (
-                                <div key={idx} className="pdp-slide-item">
+                                <div key={idx} className="pdp-stack-item">
                                     <img
                                         src={img}
                                         alt={`${product.name} view ${idx + 1}`}
@@ -273,10 +270,30 @@ export default function ProductDetailClient({ product: initialProduct }) {
                                 </div>
                             ))}
                         </div>
+
+                        {/* MOBILE: Horizontal Slider */}
+                        <div
+                            className="pdp-main-image-slider mobile-only"
+                            ref={scrollContainerRef}
+                            onScroll={handleScroll}
+                        >
+                            {galleryImages.map((img, idx) => (
+                                <div key={idx} className="pdp-slide-item">
+                                    <img
+                                        src={img}
+                                        alt={`${product.name} view ${idx + 1}`}
+                                        onClick={() => {
+                                            setCurrentImgIndex(idx);
+                                            setIsLightboxOpen(true);
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Progress Indicator (Thin Gold Line) */}
-                    <div className="pdp-gallery-progress-bg">
+                    {/* Progress Indicator (Mobile ONLY) */}
+                    <div className="pdp-gallery-progress-bg mobile-only">
                         <div
                             className="pdp-gallery-progress-fill"
                             style={{ width: `${((currentImgIndex + 1) / galleryImages.length) * 100}%` }}
