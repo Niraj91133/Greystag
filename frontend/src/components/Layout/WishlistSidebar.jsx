@@ -226,7 +226,7 @@ export default function WishlistDrawer() {
                         backgroundColor: '#0f0f0f'
                     }}>
                         <Link
-                            href="/account/wishlist"
+                            href="/wishlist"
                             onClick={closeWishlist}
                             style={{
                                 display: 'block',

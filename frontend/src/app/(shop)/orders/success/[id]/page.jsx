@@ -4,10 +4,12 @@ import { useParams, useRouter } from 'next/navigation';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import { api } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 
 export default function OrderSuccessPage() {
     const { id } = useParams();
+    const { openUserMenu } = useAuth();
     const router = useRouter();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -78,7 +80,10 @@ export default function OrderSuccessPage() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <button
-                            onClick={() => router.push('/account')}
+                            onClick={() => {
+                                router.push('/');
+                                setTimeout(() => openUserMenu(), 500);
+                            }}
                             style={{
                                 padding: '16px 32px', background: '#f4f2ee', color: '#0f0f0f',
                                 border: 'none', borderRadius: '4px', fontWeight: '700', cursor: 'pointer',
@@ -86,6 +91,17 @@ export default function OrderSuccessPage() {
                             }}
                         >
                             Go to My Orders
+                        </button>
+
+                        <button
+                            onClick={() => window.open(`https://wa.me/919113326023?text=${encodeURIComponent(`Hi The Grey Stag! I just placed an order #${order.orderNumber || order.id?.substring(0, 8)}. I'd like to discuss the tailoring details.`)}`, '_blank')}
+                            style={{
+                                padding: '16px 32px', background: 'rgba(37, 211, 102, 0.1)', color: '#25D366',
+                                border: '1px solid #25D366', borderRadius: '4px', fontWeight: '700', cursor: 'pointer',
+                                textTransform: 'uppercase', letterSpacing: '1px'
+                            }}
+                        >
+                            Discuss on WhatsApp
                         </button>
 
                         <button
