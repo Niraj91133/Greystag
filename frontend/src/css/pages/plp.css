@@ -1,6 +1,6 @@
 /* =====================================================
    THE GREY STAG – PLP REDESIGN CSS
-   Luxury Minimal Aesthetic
+   Luxury Minimal Aesthetic - Updated
    ===================================================== */
 
 :root {
@@ -14,8 +14,9 @@
     --font-serif: "Playfair Display", serif;
     --font-sans: "Inter", sans-serif;
 
-    --gap-desktop: 24px;
-    --gap-mobile: 12px;
+    --gap-desktop: 0px;
+    /* Gapless as requested */
+    --gap-mobile: 0px;
 }
 
 /* RESET & BASE */
@@ -42,7 +43,7 @@ body {
 /* 2. CATEGORY NAVIGATION BAR */
 .plp-nav-wrapper {
     background: #000;
-    padding: 16px 24px;
+    padding: 24px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -52,6 +53,15 @@ body {
     overflow-x: auto;
     scrollbar-width: none;
     /* Firefox */
+    justify-content: center;
+    /* Centered as requested */
+}
+
+@media (max-width: 768px) {
+    .category-nav-bar {
+        justify-content: flex-start;
+        /* Still scrollable on mobile */
+    }
 }
 
 .category-nav-bar::-webkit-scrollbar {
@@ -63,7 +73,7 @@ body {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: #fff;
-    padding: 8px 24px;
+    padding: 10px 28px;
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
@@ -83,8 +93,8 @@ body {
 .category-hero-banner {
     position: relative;
     width: 100%;
-    height: 320px;
-    /* Desktop height */
+    height: 400px;
+    /* Slightly bigger hero */
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -121,37 +131,40 @@ body {
 }
 
 .hero-title-outline {
-    font-size: clamp(3rem, 10vw, 7rem);
-    font-weight: 800;
+    font-size: clamp(4rem, 12vw, 9rem);
+    /* Bigger and bold as requested */
+    font-weight: 900;
     color: transparent;
     -webkit-text-stroke: 2px #fff;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     margin: 0;
     text-transform: uppercase;
+    font-family: var(--font-serif);
+    /* Using serif for better luxury feel */
 }
 
 @media (max-width: 768px) {
     .category-hero-banner {
-        height: 180px;
-        /* Mobile height */
+        height: 220px;
     }
 }
 
 /* 4. PRODUCT GRID */
 .plp-content-main {
-    padding: 40px 24px 80px;
-    max-width: 1440px;
-    margin: 0 auto;
+    padding: 0;
+    /* Full width as requested */
+    margin: 0;
     width: 100%;
 }
 
 .plp-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--gap-desktop);
+    gap: 0;
+    /* Gapless */
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
     .plp-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -160,11 +173,6 @@ body {
 @media (max-width: 768px) {
     .plp-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: var(--gap-mobile);
-    }
-
-    .plp-content-main {
-        padding: 24px 12px 60px;
     }
 }
 
@@ -175,15 +183,30 @@ body {
     text-decoration: none;
     color: inherit;
     transition: transform 0.3s ease;
+    position: relative;
+    border: 0.5px solid rgba(255, 255, 255, 0.05);
+    /* Very subtle separation since no gap */
 }
 
 .product-image-container {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    /* Pure square for all */
+    aspect-ratio: 1 / 1.25;
+    /* Slightly taller for more presence */
     background: #1a1a1a;
     overflow: hidden;
+}
+
+/* CAROUSEL STYLES */
+.card-carousel {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 100%;
 }
 
 .product-main-img {
@@ -193,20 +216,71 @@ body {
     transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.plp-product-card:hover .product-main-img {
-    transform: scale(1.05);
+/* DESKTOP ARROWS */
+.carousel-arrows {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.plp-product-card:hover .carousel-arrows {
+    opacity: 1;
+}
+
+.carousel-arrow {
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.2s;
+}
+
+.carousel-arrow:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* PAGINATION LINE (Mobile Style) */
+.pagination-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.pagination-progress {
+    height: 100%;
+    background: #fff;
+    transition: width 0.3s ease;
 }
 
 .wishlist-heart-btn {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 15px;
+    right: 15px;
     background: transparent;
     border: none;
     color: #fff;
     cursor: pointer;
-    z-index: 5;
+    z-index: 10;
     transition: transform 0.2s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .wishlist-heart-btn:hover {
@@ -220,15 +294,16 @@ body {
 
 /* Details Section */
 .product-card-details {
-    padding: 16px 0;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    background: #000;
 }
 
 .product-card-name {
     font-family: var(--font-serif);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 500;
     color: #fff;
     margin: 0;
@@ -238,15 +313,15 @@ body {
     font-size: 0.75rem;
     color: var(--color-grey);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     margin: 0;
 }
 
 .product-card-price {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #fff;
-    margin-top: 4px;
+    margin-top: 5px;
 }
 
 /* Transitions */

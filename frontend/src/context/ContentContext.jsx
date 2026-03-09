@@ -85,6 +85,18 @@ const DEFAULT_BEHIND_SEAMS = {
     ctaLink: '/story'
 };
 
+const DEFAULT_PLP_BANNERS = {
+    all: 'https://images.unsplash.com/photo-1490312278390-ab6414f81c81?q=80&w=2000',
+    shirt: 'https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=2000',
+    polo: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=2000',
+    jackets: 'https://images.unsplash.com/photo-1591047139829-d91aec16adcd?q=80&w=2000',
+    pants: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=2000',
+    meetings: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2000',
+    events: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000',
+    students: 'https://images.unsplash.com/photo-1523050853063-8931a677ca4a?q=80&w=2000',
+    office: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000'
+};
+
 const ContentContext = createContext(undefined);
 import { api } from '@/lib/api';
 
@@ -93,6 +105,7 @@ export function ContentProvider({ children }) {
     const [videoSection, setVideoSection] = useState(DEFAULT_VIDEO_SECTION);
     const [behindSeams, setBehindSeams] = useState(DEFAULT_BEHIND_SEAMS);
     const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+    const [plpBanners, setPlpBanners] = useState(DEFAULT_PLP_BANNERS);
     const [videoScrollItems, setVideoScrollItems] = useState(DEFAULT_VIDEO_SCROLL);
     const [handpickedItems, setHandpickedItems] = useState(DEFAULT_HANDPICKED);
     const [journal, setJournal] = useState(DEFAULT_JOURNAL);
@@ -115,6 +128,7 @@ export function ContentProvider({ children }) {
                     if (data.hero) setHero(data.hero);
                     if (data.videoSection) setVideoSection(data.videoSection);
                     if (data.categories) setCategories(data.categories);
+                    if (data.plpBanners) setPlpBanners(data.plpBanners);
                     if (data.videoScrollItems) setVideoScrollItems(data.videoScrollItems);
                     if (data.handpickedItems) setHandpickedItems(data.handpickedItems);
                     if (data.journal) setJournal(data.journal);
@@ -164,6 +178,7 @@ export function ContentProvider({ children }) {
                     hero,
                     videoSection,
                     categories,
+                    plpBanners,
                     videoScrollItems,
                     handpickedItems,
                     journal,
@@ -185,10 +200,9 @@ export function ContentProvider({ children }) {
                 setIsSaving(false);
             }
         };
-        // Debounce slightly to avoid rapid-fire saves if multiple updates happen
         const timeoutId = setTimeout(saveContent, 3000);
         return () => clearTimeout(timeoutId);
-    }, [hero, videoSection, behindSeams, categories, videoScrollItems, handpickedItems, journal, essentialsConfig, isLoaded, user]);
+    }, [hero, videoSection, behindSeams, categories, plpBanners, videoScrollItems, handpickedItems, journal, essentialsConfig, isLoaded, user]);
 
 
     const updateHero = (data) => {
@@ -202,6 +216,9 @@ export function ContentProvider({ children }) {
     };
     const updateCategory = (id, data) => {
         setCategories(prev => prev.map(cat => cat.id === id ? { ...cat, ...data } : cat));
+    };
+    const updatePlpBanner = (key, url) => {
+        setPlpBanners(prev => ({ ...prev, [key.toLowerCase()]: url }));
     };
     const addCategory = (name) => {
         const id = name.toLowerCase().replace(/\s+/g, '-');
@@ -249,8 +266,8 @@ export function ContentProvider({ children }) {
         setEssentialsConfig(prev => ({ ...prev, ...data }));
     };
     return (<ContentContext.Provider value={{
-        hero, videoSection, behindSeams, categories, videoScrollItems, journal, essentialsConfig, handpickedItems,
-        updateHero, updateVideoSection, updateBehindSeams, updateCategory, addCategory, deleteCategory,
+        hero, videoSection, behindSeams, categories, plpBanners, videoScrollItems, journal, essentialsConfig, handpickedItems,
+        updateHero, updateVideoSection, updateBehindSeams, updateCategory, updatePlpBanner, addCategory, deleteCategory,
         addVideoScrollItem, deleteVideoScrollItem,
 
         addJournalEntry, updateJournalEntry, deleteJournalEntry, updateEssentialsConfig, updateHandpickedItem
