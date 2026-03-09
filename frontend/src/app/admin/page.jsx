@@ -9,6 +9,7 @@ import VideoScrollEditor from '@/components/Admin/VideoScrollEditor';
 import JournalEditor from '@/components/Admin/JournalEditor';
 import HandpickedEditor from '@/components/Admin/HandpickedEditor';
 import BehindSeamsEditor from '@/components/Admin/BehindSeamsEditor';
+import PLPBannerEditor from '@/components/Admin/PLPBannerEditor'; // Added
 import OrdersManager from '@/components/Admin/OrdersManager';
 import DashboardOverview from '@/components/Admin/DashboardOverview'; // New
 import TailoringCRM from '@/components/Admin/TailoringCRM'; // New
@@ -22,6 +23,7 @@ const TABS = [
 
     { id: 'products', label: 'Product Lab', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg> },
     { id: 'hero', label: 'CMS: Hero', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
+    { id: 'plp-banners', label: 'CMS: PLP Banners', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg> },
     { id: 'categories', label: 'CMS: Categories', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg> },
     { id: 'promo', label: 'CMS: Promos', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4V20M17 4V20M3 8H21M3 16H21" /></svg> },
     { id: 'reels', label: 'CMS: Reels', icon: <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg> },
@@ -72,6 +74,7 @@ export default function AdminDashboard() {
             case 'orders': return <OrdersManager />;
 
             case 'hero': return <HeroEditor />;
+            case 'plp-banners': return <PLPBannerEditor />;
             case 'categories': return <CategoryEditor />;
             case 'promo': return <PromoEditor />;
             case 'reels': return <VideoScrollEditor />;
