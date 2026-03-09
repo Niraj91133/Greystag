@@ -217,29 +217,7 @@ export default function UserDrawer() {
                         {/* Settings Navs */}
                         <div style={{ marginTop: '24px' }}>
                             <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: '#666', marginBottom: '8px', letterSpacing: '1px' }}>Settings</h3>
-                            {user.role === 'ADMIN' && (
-                                <button onClick={() => { router.push('/admin'); closeUserMenu(); }} style={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    padding: '16px 0',
-                                    background: 'rgba(212, 175, 55, 0.1)',
-                                    border: 'none',
-                                    borderBottom: '1px solid rgba(255,255,255,0.06)',
-                                    color: '#d4af37',
-                                    fontSize: '1rem',
-                                    cursor: 'pointer',
-                                    textAlign: 'left',
-                                    paddingLeft: '12px',
-                                    paddingRight: '12px',
-                                    borderRadius: '4px',
-                                    marginBottom: '12px'
-                                }}>
-                                    <span>👑 Admin Dashboard</span>
-                                    <span style={{ fontSize: '1.2rem', opacity: 0.5 }}>›</span>
-                                </button>
-                            )}
+                            {/* Admin link removed per user request */}
                             {[
                                 { label: 'My Addresses', view: 'addresses' },
                                 { label: 'Payment Methods', view: 'payments' },

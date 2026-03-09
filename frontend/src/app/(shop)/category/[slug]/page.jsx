@@ -80,22 +80,6 @@ export default async function CategoryPage({ params }) {
         }
         return (<>
             <CategoryLayoutClient initialCategory={initialCategory} pageTitle={pageTitle} />
-
-            {/* Suggestions Section */}
-            <section style={{ padding: '64px 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <div className="global-page-container" style={{ padding: '0 24px' }}>
-                    <h3 style={{
-                        fontFamily: 'var(--font-serif)',
-                        fontSize: '2rem',
-                        color: '#fff',
-                        marginBottom: '32px',
-                        textAlign: 'center'
-                    }}>
-                        Explore More Categories
-                    </h3>
-                    <CategoryMosaic />
-                </div>
-            </section>
         </>);
     }
     catch (error) {

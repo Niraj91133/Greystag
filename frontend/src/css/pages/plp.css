@@ -14,9 +14,8 @@
     --font-serif: "Playfair Display", serif;
     --font-sans: "Inter", sans-serif;
 
-    --gap-desktop: 0px;
-    /* Gapless as requested */
-    --gap-mobile: 0px;
+    --gap-desktop: 32px;
+    --gap-mobile: 16px;
 }
 
 /* RESET & BASE */
@@ -151,17 +150,28 @@ body {
 
 /* 4. PRODUCT GRID */
 .plp-content-main {
-    padding: 0;
-    /* Full width as requested */
+    padding: 60px 40px;
+    /* More space on sides and top */
     margin: 0;
     width: 100%;
+}
+
+@media (max-width: 768px) {
+    .plp-content-main {
+        padding: 30px 16px;
+    }
 }
 
 .plp-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    /* Gapless */
+    gap: var(--gap-desktop);
+}
+
+@media (max-width: 768px) {
+    .plp-grid {
+        gap: var(--gap-mobile);
+    }
 }
 
 @media (max-width: 1200px) {
@@ -195,6 +205,8 @@ body {
     /* Slightly taller for more presence */
     background: #1a1a1a;
     overflow: hidden;
+    margin-bottom: 12px;
+    /* Space between image and details */
 }
 
 /* CAROUSEL STYLES */
