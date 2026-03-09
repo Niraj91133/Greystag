@@ -3,13 +3,22 @@ import { useContent } from '@/context/ContentContext';
 
 export default function CategoryTabs({ activeCategory, onSelect }) {
     const { categories } = useContent();
-    const CATEGORIES = ["All", ...categories.map(c => c.name)];
+    const categoriesFromContext = categories.map(c => c.name);
 
-    return (<div className="category-nav-container">
-        <nav className="category-nav">
-            {CATEGORIES.map((cat) => (<a key={cat} className={activeCategory === cat ? 'active' : ''} onClick={() => onSelect(cat)}>
-                {cat}
-            </a>))}
-        </nav>
-    </div>);
+    // As per design prompts: Shirt, Polo, Jackets, Pants, Meetings, Events, Students, Office
+    const CATEGORIES = ["All", "Shirt", "Polo", "Jackets", "Pants", "Meetings", "Events", "Students", "Office"];
+
+    return (
+        <div className="category-nav-bar">
+            {CATEGORIES.map((cat) => (
+                <button
+                    key={cat}
+                    className={`nav-tab-btn ${activeCategory.toLowerCase() === cat.toLowerCase() ? 'active' : ''}`}
+                    onClick={() => onSelect(cat)}
+                >
+                    {cat}
+                </button>
+            ))}
+        </div>
+    );
 }

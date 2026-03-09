@@ -1,108 +1,81 @@
 'use client';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Header from '@/components/Layout/Header';
-import FilterBar from "@/components/Shop/FilterPanel";
 import PLPGrid from "@/components/Shop/ProductGrid";
 import Footer from "@/components/Layout/Footer";
-import CategoryTabs from "@/components/Shop/CategoryTabs"; // User deleted this but I just recreated it
-import '@/css/pages/plp.css'; // Import the user's allowed CSS
+import CategoryTabs from "@/components/Shop/CategoryTabs";
+import CategoryBanner from "@/components/Shop/CategoryBanner";
+import '@/css/pages/plp.css';
 import { useCart } from '@/context/CartContext';
-import { useProduct } from '@/context/ProductContext'; // Import context
-export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
-    // State
-    const { products: contextProducts } = useProduct(); // Get products from context
-    const { openCart } = useCart();
-    // Map Context Products to UI Products (fixing type mismatch)
-    const mappedProducts = useMemo(() => {
-        return contextProducts.map(p => ({
-            id: p.id || p._id, // Handle both string IDs
-            name: p.name,
-            price: `₹${p.price}`,
-            image: (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000',
-            category: typeof p.category === 'object' ? p.category?.name : p.category,
-            size: p.sizes,
+import { useProduct } from '@/context/ProductContext';
 
-            color: p.colors?.[0],
-            tags: p.occasions,
-            fit: 'Regular' // Default
-        }));
-    }, [contextProducts]);
+export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
+    const { products: contextProducts } = useProduct();
     const [activeCategory, setActiveCategory] = useState(initialCategory);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    const [activeFilters, setActiveFilters] = useState({ Size: [], Color: [], Fit: [] });
-    const [sortType, setSortType] = useState('');
-    const contentRef = React.useRef(null);
-    // Initial scroll reset on mount or category change
-    React.useEffect(() => {
-        if (contentRef.current) {
-            contentRef.current.scrollTop = 0;
-        }
+    const contentRef = useRef(null);
+
+    // Initial scroll reset on change
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [activeCategory]);
-    // --- LOGIC: Filter & Sort ---
+
+    const mappedProducts = useMemo(() => {
+        return contextProducts.map(p => ({
+            id: p.id || p._id,
+            name: p.name,
+            brand: "The Grey Stag",
+            price: p.price,
+            images: p.images || [],
+            image: (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=2000',
+            category: typeof p.category === 'object' ? p.category?.name : p.category,
+            tags: (p.occasions || p.tags || []).map(t => t.toLowerCase()),
+        }));
+    }, [contextProducts]);
+
     const filteredProducts = useMemo(() => {
-        // 1. Base Filter determined by Page Title (Intent)
-        let baseProducts = mappedProducts;
+        // Base filtering if pageTitle is an occasion
+        let base = [...mappedProducts];
 
-        if (pageTitle && pageTitle !== 'All' && !['Shirts', 'Pants', 'Trousers', 'Chinos', 'Blazers', 'Accessories'].includes(pageTitle)) {
-            const occasionMap = {
-                'Meetings': 'Meeting',
-                'Office Essentials': 'Office',
-                'Students': 'Student',
-                'Events': 'Event'
-            };
-            const tag = occasionMap[pageTitle] || pageTitle.replace(/s$/, ''); // naive singularize
-            baseProducts = mappedProducts.filter(p => p.tags?.includes(tag));
+        const occasionMap = {
+            'meetings': 'meeting',
+            'events': 'event',
+            'students': 'student',
+            'office': 'office',
+            'office essentials': 'office'
+        };
+
+        // If the whole page is dedicated to an occasion (via URL slug)
+        const pageOccasionTag = occasionMap[pageTitle?.toLowerCase()];
+        if (pageOccasionTag) {
+            base = base.filter(p => p.tags.includes(pageOccasionTag));
         }
 
-        // 2. Category Filter (Active Tab)
-        let result = activeCategory === 'All'
-            ? [...baseProducts]
-            : baseProducts.filter(p => p.category?.toLowerCase() === activeCategory.toLowerCase());
+        // Active Tab Filtering
+        const currentTab = activeCategory.toLowerCase();
+        if (currentTab === 'all') return base;
 
-        // Standard Filters
-        if (activeFilters.Size.length > 0)
-            result = result.filter(p => p.size?.some(s => activeFilters.Size.includes(s)));
-        if (activeFilters.Color.length > 0)
-            result = result.filter(p => p.color && activeFilters.Color.includes(p.color));
-        if (activeFilters.Fit.length > 0)
-            result = result.filter(p => p.fit && activeFilters.Fit.includes(p.fit));
-
-        // Sort
-        if (sortType === 'price_asc') {
-            result.sort((a, b) => parseInt(a.price.replace(/[^0-9]/g, '')) - parseInt(b.price.replace(/[^0-9]/g, '')));
+        // If active tab is an occasion
+        const tabOccasionTag = occasionMap[currentTab];
+        if (tabOccasionTag) {
+            return base.filter(p => p.tags.includes(tabOccasionTag));
         }
-        else if (sortType === 'price_desc') {
-            result.sort((a, b) => parseInt(b.price.replace(/[^0-9]/g, '')) - parseInt(a.price.replace(/[^0-9]/g, '')));
-        }
-        return result;
-    }, [mappedProducts, activeCategory, activeFilters, sortType, pageTitle]);
 
-    // Grouped View for 'All' - Now dynamically generated
-    const groupedView = useMemo(() => {
-        if (activeCategory !== 'All') return null;
+        // Otherwise filter by category name
+        // Map some UI names to DB names if needed
+        const categoryMapping = {
+            'shirt': 'shirts',
+            'pants': 'trousers',
+            'jackets': 'blazers',
+            'polo': 'shirts' // Assuming polos are in shirts or have a specific tag
+        };
 
-        // Dynamically extract categories from the current list of filtered products
-        const uniqueCategories = Array.from(new Set(filteredProducts.map(p => p.category).filter(Boolean)));
+        const dbCategoryName = categoryMapping[currentTab] || currentTab;
+        return base.filter(p => p.category?.toLowerCase() === dbCategoryName);
+    }, [mappedProducts, activeCategory, pageTitle]);
 
-        if (uniqueCategories.length === 0) return { "All Items": filteredProducts };
-
-        const groups = {};
-        uniqueCategories.forEach(cat => {
-            const catProducts = filteredProducts.filter(p => p.category === cat);
-            if (catProducts.length > 0) groups[cat] = catProducts;
-        });
-
-        // Also catch uncategorized products
-        const uncategorized = filteredProducts.filter(p => !p.category);
-        if (uncategorized.length > 0) groups["Other"] = uncategorized;
-
-        return groups;
-    }, [activeCategory, filteredProducts]);
-
-    // Handlers
     const handleCategoryChange = (category) => {
         if (category === activeCategory) return;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         setIsTransitioning(true);
         setTimeout(() => {
             setActiveCategory(category);
@@ -112,59 +85,29 @@ export default function CategoryLayoutClient({ initialCategory, pageTitle }) {
         }, 120);
     };
 
-    const handleFilterChange = (type, value) => {
-        setActiveFilters(prev => {
-            const current = prev[type];
-            return {
-                ...prev,
-                [type]: current.includes(value) ? current.filter(i => i !== value) : [...current, value]
-            };
-        });
-    };
-
-    const handleSort = (type) => setSortType(type);
-
     return (
-        <main className="plp-main-frame">
-            <div style={{ flexShrink: 0, zIndex: 100, background: '#0f0f0f' }}>
-                <Header variant="plp" />
-                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div className="category-row">
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                            <CategoryTabs activeCategory={activeCategory} onSelect={handleCategoryChange} />
-                        </div>
-                    </div>
-                    <div className="filter-bar-row">
-                        <FilterBar activeFilters={activeFilters} onFilterChange={handleFilterChange} onSort={handleSort} />
-                    </div>
-                </div>
+        <div className="plp-page-root">
+            {/* 1. HEADER (Handled in Header component) */}
+            <Header variant="plp" />
+
+            {/* 2. CATEGORY NAVIGATION BAR */}
+            <div className="plp-nav-wrapper">
+                <CategoryTabs activeCategory={activeCategory} onSelect={handleCategoryChange} />
             </div>
 
-            <div ref={contentRef} className="plp-scroll-area">
-                <div className="plp-container" style={{
-                    opacity: isTransitioning ? 0 : 1,
-                    transition: 'opacity 120ms ease-out',
-                }}>
-                    {groupedView ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
-                            {Object.entries(groupedView).map(([cat, items]) => (
-                                <section key={cat}>
-                                    <h2 style={{
-                                        fontFamily: 'var(--font-serif)',
-                                        fontSize: '1.5rem',
-                                        marginBottom: '24px',
-                                        color: 'rgba(255,255,255,0.8)'
-                                    }}>{cat}</h2>
-                                    <PLPGrid products={items} />
-                                </section>
-                            ))}
-                        </div>
-                    ) : (
-                        <PLPGrid products={filteredProducts} />
-                    )}
+            {/* 3. CATEGORY HERO BANNER */}
+            <CategoryBanner title={activeCategory === 'All' ? (pageTitle || "Collection") : activeCategory} />
+
+            {/* 4. PRODUCT GRID */}
+            <main
+                className={`plp-content-main ${isTransitioning ? 'fade-out' : 'fade-in'}`}
+            >
+                <div className="plp-grid-container">
+                    <PLPGrid products={filteredProducts} />
                 </div>
-                <Footer />
-            </div>
-        </main>
+            </main>
+
+            <Footer />
+        </div>
     );
 }
